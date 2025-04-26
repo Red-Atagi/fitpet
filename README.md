@@ -24,7 +24,7 @@ data_241_autumn_2024_1/
     └── manage.py
 ```
 
-## Virtual Environment
+## Virtual Environment (for Mac)
 
 1. Make a virtual environment in the base directory called `env` by typing `python -m venv .env`
 2. Activate the virtual environment by typing `source .env/bin/activate`.
@@ -43,5 +43,5 @@ The `templates` directory holds all the html files for the UI.
 
 ## Running the Webserver
 
-1. If the class structure has changed, then the database structure will also change. Thus, you need to run `python manage.py migrate`.
+1. If the class structure has changed, then the database structure will also change. Thus, you need to run `python manage.py makemigrations` then `python manage.py migrate`.
 2. To run the webserver, run `python manage.py runserver`.
