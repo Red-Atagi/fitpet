@@ -12,13 +12,24 @@ class FPUser(models.Model):
     username = models.CharField(max_length=255, default=None)
     name = models.CharField(max_length=255, default=None)
     owns = models.ManyToManyField('Clothing', related_name='users')
+    
+    def clothing_owned(self):
+        # get all the clothing this user owns, sort them into hats, shirts, and shoes, then return a tuple of lists
+        ...
 
 class Pet(models.Model):
     pet_id = models.AutoField(primary_key=True)
     xp = models.IntegerField(default=0)
     name = models.CharField(max_length=255, default=None)
     owner = models.ForeignKey(FPUser, on_delete=models.CASCADE)
-    wearing = models.ManyToManyField('Clothing', related_name='pets')
+    hat = models.ForeignKey('Clothing', default=None)
+    shirt = models.ForeignKey('Clothing', default=None)
+    shoes = models.ForeignKey('Clothing', default=None)
+    image_path = models.CharField(max_length=255)
+    
+    def is_wearing(self):
+        # returns tuple (hat, shirt, shoes) that the pet is wearing
+        ...
     
 class Exercise(models.Model):
     exercise_id = models.AutoField(primary_key=True)
