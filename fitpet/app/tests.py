@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from app.models import *
+from models import FPUser, Pet, Clothing
 
 
 class CreateAcountTestCase(TestCase):
@@ -40,7 +41,7 @@ class ShopTestCase(TestCase):
         self.shoes1 = Clothing.objects.create(price=100, clothing_type="Shoes", image_path="images/shoes1.png")
         self.shoes2 = Clothing.objects.create(price=100, clothing_type="Shoes", image_path="images/shoes2.png")
 
-        #add only somes itesm to some clothes user
+        #add only somes items to some clothes user
         self.fpuserSomeClothes.owns.add(self.hat1, self.shirt1)
     
         #add all the clothes to own to user
@@ -65,7 +66,6 @@ class ShopTestCase(TestCase):
             name="PetAll", 
             image_path="images/test_pet.png"
         )
-        ...
 
     def test_shop_no_clothing_owned(self):
         # Log in
@@ -121,6 +121,37 @@ class ShopTestCase(TestCase):
         self.assertEqual(len(response.context['hats_unowned']), 0)
         self.assertEqual(len(response.context['shirts_unowned']), 0)
         self.assertEqual(len(response.context['shoes_unowned']), 0)
+
+    def test_buy_clothing_all(self):
+        # Log in 
+        self.client.login(username="userAllClothes", password="testpass")
+        # Get dress page
+        response = self.client.get(reverse("shop_page"))
+        self.assertEqual(response.status_code, 200)
+
+        # Check purchase is possible
+        self.assertEqual(self.fpuserAllClothes.buy_clothing(self.shirt1), False)
+
+    def test_buy_clothing_cant_buy(self):
+        # Log in 
+        self.client.login(username="userSomeClothes", password="testpass")
+        # Get dress page
+        response = self.client.get(reverse("shop_page"))
+        self.assertEqual(response.status_code, 200)
+
+        # Check purchase is possible
+        self.assertEqual(self.fpuserSomeClothes.buy_clothing(self.shoes1), False)
+
+    def test_buy_clothing_can_buy(self):
+        # Log in 
+        self.client.login(username="userSomeClothes", password="testpass")
+        # Get dress page
+        response = self.client.get(reverse("shop_page"))
+        self.assertEqual(response.status_code, 200)
+
+        # Check purchase is possible
+        self.assertEqual(self.fpuserSomeClothes.buy_clothing(self.hat1), True)
+
 
 class DressPetTestCase(TestCase):
     def setUp(self):

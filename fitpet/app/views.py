@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from app.models import *
 from django.http import JsonResponse
+from models import FPUser, Pet, Clothing
+
 
 def index(request):
     return render(request, 'base.html', {})
+
 
 def display_dress_page(request):
     
@@ -29,6 +32,7 @@ def display_dress_page(request):
     }
     
     return render(request, 'dress.html', data)
+
 
 def change_clothing(request):
     if request.method != "POST":
@@ -69,9 +73,10 @@ def change_clothing(request):
         'new_image_url': pet.image_path,  # Assuming you want to return the pet's image path
     })
 
+
 def shop_page(request):
     """
-    rednders the shop page with the items the user does not own
+    Renders the shop page with the items the user does not own.
     """
     if not request.user.is_authenticated:
         return redirect('') # TODO: change this to login page
