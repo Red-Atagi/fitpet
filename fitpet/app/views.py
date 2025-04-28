@@ -68,3 +68,33 @@ def change_clothing(request):
         'success': True,
         'new_image_url': pet.image_path,  # Assuming you want to return the pet's image path
     })
+
+def shop_page(request):
+    """
+    rednders the shop page with the items the user does not own
+    """
+    if not request.user.is_authenticated:
+        return redirect('') # TODO: change this to login page
+    user = request.user
+    fpuser = FPUser.objects.get(djuser=user)
+
+    owned_clothing = fpuser.owns.all()
+    unowned_clothing = Clothing.objects.exclude(clothing_id__in=owned_clothing.values_list('clothing_id', flat=True))
+    
+    hats = unowned_clothing.filter(clothing_type="Hat")
+    shirts = unowned_clothing.filter(clothing_type="Shirt")
+    shoes = unowned_clothing.filter(clothing_type="Shoes")
+
+    pet = Pet.objects.filter(owner = fpuser)
+    # hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
+
+    data = {
+        "hats_unowned": hats,
+        "shirts_unowned": shirts,
+        "shoes_unowned": shoes,
+        # "hat_wearing": hat_wearing,
+        # "shirt_wearing": shirt_wearing,
+        # "shoes_wearing": shoes_wearing
+    }
+    
+    return render(request, 'shop.html', data)
