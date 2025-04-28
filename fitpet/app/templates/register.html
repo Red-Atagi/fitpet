@@ -1,0 +1,11 @@
+<h1>Create an Account</h1>
+
+<!-- Keeping the default text because it outputs the requirements
+ for passwords which can be used in testing -->
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+
+<a href="{% url 'index' %}">Cancel</a>

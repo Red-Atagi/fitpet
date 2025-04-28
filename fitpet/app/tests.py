@@ -2,13 +2,19 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from app.models import *
-from models import FPUser, Pet, Clothing
+from .models import FPUser, Pet, Clothing
 
 
 class CreateAcountTestCase(TestCase):
-    def setUp(self): ...
-
-    def test_1(self): ...
+    def testValidUser(self):
+        response = self.client.post(reverse('register'), {
+            'username': 'testingUsername',
+            'password1': 'testPass189',
+            'password2': 'testPass189'
+        })
+        ## This is the code of a successful form submission
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(User.objects.filter(username='testingUsername').exists())
 
 
 class ShopTestCase(TestCase):
