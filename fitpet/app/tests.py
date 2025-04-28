@@ -123,6 +123,11 @@ class ShopTestCase(TestCase):
         self.assertEqual(len(response.context['shoes_unowned']), 0)
 
     def test_buy_clothing_all(self):
+        """
+        Considers the case where a user has purchased all of their clothing.
+
+        Must return False.
+        """
         # Log in 
         self.client.login(username="userAllClothes", password="testpass")
         # Get dress page
@@ -133,6 +138,12 @@ class ShopTestCase(TestCase):
         self.assertEqual(self.fpuserAllClothes.buy_clothing(self.shirt1), False)
 
     def test_buy_clothing_cant_buy(self):
+        """
+        Considers the case where a user does not have enough coins to buy an 
+        item.
+
+        Must return False.
+        """
         # Log in 
         self.client.login(username="userSomeClothes", password="testpass")
         # Get dress page
@@ -143,6 +154,11 @@ class ShopTestCase(TestCase):
         self.assertEqual(self.fpuserSomeClothes.buy_clothing(self.shoes1), False)
 
     def test_buy_clothing_can_buy(self):
+        """
+        Considers the case where a user has enough coins to purchase an item.
+
+        Must return True.
+        """
         # Log in 
         self.client.login(username="userSomeClothes", password="testpass")
         # Get dress page
