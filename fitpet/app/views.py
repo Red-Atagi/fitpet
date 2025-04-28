@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from app.models import *
 from django.http import JsonResponse
-from models import FPUser, Pet, Clothing
+from .models import FPUser, Pet, Clothing
+from .forms import CreateUserForm
 
 
 def index(request):
@@ -103,3 +104,30 @@ def shop_page(request):
     }
     
     return render(request, 'shop.html', data)
+
+def register(request):
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        ## Django already has capabilities checking if username and password work
+        if form.is_valid():
+            ## Use Django capabilities to save information of the User
+            user = form.save()
+            userFP = FPUser.objects.create(
+                ## User_id is automatically generated
+                djuser = user,
+                username = user.username,
+                ## Can set name changing capabilities later
+                name = "",
+                coins = 0
+            )
+            Pet.objects.create(
+            ## Can set name changing capabilities later
+            name = "",
+            xp=0,
+            owner = userFP
+            )
+            ## After successful account creation, return to main page
+            return redirect('index')
+    else:
+        form = CreateUserForm()
+    return render(request, 'register.html', {'form': form})
