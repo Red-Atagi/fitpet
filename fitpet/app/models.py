@@ -16,6 +16,8 @@ class FPUser(models.Model):
     def clothing_owned(self):
         # get all the clothing this user owns, sort them into hats, shirts, and shoes, then return a tuple of lists
         ...
+    def buy_clothing(self, clothing):
+        ...
 
 class Pet(models.Model):
     pet_id = models.AutoField(primary_key=True)

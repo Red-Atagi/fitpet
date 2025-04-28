@@ -12,10 +12,42 @@ class CreateAcountTestCase(TestCase):
 
 class ShopTestCase(TestCase):
     def setUp(self):
+
+        shop = Shop (hat, shirt, shoes)
+        self.pet1 = Pet.objects.create(owner=self.fpuser1, name='PetOne', image_path="images/test_pet.png")
         ...
     
-    def test_1(self):
+    def test_get_hat(self):
         ...
+
+    def test_get_shirt(self):
+        ...
+
+    def test_get_shoes(self):
+        ...
+    
+    def test_display_clothing_bad_id(self):
+        ...
+
+    def test_display_clothing_good_id(self):
+        ...
+    
+    def test_get_clothes_not_owned_owns_nothing(self):
+        ...
+
+    def test_get_clothes_not_owned_owns_some(self):
+        ...
+
+    def test_get_clothes_not_owned_owns_all(self):
+        ...
+    
+    def test_buy_clothes_not_enough_money(self):
+        ...
+
+    def test_buy_clothes_enough_money(self):
+        ...
+    
+
 
 class DressPetTestCase(TestCase):
     def setUp(self):
