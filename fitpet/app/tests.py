@@ -74,6 +74,13 @@ class ShopTestCase(TestCase):
         )
 
     def test_shop_no_clothing_owned(self):
+        """
+        Shop only shows the clothing items that are not owned by the user 
+        accessing them. So when the user loads the shop only items not owned by
+        user should be given in the context
+
+        This test is for a user that owns no clothing
+        """
         # Log in
         self.client.login(username="userNoClothes", password="testpass")
 
@@ -95,6 +102,13 @@ class ShopTestCase(TestCase):
         self.assertIn(self.shoes2.clothing_id, shoe_ids)
 
     def test_shop_some_clothing_owned(self):
+        """
+        Shop only shows the clothing items that are not owned by the user 
+        accessing them. So when the user loads the shop only items not owned by
+        user should be given in the context
+
+        This test is for a user that owns some of the clothing
+        """
         # Log in
         self.client.login(username="userSomeClothes", password="testpass")
 
@@ -118,6 +132,14 @@ class ShopTestCase(TestCase):
         self.assertIn(self.shoes2.clothing_id, shoe_ids)
 
     def test_shop_all_clothing_owned(self):
+        """
+        Shop only shows the clothing items that are not owned by the user 
+        accessing them. So when the user loads the shop only items not owned by
+        user should be given in the context
+
+        This test is for a user that owns all of the clothing so no clothing
+        is given in the context of the request
+        """
         # Log in
         self.client.login(username="userAllClothes", password="testpass")
         # Get dress page

@@ -1,5 +1,8 @@
 # FitPet
 
+## Tests Location
+All of our tests are located in `fitpet/app/tests.py`
+
 ## File Structure
 ```
 data_241_autumn_2024_1/
