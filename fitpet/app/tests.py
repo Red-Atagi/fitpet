@@ -284,6 +284,138 @@ class DressPetTestCase(TestCase):
 
 
 class WorkoutTestCase(TestCase):
-    def setUp(self): ...
 
-    def test_1(self): ...
+    def setUp(self):
+        # Create a User
+        self.user = User.objects.create_user(username="workout_user", password="testpass")
+        # Create a Fpuser
+        self.fpuser = FPUser.objects.create(djuser=self.user, username="workout_user", name="Workout User", coins=0)
+
+        #Create exercises
+        self.exercise1 = Exercise.objects.create(name="Pushups", tier=2, max_reps=20)
+        self.exercise2 = Exercise.objects.create(name="Squats", tier=3, max_reps=25)
+
+        #Create pet 
+        self.pet = Pet.objects.create(owner=self.fpuser, name="Fitty", image_path="images/test_pet.png", level=1, xp=0)
+        
+    def test_add_xp_and_coins(self): 
+        """
+        Simulate adding XP and coins to the pet and FPUser after a workout.
+        This will eventually be triggered by a view (e.g., workout completion).
+        """
+        # number of reps
+        reps_done = 15
+        # calculation for XP and Coins
+        gained_xp = Exercise.calculateXP(self.exercise1.max_reps, self.exercise1.tier, reps_done)
+        gained_coins = Exercise.calculateCoins(self.exercise1.max_reps, self.exercise1.tier, reps_done)
+
+        #Saving XP and Coins
+        self.pet.addXP(gained_xp)
+        self.pet.save()
+        self.fpuser.addCoins(gained_coins)
+        self.fpuser.save()
+
+        self.pet.refresh_from_db()
+        self.fpuser.refresh_from_db()
+
+        # Can change due to equation changes
+        self.assertEqual(self.pet.xp, 15)
+        self.assertEqual(self.fpuser.coins, 3)
+
+    def test_max_reps_cap(self):
+        """
+        Ensure XP and Coins are capped when reps exceed max_reps.
+        """
+        self.client.login(username="user", password="testpass")
+
+        # reps exceed max_reps
+        reps_done = self.exercise.max_reps + 20  
+
+        expected_xp = Exercise.calculateXP(self.exercise.max_reps, self.exercise.tier, reps_done)
+        expected_coins = Exercise.calculateCoins(self.exercise.max_reps, self.exercise.tier, reps_done)
+
+        # Confirm values are capped
+        capped_xp = round(self.exercise.tier * self.exercise.max_reps * 0.5)
+        capped_coins = round(self.exercise.tier * self.exercise.max_reps * 0.1)
+
+        self.assertEqual(expected_xp, capped_xp)
+        self.assertEqual(expected_coins, capped_coins)
+
+    def test_leveling_up(self):
+        """
+        Pet should level up when gaining enough XP.
+        """
+        self.pet.xp = 90
+        self.pet.level = 1
+        self.pet.save()
+
+        reps_done = 10  # enough to push XP over 100
+        gained_xp = Exercise.calculateXP(self.exercise1.max_reps, self.exercise1.tier, reps_done)
+
+        self.pet.addXP(gained_xp)
+        self.pet.save()
+        self.pet.refresh_from_db()
+
+        self.assertEqual(self.pet.level, 2)
+        self.assertLess(self.pet.xp, 100)
+
+
+    def test_change_exercise(self): 
+        """
+        Simulate a user switching from one exercise to another.
+        This will eventually test session data or state cleanup.
+        """
+        # Placeholder for logic like: current_exercise = self.exercise
+        # Then user switches to a new one
+        new_exercise = Exercise.objects.create(name="Squats", tier=3, max_reps=25)
+
+        # Simulate user "switching" exercises
+        current_exercise = new_exercise  # In a real view, this might be in session
+
+        """
+        views implemenation has not been added but will fix when it is
+        """
+
+        self.assertEqual(current_exercise.name, "Squats")
+        self.assertEqual(current_exercise.tier, 3)
+
+    def test_abort_exercise(self): 
+        """
+        Simulate user aborting the workout session before completion.
+        Should not result in XP/coin gain.
+        """
+        
+
+        """
+        views implemenation has not been added but will fix when it is
+
+        supposed to go back to main page
+        """
+
+
+    def test_not_leveling_up(self): 
+
+        """
+        Simulate a small workout that does not cross the XP threshold to level up.
+        """
+        self.pet.xp = 10
+        self.pet.level = 1
+        self.pet.save()
+
+        reps_done = 1
+        gained_xp = Exercise.calculateXP(self.exercise1.max_reps, self.exercise1.tier, reps_done)
+
+        self.pet.addXP(gained_xp)
+        self.pet.save()
+        self.pet.refresh_from_db()
+
+        self.assertEqual(self.pet.level, 1)
+        self.assertLess(self.pet.xp, 100)
+
+        """
+        views implemenation has not been added but will fix when it is
+
+        supposed to go back to main page
+        """
+
+       
