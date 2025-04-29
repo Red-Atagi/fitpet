@@ -12,9 +12,114 @@ class CreateAcountTestCase(TestCase):
             'password1': 'testPass189',
             'password2': 'testPass189'
         })
-        ## This is the code of a successful form submission
+
         self.assertEqual(response.status_code, 302)
         self.assertTrue(User.objects.filter(username='testingUsername').exists())
+
+    def testUserExists(self):
+        User.objects.create_user(username='existingUser', password='testpass')
+
+        response = self.client.post(reverse('register'), {
+            'username': 'existingUser',
+            'password1': 'testPass123',
+            'password2': 'testPass123'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "A user with that username already exists", status_code=200)
+    
+    def test_passwords_do_not_match(self):
+        response = self.client.post(reverse('register'), {
+            'username': 'newUser',
+            'password1': 'testPass123',
+            'password2': 'differentPass123'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "The two password fields didn’t match", status_code=200)
+    
+    def test_weak_password(self):
+        response = self.client.post(reverse('register'), {
+            'username': 'weakpassuser',
+            'password1': '123',
+            'password2': '123'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "This password is too short", status_code=200)
+    
+    def test_empty_form_submission(self):
+        response = self.client.post(reverse('register'), {})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "This field is required", status_code=200)
+    
+    def test_username_too_long(self):
+        long_username = 'a' * 200
+        response = self.client.post(reverse('register'), {
+            'username': long_username,
+            'password1': 'ValidPass123',
+            'password2': 'ValidPass123'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ensure this value has at most", status_code=200)
+
+
+class UserAuthTestCase(TestCase):
+    """Tests for login, logout, password change, password reset."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='oldpassword')
+
+    def test_login_success(self):
+        response = self.client.post(reverse('login'), {
+            'username': 'testuser',
+            'password': 'oldpassword'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue('_auth_user_id' in self.client.session)
+
+    def test_login_failure(self):
+        response = self.client.post(reverse('login'), {
+            'username': 'testuser',
+            'password': 'wrongpass'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse('_auth_user_id' in self.client.session)
+
+    def test_logout(self):
+        self.client.login(username='testuser', password='oldpassword')
+        response = self.client.get(reverse('logout'))
+        self.assertEqual(response.status_code, 302) 
+        self.assertFalse('_auth_user_id' in self.client.session)
+
+    def test_password_change_success(self):
+        self.client.login(username='testuser', password='oldpassword')
+        response = self.client.post(reverse('password_change'), {
+            'old_password': 'oldpassword',
+            'new_password1': 'newsecurepass123',
+            'new_password2': 'newsecurepass123'
+        })
+        self.assertEqual(response.status_code, 302)
+
+        # Logout and try logging in with the new password
+        self.client.logout()
+        login_success = self.client.login(username='testuser', password='newsecurepass123')
+        self.assertTrue(login_success)
+
+    def test_password_reset_request(self):
+        response = self.client.post(reverse('password_reset'), {
+            'email': self.user.email if self.user.email else 'test@example.com'
+        })
+        self.assertEqual(response.status_code, 302)
+
+    def test_cannot_access_secure_page_after_logout(self):
+        self.client.login(username='testuser', password='oldpassword')
+
+        self.client.logout()
+
+        response = self.client.get(reverse('secure_page_url'))
+        self.assertEqual(response.status_code, 302)
+
+
+
+
 
 
 class ShopTestCase(TestCase):
