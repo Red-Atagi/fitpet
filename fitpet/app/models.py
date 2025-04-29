@@ -62,6 +62,13 @@ class FPUser(models.Model):
             return True
         return False
 
+    def addCoins(self, gainedCoins):
+        """
+        Adds coins to the users wallet
+        """
+        self.coins += gainedCoins
+        return
+
 
 class Pet(models.Model):
     def __init__(self):
@@ -73,6 +80,7 @@ class Pet(models.Model):
         self.shirt = models.ForeignKey('Clothing', default=None)
         self.shoes = models.ForeignKey('Clothing', default=None)
         self.image_path = models.CharField(max_length=255)
+        self.level = models.IntegerField(default=1)
         
     def is_wearing(self):
         """
@@ -80,13 +88,70 @@ class Pet(models.Model):
         """
         return (self.hat, self.shirt, self.shoes)
         
+    def getLevel(self):
+        """
+        Returns the pet level
+        """
+        return (self.level)
+    
+    def getXP(self):
+        """
+        Returns the Pet's XP
+        """
+        return (self.xp)
+    
+    
+    def addXP (self, gainedXP):
+        """
+        Adds XP and Levels Up Pet if threshold is met
+        """
+        while (gainedXP > 0):
+            neededXP = (self.level * 100) - self.xp
+            gainedXP -= neededXP
+            if (gainedXP > 0):
+                self.level += 1
+                self.xp = 0
+            else: 
+                self.xp = (self.level * 100) + gainedXP
+        return
+        
     
 class Exercise(models.Model):
     exercise_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, default=None)
-    level = models.IntegerField()
+    tier = models.IntegerField() # degree of difficulty
     max_reps = models.IntegerField()
 
+    def calculateXP(max_reps, tier, reps):
+        """
+        If the reps are higher than max_reps then cap XP gain
+        """
+        if (reps > max_reps):
+            return round(tier * max_reps * 0.5)
+        else: 
+            return round(tier * reps * 0.5)
+            
+    def calculateCoins(max_reps, tier, reps): 
+        """
+        If the reps are higher than max_reps then cap Coin gain
+        """
+        if (reps > max_reps):
+            return round(tier * max_reps * 0.1)
+        else: 
+            return round(tier * reps * 0.1)
+        
+    def canLevelUP(self, gainedXP):
+        """
+        Returns true if there is a level up
+        """
+        neededXP = (Pet.getLevel * 100) - Pet.getXP
+        return (neededXP <= gainedXP)
+    
+    
+
+
+
+    
 
 class Clothing(models.Model):
     CLOTHING_CHOICES = [
