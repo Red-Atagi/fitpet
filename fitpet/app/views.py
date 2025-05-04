@@ -12,15 +12,48 @@ def index(request):
 def display_dress_page(request):
     
     if not request.user.is_authenticated:
-        return redirect('') # TODO: change this to login page
+        return redirect('login') # TODO: change this to login page
     user = request.user
-    fpuser = FPUser.objects.filter(djuser = user)
-    if (len(fpuser) != 1):
-        return redirect('') # TODO: change this to login page
+
+    try:
+        fpuser = FPUser.objects.get(djuser=user)
+    except FPUser.DoesNotExist:
+        fpuser = FPUser.objects.create(
+            djuser=user,
+            username=user.username,
+            name=user.get_full_name() or user.username,
+            coins=0
+        )
+        # Optionally, assign default clothing items if needed
+        # Example: give them all clothing with "starter" tag
+        # Get clothing items
+        clothing1 = Clothing.objects.get(clothing_id=1)  # hat1
+        clothing2 = Clothing.objects.get(clothing_id=2)  # hat2
+        clothing3 = Clothing.objects.get(clothing_id=3)  # shirt1
+        clothing4 = Clothing.objects.get(clothing_id=4)  # shirt2
+        clothing5 = Clothing.objects.get(clothing_id=5)  # shoes1
+        clothing6 = Clothing.objects.get(clothing_id=6)  # shoes2
+
+        # Assign clothing to users
+        fpuser.owns.add(clothing1, clothing2, clothing3, clothing4, clothing5, clothing6)
+
+        pet1 = Pet.objects.create(
+            owner=fpuser, name="PetOne", image_path="images/test_pet.png"
+        )
     
+        # return redirect('login')  
+
+
+
+    # if (len(fpuser) != 1):
+    #     return redirect('') # TODO: change this to login page
+
+        
+
     hats_owned, shirts_owned, shoes_owned = fpuser.clothing_owned()
     
-    pet = Pet.objects.filter(owner = fpuser)
+    pet = Pet.objects.get(owner=fpuser)
+
     hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
     
     data = {
