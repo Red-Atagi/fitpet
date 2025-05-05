@@ -25,12 +25,13 @@ def display_home_page(request):
     
     pet = Pet.objects.get(owner=fpuser)
 
-    hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
+    hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
     
     data = {
         "hat_wearing": hat_wearing,
         "shirt_wearing": shirt_wearing,
-        "shoes_wearing": shoes_wearing
+        "shoes_wearing": shoes_wearing,
+        "background_wearing": background_wearing,
     }
     
     return render(request, 'base.html', data)
@@ -41,11 +42,21 @@ def display_dress_page(request):
     if not request.user.is_authenticated:
         return redirect('login') 
     user = request.user
+    logger.debug(f"here")  
 
     try:
+        logger.debug(f"here3")  
         fpuser = FPUser.objects.get(djuser=user)
+        # background1 = Clothing.objects.get(clothing_id=10)  # background1
+        # fpuser.owns.add(background1)
+        # background2 = Clothing.objects.get(clothing_id=11)  # background2
+        # background3 = Clothing.objects.get(clothing_id=12)  # background3
+        # background4 = Clothing.objects.get(clothing_id=13)  # background4
+        # background5 = Clothing.objects.get(clothing_id=14)  # background5
+        # fpuser.owns.add(background2, background3, background4, background5)
     
     except FPUser.DoesNotExist:
+        logger.debug(f"here2")  
         fpuser = FPUser.objects.create(
             djuser=user,
             username=user.username,
@@ -64,6 +75,11 @@ def display_dress_page(request):
         clothing7 = Clothing.objects.get(clothing_id=7)  # shoes3
         clothing8 = Clothing.objects.get(clothing_id=8)  # shoes4
         clothing9 = Clothing.objects.get(clothing_id=9)  # shoes5
+        background1 = Clothing.objects.get(clothing_id=10)  # background1
+        background2 = Clothing.objects.get(clothing_id=11)  # background2
+        background3 = Clothing.objects.get(clothing_id=12)  # background3
+        background4 = Clothing.objects.get(clothing_id=13)  # background4
+        background5 = Clothing.objects.get(clothing_id=14)  # background5
 
         # Assign clothing to users
         fpuser.owns.add(clothing1, clothing2, clothing3, clothing4, clothing5, clothing6, clothing7, clothing8, clothing9)
@@ -107,6 +123,8 @@ def display_dress_page(request):
         "shoes_wearing": shoes_wearing,
         "background_wearing": background_wearing,
     }
+
+    logger.debug(f"background path: {background_wearing}")
     
     return render(request, 'dress.html', data)
 
@@ -151,7 +169,7 @@ def update_clothing(request):
         else: 
             pet.shoes = clothing
     elif clothing.clothing_type == 'Background':
-        if pet.backgrond and pet.background.clothing_id == clothing.clothing_id:
+        if pet.background and pet.background.clothing_id == clothing.clothing_id:
             pet.background = None
         else: 
             pet.background = clothing
