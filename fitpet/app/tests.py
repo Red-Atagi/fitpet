@@ -299,7 +299,12 @@ class ShopTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Check purchase is possible
-        self.assertEqual(self.fpuserSomeClothes.buy_clothing(self.hat1), True)
+        # This line of code was edited: the clothing item being bought was 
+        # originally self.hat2 however the user alread owns that clothing which 
+        # meant that they could not buy the clothing however that is not the
+        # behavoir we meant to test so it was changed to self.hat2 which the user
+        # had not bought
+        self.assertEqual(self.fpuserSomeClothes.buy_clothing(self.hat2), True)
 
 
 class DressPetTestCase(TestCase):
