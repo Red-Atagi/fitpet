@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dress Your Pet</title>
+    <style>
+      .scroll-row {
+        display: flex;
+        overflow-x: auto;
+        padding: 10px 0;
+      }
+      .clothing-item {
+        flex: 0 0 auto;
+        margin-right: 10px;
+        text-align: center;
+        border: 3px black;
+      }
+      .clothing-item img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        border: 2px solid transparent;
+        border-radius: 8px;
+      }
+      .clothing-item.selected img {
+        border-color: gold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dress Your Pet</h1>
+
+    <!-- Pet Display -->
+    <div style="text-align: center">
+      <img
+        id="pet-image"
+        src="/static/path_to_default_pet_image.png"
+        alt="Your Pet"
+        style="width: 200px; height: 200px"
+      />
+    </div>
+
+    <hr />
+
+    <!-- Hats Section -->
+    <h2>Hats</h2>
+    <div class="scroll-row" id="hats-row">
+      {% for hat in hats_owned %}
+      <div
+        class="clothing-item {% if hat.clothing_id == hat_wearing.clothing_id %}selected{% endif %}"
+      >
+        <img
+          src="{{ hat.image_path }}"
+          alt="Hat"
+          onclick="wearClothing({{ hat.clothing_id }}, '{{ hat.image_path }}', 'Hat')"
+        />
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Shirts Section -->
+    <h2>Shirts</h2>
+    <div class="scroll-row" id="shirts-row">
+      {% for shirt in shirts_owned %}
+      <div
+        class="clothing-item {% if shirt.clothing_id == shirt_wearing.clothing_id %}selected{% endif %}"
+      >
+        <img
+          src="{{ shirt.image_path }}"
+          alt="Shirt"
+          onclick="wearClothing({{ shirt.clothing_id }}, '{{ shirt.image_path }}', 'Shirt')"
+        />
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Shoes Section -->
+    <h2>Shoes</h2>
+    <div class="scroll-row" id="shoes-row">
+      {% for shoes in shoes_owned %}
+      <div
+        class="clothing-item {% if shoes.clothing_id == shoes_wearing.clothing_id %}selected{% endif %}"
+      >
+        <img
+          src="{{ shoes.image_path }}"
+          alt="Shoes"
+          onclick="wearClothing({{ shoes.clothing_id }}, '{{ shoes.image_path }}', 'Shoes')"
+        />
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- CSRF Token -->
+    <script>
+      const csrfToken = "{{ csrf_token }}";
+    </script>
+
+    <!-- AJAX and Pet Image Updater -->
+    <script>
+      function wearClothing(newClothingId, imagePath, clothingType) {
+        fetch("{% url 'update_clothing' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrfToken,
+          },
+          body: "new_clothing_id=" + newClothingId,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              console.log("Changed clothing successfully!");
+              updateSelectedClothing(clothingType, newClothingId);
+              updatePetImage(data.new_image_url); // Use the new image URL returned by the server
+            } else {
+              console.error("Failed to change clothing:", data.error);
+              alert("Error: " + data.error);
+            }
+          })
+          .catch((error) => {
+            console.error("Request failed:", error);
+            alert("An error occurred");
+          });
+      }
+
+      function updateSelectedClothing(clothingType, selectedId) {
+        let rowId = "";
+        if (clothingType === "Hat") rowId = "hats-row";
+        else if (clothingType === "Shirt") rowId = "shirts-row";
+        else if (clothingType === "Shoes") rowId = "shoes-row";
+
+        const row = document.getElementById(rowId);
+        if (!row) return;
+
+        // Remove "selected" from all
+        const items = row.querySelectorAll(".clothing-item");
+        items.forEach((item) => item.classList.remove("selected"));
+
+        // Add "selected" to the clicked one
+        items.forEach((item) => {
+          const img = item.querySelector("img");
+          if (img && img.getAttribute("onclick").includes(selectedId)) {
+            item.classList.add("selected");
+          }
+        });
+      }
+
+      function updatePetImage(newImageUrl) {
+        // Update the pet image with the new image URL returned by the server
+        const petImage = document.getElementById("pet-image");
+        petImage.src = newImageUrl + "?t=" + new Date().getTime(); // Adding timestamp to prevent caching
+      }
+    </script>
+  </body>
+</html>

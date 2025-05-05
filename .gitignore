@@ -1,0 +1,6 @@
+env
+.env
+fitpet/db.sqlite3
+fitpet/app/__pycache__
+fitpet/app/migrations
+.DS_Store
