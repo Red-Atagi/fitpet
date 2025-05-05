@@ -41,11 +41,9 @@ def display_dress_page(request):
     
     if not request.user.is_authenticated:
         return redirect('login') 
-    user = request.user
-    logger.debug(f"here")  
+    user = request.user 
 
     try:
-        logger.debug(f"here3")  
         fpuser = FPUser.objects.get(djuser=user)
         # background1 = Clothing.objects.get(clothing_id=10)  # background1
         # fpuser.owns.add(background1)
@@ -56,7 +54,6 @@ def display_dress_page(request):
         # fpuser.owns.add(background2, background3, background4, background5)
     
     except FPUser.DoesNotExist:
-        logger.debug(f"here2")  
         fpuser = FPUser.objects.create(
             djuser=user,
             username=user.username,
@@ -94,9 +91,6 @@ def display_dress_page(request):
     
     pet = Pet.objects.get(owner=fpuser)
 
-    logger.debug(f"Pet hat: {pet.hat}")  
-    logger.debug(f"Hat wearing: {pet.hat}")
-
     hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
 
     clothing_lists = [hats_owned, shirts_owned, shoes_owned, backgrounds_owned]
@@ -123,8 +117,6 @@ def display_dress_page(request):
         "shoes_wearing": shoes_wearing,
         "background_wearing": background_wearing,
     }
-
-    logger.debug(f"background path: {background_wearing}")
     
     return render(request, 'dress.html', data)
 
