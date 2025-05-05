@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Pet Clothing Shop</title>
+</head>
+<style>
+    /* Existing carousel styles from before stay the same */
+
+.modal {
+    display: none; /* hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal img {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 20px #fff;
+    border-radius: 8px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+}
+
+#buy-btn {
+    position: absolute;
+    top: 50%;
+    right: 25%;
+    font-size: 1rem;
+    color: white;
+}
+
+</style>
+<body>
+    <center>
+        <h1> Welcome to the Shop!</h1>
+    </center>
+        <h2>Hats</h2>
+        <center>
+            <div id="image-container-hat">
+                <div id="image-modal" class="modal" onclick="closeModal(event)">
+                    <span class="close-btn" onclick="hideModal()">&times;</span>
+                    <img id="modal-img" src="" alt="Enlarged Image">
+                    <button id="buy-btn" value="Buy"></button>
+                </div>
+            </div>
+            
+        </center>
+    
+    <div>
+        <h2>Shirts</h2>
+        <center>
+            <div id="image-container-shirt">
+                <div id="image-modal" class="modal" onclick="closeModal(event)">
+                    <span class="close-btn" onclick="hideModal()">&times;</span>
+                    <img id="modal-img" src="" alt="Enlarged Image">
+                    <input type="button" id="buy-btn" value="Buy"/>
+                </div>
+            </div>
+        </center>
+    </div>
+    <div>
+        <h2>Shoes</h2>
+        <center>
+            <div id="image-container-shoes">
+                <div id="image-modal" class="modal" onclick="closeModal(event)">
+                    <span class="close-btn" onclick="hideModal()">&times;</span>
+                    <img id="modal-img" src="" alt="Enlarged Image">
+                    <button id="buy-btn" value="Buy"></button>
+                </div>
+            </div>
+        </center>
+    </div>
+</body>
+<script>
+    // import clothing data TODO: check if account checking is needed
+
+    // check shirts owned
+    fetch('/app/data/clothing.json')
+    .then(response => response.json())
+    .then(imageUrls => {
+
+        imageUrls.forEach(url => {
+        const img = document.createElement('img');
+        img.src = `/app/${url["image_path"]}`;
+        img.alt = url["clothing_type"];
+        let container = document.getElementById(`image-container-${img.alt.toLowerCase()}`);
+        img.style.width = '500px';
+        img.style.height = '500px';
+        img.style.margin = '10px';
+        img.style.objectFit = 'cover';
+
+        // If image fails to load, replace with blank square (gray box)
+        img.onerror = function () {
+            img.src = '';
+            img.style.backgroundColor = '#ccc'; // light gray
+        };
+        img.onclick = () => showModal(`/app/${url["image_path"]}`);
+        container.appendChild(img);
+        });
+    })
+    .catch(error => {
+        console.error('Error loading images:', error);
+    });
+        
+     // Modal functionality
+    function showModal(src) {
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-img');
+        modal.style.display = 'block';
+        modalImg.src = src;
+        showBuyButton();
+    }
+
+    function hideModal() {
+        document.getElementById('image-modal').style.display = 'none';
+    }
+
+    // Optional: Close when clicking outside image
+    function closeModal(event) {
+        if (event.target.id === 'image-modal') {
+            hideModal();
+        }
+    }
+    
+    function showBuyButton() {
+        const buybtn = document.getElementById('buy-btn');
+        buybtn.style.display = 'block';
+        //TODO: check if user has enough coins
+    }
+
+    function hideBuyButton() {
+        document.getElementsById('buy-btn').style.display = 'none';
+    }
+
+    function previewClothing() {
+        // TODO: overlay clothing on pet img - need reference img
+    }
+
+    // for (i = 0, i<1, i++;){
+
+    // }
+</script>
+

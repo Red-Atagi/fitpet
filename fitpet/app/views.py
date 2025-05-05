@@ -80,7 +80,19 @@ def shop_page(request):
     Renders the shop page with the items the user does not own.
     """
     if not request.user.is_authenticated:
-        return redirect('') # TODO: change this to login page
+        unowned_clothing = Clothing.objects.all()
+        hats = unowned_clothing.filter(clothing_type="Hat")
+        shirts = unowned_clothing.filter(clothing_type="Shirt")
+        shoes = unowned_clothing.filter(clothing_type="Shoes")
+        data = {
+            "hats_unowned": hats,
+            "shirts_unowned": shirts,
+            "shoes_unowned": shoes,
+            # "hat_wearing": hat_wearing,
+            # "shirt_wearing": shirt_wearing,
+            # "shoes_wearing": shoes_wearing
+        }
+        return render(request, 'shop.html', data)
     user = request.user
     fpuser = FPUser.objects.get(djuser=user)
 
@@ -131,3 +143,6 @@ def register(request):
     else:
         form = CreateUserForm()
     return render(request, 'register.html', {'form': form})
+
+def workout_page(request):
+    return render(request, 'workout.html', {})

@@ -5,9 +5,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('shop/', views.shop_page, name='shop_page'),
-    path('register/', views.register, name='register'),
-    path('workout/', views.workout, name='workout_page'),
+    path('shop', views.shop_page, name='shop_page'),
+    path('register', views.register, name='register'),
+    path('workout', views.workout_page, name='workout_page'),
     # EXAMPLES FROM PREV PROJECT
     # path('new', views.addNewUserForm, name='new'),
     # path('handleNewUserForm', views.handleNewUserForm),
