@@ -8,8 +8,32 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def index(request):
-    return render(request, 'base.html', {})
+# def index(request):
+#     return render(request, 'base.html', {})
+
+def display_home_page(request):
+    
+    if not request.user.is_authenticated:
+        return redirect('login') 
+    user = request.user
+
+    try:
+        fpuser = FPUser.objects.get(djuser=user)
+    
+    except FPUser.DoesNotExist:
+        return redirect('login')  
+    
+    pet = Pet.objects.get(owner=fpuser)
+
+    hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
+    
+    data = {
+        "hat_wearing": hat_wearing,
+        "shirt_wearing": shirt_wearing,
+        "shoes_wearing": shoes_wearing
+    }
+    
+    return render(request, 'base.html', data)
 
 
 def display_dress_page(request):
@@ -54,8 +78,8 @@ def display_dress_page(request):
     
     pet = Pet.objects.get(owner=fpuser)
 
-    logger.debug(f"Pet hat: {pet.hat}")  # Log the pet's hat to check if it's being fetched correctly
-    logger.debug(f"Hat wearing: {pet.hat}")  # Log the hat that the pet is wearing (or check other attributes)
+    logger.debug(f"Pet hat: {pet.hat}")  
+    logger.debug(f"Hat wearing: {pet.hat}")
 
     hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
 
