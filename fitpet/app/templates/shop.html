@@ -57,6 +57,8 @@
   background-color: #fff;
   color: #333;
   position: relative;
+  align-content: center;
+  vertical-align: middle;
 }
 
 .close-btn {
@@ -64,7 +66,7 @@
     top: 20px;
     right: 30px;
     font-size: 2rem;
-    color: white;
+    color: black;
     cursor: pointer;
     user-select: none;
 }
@@ -77,7 +79,6 @@
 }
 
 #buy-btn {
-    position: absolute;
     top: 50%;
     right: 25%;
     font-size: 1rem;
@@ -132,10 +133,19 @@
         <center>
             <div id="image-container-shirt">
                 <div id="image-modal" class="modal" onclick="closeModal(event)">
-                    <span class="close-btn" onclick="hideModal()">&times;</span>
-                    <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
-                    <img id="modal-img" src="" alt="Enlarged Image">
-                    <input type="button" id="buy-btn" value="Buy"/>
+                    <div class="modal-content">
+                        <div class="modal-left">
+                          <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
+                          <img id="modal-img" src="" alt="Enlargeed Image" />
+                        </div>
+                        <div class="modal-right">
+                          <span class="close-btn" onclick="hideModal()">&times;</span>
+                            <div class="desc">
+                                <h2>Item</h2>
+                                <p>Price: 🪙200</p>
+                                <button id="buy-btn" onclick="buyItem()">Buy</button>
+                            </div>
+                        </div>
                 </div>
             </div>
         </center>
@@ -145,10 +155,19 @@
         <center>
             <div id="image-container-shoes">
                 <div id="image-modal" class="modal" onclick="closeModal(event)">
-                    <span class="close-btn" onclick="hideModal()">&times;</span>
-                    <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
-                    <img id="modal-img" src="" alt="Enlarged Image">
-                    <button id="buy-btn" value="Buy"></button>
+                    <div class="modal-content">
+                        <div class="modal-left">
+                          <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
+                          <img id="modal-img" src="" alt="Enlargeed Image" />
+                        </div>
+                        <div class="modal-right">
+                          <span class="close-btn" onclick="hideModal()">&times;</span>
+                            <div class="desc">
+                                <h2>Item</h2>
+                                <p>Price: 🪙200</p>
+                                <button id="buy-btn" onclick="buyItem()">Buy</button>
+                            </div>
+                        </div>
                 </div>
             </div>
         </center>
