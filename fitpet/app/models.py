@@ -38,12 +38,9 @@ class FPUser(models.Model):
         Purchase new clothing for pet. Returns True if purchase is valid.
         """
         can_buy = self.is_purchasable(clothing)
-        if not can_buy:
-            print("Not enough coins!")
-        else:
+        if can_buy:
             self.coins = self.coins - clothing.price
             self.owns.add(clothing)
-            print(f"You purchased {clothing.clothing_id} ({clothing.clothing_type}) for {clothing.price}🤑🥳!")
         return can_buy
 
 
@@ -51,8 +48,9 @@ class FPUser(models.Model):
         """
         Returns True if purchase is valid.
         """
-        if self.coins >= clothing.price:
-            return True
+        if not self.owns.filter(clothing_id=clothing.clothing_id).exists(): #checks to see if clothing is not in owned
+            if self.coins >= clothing.price:
+                return True
         return False
 
     def addCoins(self, gainedCoins):

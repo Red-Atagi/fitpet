@@ -132,6 +132,30 @@ def shop_page(request):
     
     return render(request, 'shop.html', data)
 
+def buy_clothing(request):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Invalid request method."})
+
+    if not request.user.is_authenticated:
+        return redirect('login') 
+
+    try:
+        new_clothing_id = int(request.POST.get('clothing_id'))
+    except (TypeError, ValueError):
+        return JsonResponse({"success": False, "error": "Invalid clothing ID."})
+    
+    # Get the FPUser
+    fpuser = FPUser.objects.filter(djuser=request.user).first()
+    if not fpuser:
+        return JsonResponse({"success": False, "error": "User profile not found."})
+    
+    if fpuser.buy_clothing(Clothing.objects.filter(clothin_id=new_clothing_id).first()):
+        return JsonResponse({
+            'success': True,
+        })
+    return JsonResponse({"success": False, "error": "Failed to buy clothes"})
+
+
 def register(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
