@@ -21,6 +21,7 @@ class FPUser(models.Model):
         hats = []
         shirts = []
         shoes = []
+        backgrounds = []
 
         for item in self.owns.all():
             if item.clothing_type == "Hat":
@@ -29,8 +30,10 @@ class FPUser(models.Model):
                 shirts.append(item)
             elif item.clothing_type == "Shoes":
                 shoes.append(item)
+            elif item.clothing_type == "Background":
+                backgrounds.append(item)
 
-        return hats, shirts, shoes
+        return hats, shirts, shoes, backgrounds
 
 
     def buy_clothing(self, clothing):
@@ -65,6 +68,7 @@ class Clothing(models.Model):
         ("Hat", "Hat"),
         ("Shirt", "Shirt"),
         ("Shoes", "Shoes"),
+        ("Background", "Background"),
     ]
     
     clothing_id = models.AutoField(primary_key=True)
@@ -80,6 +84,7 @@ class Pet(models.Model):
     hat = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_this_hat', default=None)
     shirt = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_this_shirt', default = None)
     shoes = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_these_shoes', default = None)
+    background = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_this_background', default = None)
     image_path = models.CharField(max_length=255, blank=False, null=False, default='images/')
     level = models.IntegerField(default=1)
         
@@ -87,7 +92,7 @@ class Pet(models.Model):
         """
         Returns tuple (hat, shirt, shoes) that the pet is wearing
         """
-        return (self.hat, self.shirt, self.shoes)
+        return (self.hat, self.shirt, self.shoes, self.background)
         
     def getLevel(self):
         """

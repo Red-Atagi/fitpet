@@ -4,8 +4,6 @@
     <title>Pet Clothing Shop</title>
 </head>
 <style>
-    /* Existing carousel styles from before stay the same */
-
 .modal {
     display: none; /* hidden by default */
     position: fixed;
@@ -24,6 +22,43 @@
     max-height: 90%;
     box-shadow: 0 0 20px #fff;
     border-radius: 8px;
+    align-content: center;
+}
+
+.modal-content {
+  display: flex;
+  background-color: white;
+  width: 80%;
+  max-width: 900px;
+  height: 70%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.modal-left, .modal-right {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modal-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-left img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.modal-right {
+  background-color: #fff;
+  color: #333;
+  position: relative;
+  align-content: center;
+  vertical-align: middle;
 }
 
 .close-btn {
@@ -31,19 +66,43 @@
     top: 20px;
     right: 30px;
     font-size: 2rem;
-    color: white;
+    color: black;
     cursor: pointer;
     user-select: none;
 }
 
+.desc {
+    position: relative;
+    align-content: right;
+    background-color: #fff;
+    color: #333;
+}
+
 #buy-btn {
-    position: absolute;
     top: 50%;
     right: 25%;
     font-size: 1rem;
+    background-color: green;
     color: white;
 }
 
+#preview-img {
+    position: absolute;
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    align-content: center;
+    vertical-align: middle;
+}
+
+#modal-img {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 20px #fff;
+    border-radius: 8px;
+    align-content: center;
+    vertical-align: middle;
+}
 </style>
 <body>
     <center>
@@ -53,22 +112,40 @@
         <center>
             <div id="image-container-hat">
                 <div id="image-modal" class="modal" onclick="closeModal(event)">
-                    <span class="close-btn" onclick="hideModal()">&times;</span>
-                    <img id="modal-img" src="" alt="Enlarged Image">
-                    <button id="buy-btn" value="Buy"></button>
+                    <div class="modal-content">
+                        <div class="modal-left">
+                          <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
+                          <img id="modal-img" src="" alt="Enlargeed Image" />
+                        </div>
+                        <div class="modal-right">
+                          <span class="close-btn" onclick="hideModal()">&times;</span>
+                            <div class="desc">
+                                <h2>Item</h2>
+                                <p>Price: 🪙200</p>
+                                <button id="buy-btn" onclick="buyItem()">Buy</button>
+                            </div>
+                        </div>
                 </div>
-            </div>
-            
+            </div>   
         </center>
-    
     <div>
         <h2>Shirts</h2>
         <center>
             <div id="image-container-shirt">
                 <div id="image-modal" class="modal" onclick="closeModal(event)">
-                    <span class="close-btn" onclick="hideModal()">&times;</span>
-                    <img id="modal-img" src="" alt="Enlarged Image">
-                    <input type="button" id="buy-btn" value="Buy"/>
+                    <div class="modal-content">
+                        <div class="modal-left">
+                          <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
+                          <img id="modal-img" src="" alt="Enlargeed Image" />
+                        </div>
+                        <div class="modal-right">
+                          <span class="close-btn" onclick="hideModal()">&times;</span>
+                            <div class="desc">
+                                <h2>Item</h2>
+                                <p>Price: 🪙200</p>
+                                <button id="buy-btn" onclick="buyItem()">Buy</button>
+                            </div>
+                        </div>
                 </div>
             </div>
         </center>
@@ -78,9 +155,19 @@
         <center>
             <div id="image-container-shoes">
                 <div id="image-modal" class="modal" onclick="closeModal(event)">
-                    <span class="close-btn" onclick="hideModal()">&times;</span>
-                    <img id="modal-img" src="" alt="Enlarged Image">
-                    <button id="buy-btn" value="Buy"></button>
+                    <div class="modal-content">
+                        <div class="modal-left">
+                          <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
+                          <img id="modal-img" src="" alt="Enlargeed Image" />
+                        </div>
+                        <div class="modal-right">
+                          <span class="close-btn" onclick="hideModal()">&times;</span>
+                            <div class="desc">
+                                <h2>Item</h2>
+                                <p>Price: 🪙200</p>
+                                <button id="buy-btn" onclick="buyItem()">Buy</button>
+                            </div>
+                        </div>
                 </div>
             </div>
         </center>
@@ -121,13 +208,16 @@
     function showModal(src) {
         const modal = document.getElementById('image-modal');
         const modalImg = document.getElementById('modal-img');
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
         modalImg.src = src;
+        previewClothing();
         showBuyButton();
     }
 
     function hideModal() {
         document.getElementById('image-modal').style.display = 'none';
+        hidePreview();
+        hideBuyButton();
     }
 
     // Optional: Close when clicking outside image
@@ -144,15 +234,21 @@
     }
 
     function hideBuyButton() {
-        document.getElementsById('buy-btn').style.display = 'none';
+        document.getElementById('buy-btn').style.display = 'none';
     }
 
     function previewClothing() {
         // TODO: overlay clothing on pet img - need reference img
+        const preview = document.getElementById('preview-img');
+        preview.style.display = 'block';
     }
 
-    // for (i = 0, i<1, i++;){
+    function hidePreview() {
+        document.getElementById('preview-img').style.display = 'none';
+    }
 
-    // }
+    function buyItem() {
+        console.log("Purchase successful!")
+    }
 </script>
 

@@ -11,11 +11,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def index(request):
-    return render(request, 'base.html', {})
+# def index(request):
+#     return render(request, 'base.html', {})
 
-
-def display_dress_page(request):
+def display_home_page(request):
     
     if not request.user.is_authenticated:
         return redirect('login') 
@@ -23,6 +22,39 @@ def display_dress_page(request):
 
     try:
         fpuser = FPUser.objects.get(djuser=user)
+    
+    except FPUser.DoesNotExist:
+        return redirect('login')  
+    
+    pet = Pet.objects.get(owner=fpuser)
+
+    hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
+    
+    data = {
+        "hat_wearing": hat_wearing,
+        "shirt_wearing": shirt_wearing,
+        "shoes_wearing": shoes_wearing,
+        "background_wearing": background_wearing,
+    }
+    
+    return render(request, 'base.html', data)
+
+
+def display_dress_page(request):
+    
+    if not request.user.is_authenticated:
+        return redirect('login') 
+    user = request.user 
+
+    try:
+        fpuser = FPUser.objects.get(djuser=user)
+        # background1 = Clothing.objects.get(clothing_id=10)  # background1
+        # fpuser.owns.add(background1)
+        # background2 = Clothing.objects.get(clothing_id=11)  # background2
+        # background3 = Clothing.objects.get(clothing_id=12)  # background3
+        # background4 = Clothing.objects.get(clothing_id=13)  # background4
+        # background5 = Clothing.objects.get(clothing_id=14)  # background5
+        # fpuser.owns.add(background2, background3, background4, background5)
     
     except FPUser.DoesNotExist:
         fpuser = FPUser.objects.create(
@@ -43,6 +75,11 @@ def display_dress_page(request):
         clothing7 = Clothing.objects.get(clothing_id=7)  # shoes3
         clothing8 = Clothing.objects.get(clothing_id=8)  # shoes4
         clothing9 = Clothing.objects.get(clothing_id=9)  # shoes5
+        background1 = Clothing.objects.get(clothing_id=10)  # background1
+        background2 = Clothing.objects.get(clothing_id=11)  # background2
+        background3 = Clothing.objects.get(clothing_id=12)  # background3
+        background4 = Clothing.objects.get(clothing_id=13)  # background4
+        background5 = Clothing.objects.get(clothing_id=14)  # background5
 
         # Assign clothing to users
         fpuser.owns.add(clothing1, clothing2, clothing3, clothing4, clothing5, clothing6, clothing7, clothing8, clothing9)
@@ -53,36 +90,35 @@ def display_dress_page(request):
     
         return redirect('login')  
 
-    hats_owned, shirts_owned, shoes_owned = fpuser.clothing_owned()
+    hats_owned, shirts_owned, shoes_owned, backgrounds_owned = fpuser.clothing_owned()
     
     pet = Pet.objects.get(owner=fpuser)
 
-    logger.debug(f"Pet hat: {pet.hat}")  # Log the pet's hat to check if it's being fetched correctly
-    logger.debug(f"Hat wearing: {pet.hat}")  # Log the hat that the pet is wearing (or check other attributes)
+    hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
 
-    hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
-
-    clothing_lists = [hats_owned, shirts_owned, shoes_owned]
-    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing]
+    clothing_lists = [hats_owned, shirts_owned, shoes_owned, backgrounds_owned]
+    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing, background_wearing]
 
 
     # # Sort the list so that the item currently worn is at the head
-    # for i in range(len(clothing_lists)):
-    #     clothing_list = clothing_lists[i]
-    #     wearing_item = currently_wearing[i]
+    for i in range(len(clothing_lists)):
+        clothing_list = clothing_lists[i]
+        wearing_item = currently_wearing[i]
 
-    #     for idx, item in enumerate(clothing_list):
-    #         if item.clothing_id == wearing_item.clothing_id:
-    #             clothing_list.insert(0, clothing_list.pop(idx))
-    #             break
+        for idx, item in enumerate(clothing_list):
+            if wearing_item and item.clothing_id == wearing_item.clothing_id:
+                clothing_list.insert(0, clothing_list.pop(idx))
+                break
     
     data = {
         "hats_owned": hats_owned,
         "shirts_owned": shirts_owned,
         "shoes_owned": shoes_owned,
+        "backgrounds_owned": backgrounds_owned,
         "hat_wearing": hat_wearing,
         "shirt_wearing": shirt_wearing,
-        "shoes_wearing": shoes_wearing
+        "shoes_wearing": shoes_wearing,
+        "background_wearing": background_wearing,
     }
     
     return render(request, 'dress.html', data)
@@ -113,11 +149,25 @@ def update_clothing(request):
     # Update the pet's clothing based on the type
     clothing = Clothing.objects.get(clothing_id=new_clothing_id)
     if clothing.clothing_type == 'Hat':
-        pet.hat = clothing
+        if pet.hat and pet.hat.clothing_id == clothing.clothing_id:
+            pet.hat = None
+        else: 
+            pet.hat = clothing
     elif clothing.clothing_type == 'Shirt':
-        pet.shirt = clothing
+        if pet.shirt and pet.shirt.clothing_id == clothing.clothing_id:
+            pet.shirt = None
+        else: 
+            pet.shirt = clothing
     elif clothing.clothing_type == 'Shoes':
-        pet.shoes = clothing
+        if pet.shoes and pet.shoes.clothing_id == clothing.clothing_id:
+            pet.shoes = None
+        else: 
+            pet.shoes = clothing
+    elif clothing.clothing_type == 'Background':
+        if pet.background and pet.background.clothing_id == clothing.clothing_id:
+            pet.background = None
+        else: 
+            pet.background = clothing
 
     pet.save()
 
