@@ -12,7 +12,7 @@ def index(request):
 def display_dress_page(request):
     
     if not request.user.is_authenticated:
-        return redirect('login') # TODO: change this to login page
+        return redirect('login') 
     user = request.user
 
     try:
@@ -41,15 +41,9 @@ def display_dress_page(request):
             owner=fpuser, name="PetOne", image_path="images/test_pet.png"
         )
     
-        # return redirect('login')  
+        return redirect('login')  
 
-
-
-    # if (len(fpuser) != 1):
-    #     return redirect('') # TODO: change this to login page
-
-        
-
+    
     hats_owned, shirts_owned, shoes_owned = fpuser.clothing_owned()
     
     pet = Pet.objects.get(owner=fpuser)
@@ -68,15 +62,15 @@ def display_dress_page(request):
     return render(request, 'dress.html', data)
 
 
-def change_clothing(request):
+def update_clothing(request):
     if request.method != "POST":
         return JsonResponse({"success": False, "error": "Invalid request method."})
 
     if not request.user.is_authenticated:
-        return redirect('') # TODO: change this to login page
+        return redirect('login') 
 
     try:
-        new_clothing_id = int(request.POST.get('new_clothing_id'))
+        new_clothing_id = int(request.POST.get('clothing_id'))
     except (TypeError, ValueError):
         return JsonResponse({"success": False, "error": "Invalid clothing ID."})
 

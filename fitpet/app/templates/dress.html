@@ -98,7 +98,7 @@
     <!-- AJAX and Pet Image Updater -->
     <script>
       function wearClothing(newClothingId, imagePath, clothingType) {
-        fetch("{% url 'change_clothing' %}", {
+        fetch("{% url 'update_clothing' %}", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

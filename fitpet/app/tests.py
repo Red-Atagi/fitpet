@@ -350,7 +350,7 @@ class DressPetTestCase(TestCase):
         self.client.login(username="user1", password="testpass")
 
         # Get dress page
-        response = self.client.get(reverse("display_dress_page"))
+        response = self.client.get(reverse("dress_page"))
         self.assertEqual(response.status_code, 200)
 
         # Check all clothing options are displayed
@@ -383,7 +383,7 @@ class DressPetTestCase(TestCase):
         self.client.login(username="user2", password="testpass")
 
         # Get dress page
-        response = self.client.get(reverse("display_dress_page"))
+        response = self.client.get(reverse("dress_page"))
         self.assertEqual(response.status_code, 200)
 
         # Check correct clothing options are displayed
@@ -413,7 +413,7 @@ class DressPetTestCase(TestCase):
         self.client.login(username="user3", password="testpass")
 
         # Get dress page
-        response = self.client.get(reverse("display_dress_page"))
+        response = self.client.get(reverse("dress_page"))
         self.assertEqual(response.status_code, 200)
 
         # Check nothing is displayed
