@@ -100,16 +100,21 @@ class Pet(models.Model):
         Returns the Pet's XP
         """
         return (self.xp)
-    
+   
+    def neededXP(self):
+        """
+        Amount of XP needed before level up
+        """
+        return ((self.level * 100) - self.xp)
     
     def addXP (self, gainedXP):
         """
         Adds XP and Levels Up Pet if threshold is met
         """
         while (gainedXP > 0):
-            neededXP = (self.level * 100) - self.xp
+            neededXP = neededXP(self)
             gainedXP -= neededXP
-            if (gainedXP > 0):
+            if (gainedXP >= 0):
                 self.level += 1
                 self.xp = 0
             else: 
@@ -119,35 +124,28 @@ class Pet(models.Model):
         
     
 class Exercise(models.Model):
-    exercise_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, default=None)
     tier = models.IntegerField() # degree of difficulty
     max_reps = models.IntegerField()
 
-    def calculateXP(max_reps, tier, reps):
+    def calculateXP(self, reps):
         """
         If the reps are higher than max_reps then cap XP gain
         """
-        if (reps > max_reps):
-            return round(tier * max_reps * 0.5)
+        if (reps > self.max_reps):
+            return round(self.tier * self.max_reps * 0.5)
         else: 
-            return round(tier * reps * 0.5)
+            return round(self.tier * reps * 0.5)
             
-    def calculateCoins(max_reps, tier, reps): 
+    def calculateCoins(self, reps): 
         """
         If the reps are higher than max_reps then cap Coin gain
         """
-        if (reps > max_reps):
-            return round(tier * max_reps * 0.1)
+        if (reps > self.max_reps):
+            return round(self.tier * self.max_reps * 0.1)
         else: 
-            return round(tier * reps * 0.1)
+            return round(self.tier * reps * 0.1)
         
-    def canLevelUP(self, gainedXP):
-        """
-        Returns true if there is a level up
-        """
-        neededXP = (Pet.getLevel * 100) - Pet.getXP
-        return (neededXP <= gainedXP)
     
     
     

@@ -12,6 +12,8 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('dress/update_clothing/', views.update_clothing, name='update_clothing'),
     path('api/buyclothing/', views.buy_clothing, name='buy_clothing'),
+    path('workout/',views.workout_page, name = 'workout_page'),
+    path('workout_logged/',views.log_workout, name = 'workout_logged')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,10 @@
+import json
+import os
+from django.conf import settings
 from django.shortcuts import render, redirect
 from app.models import *
 from django.http import JsonResponse
-from .models import FPUser, Pet, Clothing
+from .models import FPUser, Pet, Clothing, Exercise
 from .forms import CreateUserForm
 
 import logging
@@ -218,5 +221,67 @@ def register(request):
         form = CreateUserForm()
     return render(request, 'register.html', {'form': form})
 
+def load_exercises():
+    """
+    Loads all of the exercises into a list from the exercise json file
+    """
+    path = os.path.join(settings.BASE_DIR, 'app', 'data', 'exercise.json')
+    with open(path, 'r') as file:
+        data = json.load(file)
+
+    return data
+
+
 def workout_page(request):
-    return render(request, 'workout.html', {})
+
+    if not request.user.is_authenticated:
+        redirect('login')
+
+    exercises = load_exercises()
+    return render(request, 'workout.html',{'exercises': exercises})
+
+def findExercise(name):
+    exercises = load_exercises()
+    for exercise in exercises:
+        if exercise['exercise'] == name:
+            return Exercise(
+                name = exercise['exercise'],
+                tier = int(exercise['tier']),
+                max_reps = int(exercise['max_reps'])
+            )
+    return None
+
+def log_workout(request):
+    if not request.user.is_authenticated:
+        redirect ('login')
+    if request.method == 'POST':
+        """
+        # Get the fpuser
+        user = request.user
+        fpuser = FPUser.objects.get(djuser = user)
+        # Get the Pet of the Fpuser
+        pet = Pet.objects.filter(owner = fpuser)
+        """
+        # Get the amount of reps done, max_reps, level /tier of exercise
+        reps = int(request.POST.get('reps'))
+        name = request.POST.get('exercise')
+        
+        CurrentExercise = findExercise(name)
+
+        
+        gainedXP = CurrentExercise.calculateXP(reps)
+        gainedCoins = CurrentExercise.calculateCoins(reps)
+        #canLevelUp = gainedXP >= pet.neededXP 
+        """
+        user.addCoins(gainedCoins)
+        pet.addXP(gainedXP)
+        """
+            # add the coins and xp to the user and the pet
+            
+
+        return render(request, 'logged_workout.html', {
+            'gainedXP': gainedXP,
+            'gainedCoins': gainedCoins,
+            #'leveled_up' : canLevelUp
+            'exercises': load_exercises()
+        })
