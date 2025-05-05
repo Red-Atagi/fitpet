@@ -64,14 +64,14 @@ def display_dress_page(request):
 
 
     # # Sort the list so that the item currently worn is at the head
-    # for i in range(len(clothing_lists)):
-    #     clothing_list = clothing_lists[i]
-    #     wearing_item = currently_wearing[i]
+    for i in range(len(clothing_lists)):
+        clothing_list = clothing_lists[i]
+        wearing_item = currently_wearing[i]
 
-    #     for idx, item in enumerate(clothing_list):
-    #         if item.clothing_id == wearing_item.clothing_id:
-    #             clothing_list.insert(0, clothing_list.pop(idx))
-    #             break
+        for idx, item in enumerate(clothing_list):
+            if wearing_item and item.clothing_id == wearing_item.clothing_id:
+                clothing_list.insert(0, clothing_list.pop(idx))
+                break
     
     data = {
         "hats_owned": hats_owned,
@@ -110,11 +110,20 @@ def update_clothing(request):
     # Update the pet's clothing based on the type
     clothing = Clothing.objects.get(clothing_id=new_clothing_id)
     if clothing.clothing_type == 'Hat':
-        pet.hat = clothing
+        if pet.hat and pet.hat.clothing_id == clothing.clothing_id:
+            pet.hat = None
+        else: 
+            pet.hat = clothing
     elif clothing.clothing_type == 'Shirt':
-        pet.shirt = clothing
+        if pet.shirt and pet.shirt.clothing_id == clothing.clothing_id:
+            pet.shirt = None
+        else: 
+            pet.shirt = clothing
     elif clothing.clothing_type == 'Shoes':
-        pet.shoes = clothing
+        if pet.shoes and pet.shoes.clothing_id == clothing.clothing_id:
+            pet.shoes = None
+        else: 
+            pet.shoes = clothing
 
     pet.save()
 
