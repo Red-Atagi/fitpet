@@ -30,7 +30,7 @@
   <body>
     <main>
       <text> base page </text>
-      
+
       {% if user.is_authenticated %} Hi {{ user.username }}!
       <form action="{% url 'logout' %}" method="post">
         {% csrf_token %}
@@ -41,7 +41,7 @@
       <a href="{% url 'login' %}">Log In</a>
       {% endif %}
 
-      <a href="{% url 'dress' %}">
+      <a href="{% url 'dress_page' %}">
         <button type="button">Dress Your Pet</button>
       </a>
 

@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from .models import FPUser, Pet, Clothing
 from .forms import CreateUserForm
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 def index(request):
     return render(request, 'base.html', {})
@@ -17,6 +20,7 @@ def display_dress_page(request):
 
     try:
         fpuser = FPUser.objects.get(djuser=user)
+    
     except FPUser.DoesNotExist:
         fpuser = FPUser.objects.create(
             djuser=user,
@@ -33,22 +37,41 @@ def display_dress_page(request):
         clothing4 = Clothing.objects.get(clothing_id=4)  # shirt2
         clothing5 = Clothing.objects.get(clothing_id=5)  # shoes1
         clothing6 = Clothing.objects.get(clothing_id=6)  # shoes2
+        clothing7 = Clothing.objects.get(clothing_id=7)  # shoes3
+        clothing8 = Clothing.objects.get(clothing_id=8)  # shoes4
+        clothing9 = Clothing.objects.get(clothing_id=9)  # shoes5
 
         # Assign clothing to users
-        fpuser.owns.add(clothing1, clothing2, clothing3, clothing4, clothing5, clothing6)
+        fpuser.owns.add(clothing1, clothing2, clothing3, clothing4, clothing5, clothing6, clothing7, clothing8, clothing9)
 
         pet1 = Pet.objects.create(
-            owner=fpuser, name="PetOne", image_path="images/test_pet.png"
+            owner=fpuser, name="PetOne", image_path="images/test_pet.png", hat=clothing1
         )
     
         return redirect('login')  
 
-    
     hats_owned, shirts_owned, shoes_owned = fpuser.clothing_owned()
     
     pet = Pet.objects.get(owner=fpuser)
 
+    logger.debug(f"Pet hat: {pet.hat}")  # Log the pet's hat to check if it's being fetched correctly
+    logger.debug(f"Hat wearing: {pet.hat}")  # Log the hat that the pet is wearing (or check other attributes)
+
     hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
+
+    clothing_lists = [hats_owned, shirts_owned, shoes_owned]
+    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing]
+
+
+    # # Sort the list so that the item currently worn is at the head
+    # for i in range(len(clothing_lists)):
+    #     clothing_list = clothing_lists[i]
+    #     wearing_item = currently_wearing[i]
+
+    #     for idx, item in enumerate(clothing_list):
+    #         if item.clothing_id == wearing_item.clothing_id:
+    #             clothing_list.insert(0, clothing_list.pop(idx))
+    #             break
     
     data = {
         "hats_owned": hats_owned,
