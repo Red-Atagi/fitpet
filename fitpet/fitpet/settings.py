@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,7 +56,7 @@ ROOT_URLCONF = "fitpet.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -116,3 +117,53 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+STATIC_URL = '/static/' 
+STATICFILES_DIRS = [
+    BASE_DIR / "app/static", 
+]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,      # keep Django’s default loggers
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        },
+    },
+    'root': {                              # catch-all root logger
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',               # only show INFO+ from Django
+            'propagate': False,            # do not pass to root again
+        },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'WARNING',            # silence runserver GET/200 logs
+            'propagate': False,
+        },
+        'django.utils.autoreload': {
+            'handlers': ['console'],
+            'level': 'CRITICAL',           # silence autoreload file-watch logs
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'INFO',               # suppress raw SQL DEBUG output
+            'propagate': False,
+        },
+        'myapp': {  # your app’s logger (use your real app name)
+            'handlers': ['console'],
+            'level': 'DEBUG',              # show your debug messages
+            'propagate': False,
+        },
+    },
+}

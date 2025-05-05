@@ -6,38 +6,31 @@ class FPUser(models.Model):
     '''
     All FitPet users. Uses the Django User class to handle authentication.
     '''
-    def __init__(self):
-        self.user_id = models.AutoField(primary_key=True)
-        self.djuser = models.ForeignKey(User, on_delete=models.CASCADE) # handles authentication
-        self.coins = models.IntegerField(default=0)
-        self.username = models.CharField(max_length=255, default=None)
-        self.name = models.CharField(max_length=255, default=None)
-        self.owns = models.ManyToManyField('Clothing', related_name='users')
-
+    user_id = models.AutoField(primary_key=True)
+    djuser = models.ForeignKey(User, on_delete=models.CASCADE)  # handles authentication
+    coins = models.IntegerField(default=0)
+    username = models.CharField(max_length=255, default=None)
+    name = models.CharField(max_length=255, default=None)
+    owns = models.ManyToManyField('Clothing', related_name='users')
 
     def clothing_owned(self):
         """
         Get all the clothing this user owns, sort them into hats, shirts, 
         and shoes, then return a tuple of lists.
         """
-        all_clothes = {}
-        for item in self.owns:
+        hats = []
+        shirts = []
+        shoes = []
+
+        for item in self.owns.all():
             if item.clothing_type == "Hat":
-                if all_clothes.get("Hats"):
-                    all_clothes["Hats"].append()
-                else:
-                    all_clothes["Hats"] = [item]
-            if item.clothing_type == "Shirt":
-                if all_clothes.get("Shirts"):
-                    all_clothes["Shirts"].append()
-                else:
-                    all_clothes["Shirts"] = [item]
-            if item.clothing_type == "Shoes":
-                if all_clothes.get("Shoes"):
-                    all_clothes["Shoes"].append()
-                else:
-                    all_clothes["Shoes"] = [item]
-        return all_clothes
+                hats.append(item)
+            elif item.clothing_type == "Shirt":
+                shirts.append(item)
+            elif item.clothing_type == "Shoes":
+                shoes.append(item)
+
+        return hats, shirts, shoes
 
 
     def buy_clothing(self, clothing):
@@ -45,12 +38,9 @@ class FPUser(models.Model):
         Purchase new clothing for pet. Returns True if purchase is valid.
         """
         can_buy = self.is_purchasable(clothing)
-        if not can_buy:
-            print("Not enough coins!")
-        else:
+        if can_buy:
             self.coins = self.coins - clothing.price
             self.owns.add(clothing)
-            print(f"You purchased {clothing.clothing_id} ({clothing.clothing_type}) for {clothing.price}🤑🥳!")
         return can_buy
 
 
@@ -58,8 +48,9 @@ class FPUser(models.Model):
         """
         Returns True if purchase is valid.
         """
-        if self.coins >= clothing.price:
-            return True
+        if not self.owns.filter(clothing_id=clothing.clothing_id).exists(): #checks to see if clothing is not in owned
+            if self.coins >= clothing.price:
+                return True
         return False
 
     def addCoins(self, gainedCoins):
@@ -69,18 +60,28 @@ class FPUser(models.Model):
         self.coins += gainedCoins
         return
 
+class Clothing(models.Model):
+    CLOTHING_CHOICES = [
+        ("Hat", "Hat"),
+        ("Shirt", "Shirt"),
+        ("Shoes", "Shoes"),
+    ]
+    
+    clothing_id = models.AutoField(primary_key=True)
+    price = models.IntegerField()
+    clothing_type = models.CharField(choices=CLOTHING_CHOICES, max_length=255)
+    image_path = models.CharField(max_length=255, blank=False, null=False, default='images/')
 
 class Pet(models.Model):
-    def __init__(self):
-        self.pet_id = models.AutoField(primary_key=True)
-        self.xp = models.IntegerField(default=0)
-        self.name = models.CharField(max_length=255, default=None)
-        self.owner = models.ForeignKey(FPUser, on_delete=models.CASCADE)
-        self.hat = models.ForeignKey('Clothing', default=None)
-        self.shirt = models.ForeignKey('Clothing', default=None)
-        self.shoes = models.ForeignKey('Clothing', default=None)
-        self.image_path = models.CharField(max_length=255)
-        self.level = models.IntegerField(default=1)
+    pet_id = models.AutoField(primary_key=True)
+    xp = models.IntegerField(default=0)
+    name = models.CharField(max_length=255, default=None)
+    owner = models.ForeignKey(FPUser, on_delete=models.CASCADE)
+    hat = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_this_hat', default=None)
+    shirt = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_this_shirt', default = None)
+    shoes = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_these_shoes', default = None)
+    image_path = models.CharField(max_length=255, blank=False, null=False, default='images/')
+    level = models.IntegerField(default=1)
         
     def is_wearing(self):
         """
@@ -115,6 +116,7 @@ class Pet(models.Model):
                 self.xp = (self.level * 100) + gainedXP
         return
         
+        
     
 class Exercise(models.Model):
     exercise_id = models.AutoField(primary_key=True)
@@ -148,20 +150,4 @@ class Exercise(models.Model):
         return (neededXP <= gainedXP)
     
     
-
-
-
-    
-
-class Clothing(models.Model):
-    CLOTHING_CHOICES = [
-        ("Hat", "Hat"),
-        ("Shirt", "Shirt"),
-        ("Shoes", "Shoes"),
-    ]
-    
-    clothing_id = models.AutoField(primary_key=True)
-    price = models.IntegerField()
-    clothing_type = models.CharField(choices=CLOTHING_CHOICES, max_length=255)
-    image_path = models.CharField(max_length=255)
     
