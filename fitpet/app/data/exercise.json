@@ -1,32 +1,32 @@
 [
     {
-        "exercise": "standard pullup",
-        "level": "2",
+        "name": "standard pullup",
+        "tier": "2",
         "max_reps": 200
     },
     {
-        "exercise": "weighted pullup",
-        "level": "3",
+        "name": "weighted pullup",
+        "tier": "3",
         "max_reps": 200
     },
   {
-        "exercise": "assisted pullup",
-        "level": "1",
+        "name": "assisted pullup",
+        "tier": "1",
         "max_reps": 200
     },
   {
-        "exercise": "standard pushup",
-        "level": "2",
+        "name": "standard pushup",
+        "tier": "2",
         "max_reps": 300
     },
   {
-        "exercise": "knees pushup",
-        "level": "1",
+        "name": "knees pushup",
+        "tier": "1",
         "max_reps": 300
     },
   {
-        "exercise": "decline pushup",
-        "level": "3",
+        "name": "decline pushup",
+        "tier": "3",
         "max_reps": 300
-    },
+    }
 ]

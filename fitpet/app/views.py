@@ -74,17 +74,17 @@ def display_dress_page(request):
     
         return redirect('login')  
 
-    hats_owned, shirts_owned, shoes_owned = fpuser.clothing_owned()
+    hats_owned, shirts_owned, shoes_owned, backgrounds_owned = fpuser.clothing_owned()
     
     pet = Pet.objects.get(owner=fpuser)
 
     logger.debug(f"Pet hat: {pet.hat}")  
     logger.debug(f"Hat wearing: {pet.hat}")
 
-    hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
+    hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
 
-    clothing_lists = [hats_owned, shirts_owned, shoes_owned]
-    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing]
+    clothing_lists = [hats_owned, shirts_owned, shoes_owned, backgrounds_owned]
+    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing, background_wearing]
 
 
     # # Sort the list so that the item currently worn is at the head
@@ -101,9 +101,11 @@ def display_dress_page(request):
         "hats_owned": hats_owned,
         "shirts_owned": shirts_owned,
         "shoes_owned": shoes_owned,
+        "backgrounds_owned": backgrounds_owned,
         "hat_wearing": hat_wearing,
         "shirt_wearing": shirt_wearing,
-        "shoes_wearing": shoes_wearing
+        "shoes_wearing": shoes_wearing,
+        "background_wearing": background_wearing,
     }
     
     return render(request, 'dress.html', data)
@@ -148,6 +150,11 @@ def update_clothing(request):
             pet.shoes = None
         else: 
             pet.shoes = clothing
+    elif clothing.clothing_type == 'Background':
+        if pet.backgrond and pet.background.clothing_id == clothing.clothing_id:
+            pet.background = None
+        else: 
+            pet.background = clothing
 
     pet.save()
 
@@ -163,7 +170,19 @@ def shop_page(request):
     Renders the shop page with the items the user does not own.
     """
     if not request.user.is_authenticated:
-        return redirect('') # TODO: change this to login page
+        unowned_clothing = Clothing.objects.all()
+        hats = unowned_clothing.filter(clothing_type="Hat")
+        shirts = unowned_clothing.filter(clothing_type="Shirt")
+        shoes = unowned_clothing.filter(clothing_type="Shoes")
+        data = {
+            "hats_unowned": hats,
+            "shirts_unowned": shirts,
+            "shoes_unowned": shoes,
+            # "hat_wearing": hat_wearing,
+            # "shirt_wearing": shirt_wearing,
+            # "shoes_wearing": shoes_wearing
+        }
+        return render(request, 'shop.html', data)
     user = request.user
     fpuser = FPUser.objects.get(djuser=user)
 
@@ -238,3 +257,6 @@ def register(request):
     else:
         form = CreateUserForm()
     return render(request, 'register.html', {'form': form})
+
+def workout_page(request):
+    return render(request, 'workout.html', {})
