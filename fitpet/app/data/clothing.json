@@ -48,5 +48,25 @@
         "price": 1,
         "clothing_type": "Background",
         "image_path": "images/background_img1.jpeg"
+    },
+    {
+        "price": 1,
+        "clothing_type": "Background",
+        "image_path": "images/background_img2.jpeg"
+    },
+    {
+        "price": 1,
+        "clothing_type": "Background",
+        "image_path": "images/background_img3.jpeg"
+    },
+    {
+        "price": 1,
+        "clothing_type": "Background",
+        "image_path": "images/background_img4.jpeg"
+    },
+    {
+        "price": 1,
+        "clothing_type": "Background",
+        "image_path": "images/background_img5.jpeg"
     }
 ]

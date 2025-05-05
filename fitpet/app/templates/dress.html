@@ -162,12 +162,13 @@
 
       <!-- Pet Display -->
       <div class="pet-container">
-        {%load static%}
+        {%load static%} {% if background_wearing %}
         <img
           class="background"
-          src="/static/images/background_img1.jpeg"
+          src="{% static background_wearing.image_path %}?v={{ timestamp }}"
           alt="Background Image"
         />
+        {%endif%}
         <img
           class="pet"
           id="pet-image"
@@ -251,6 +252,22 @@
               src="{% static shoes.image_path %}?v={{ timestamp }}"
               alt="Shoes"
               onclick="wearClothing({{ shoes.clothing_id }},'Shoes')"
+            />
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Background Section -->
+        <h2>Background</h2>
+        <div class="scroll-row" id="background-row">
+          {% for background in backgrounds_owned %}
+          <div
+            class="clothing-item {% if background.clothing_id == background_wearing.clothing_id %}selected{% endif %}"
+          >
+            <img
+              src="{% static background.image_path %}?v={{ timestamp }}"
+              alt="Background"
+              onclick="wearClothing({{ background.clothing_id }},'Background')"
             />
           </div>
           {% endfor %}

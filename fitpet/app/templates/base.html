@@ -99,12 +99,13 @@
         {% if user.is_authenticated %}
         <h2 class="welcome-user">Hi {{ user.username }}!</h2>
         <div class="pet-container">
-          {%load static%}
+          {%load static%} {% if background_wearing %}
           <img
             class="background"
-            src="/static/images/background_img1.jpeg"
+            src="{% static background_wearing.image_path %}?v={{ timestamp }}"
             alt="Background Image"
           />
+          {%endif%}
           <img
             class="pet"
             id="pet-image"
