@@ -50,17 +50,17 @@ def display_dress_page(request):
     
         return redirect('login')  
 
-    hats_owned, shirts_owned, shoes_owned = fpuser.clothing_owned()
+    hats_owned, shirts_owned, shoes_owned, backgrounds_owned = fpuser.clothing_owned()
     
     pet = Pet.objects.get(owner=fpuser)
 
     logger.debug(f"Pet hat: {pet.hat}")  # Log the pet's hat to check if it's being fetched correctly
     logger.debug(f"Hat wearing: {pet.hat}")  # Log the hat that the pet is wearing (or check other attributes)
 
-    hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
+    hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
 
-    clothing_lists = [hats_owned, shirts_owned, shoes_owned]
-    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing]
+    clothing_lists = [hats_owned, shirts_owned, shoes_owned, backgrounds_owned]
+    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing, background_wearing]
 
 
     # # Sort the list so that the item currently worn is at the head
@@ -77,9 +77,11 @@ def display_dress_page(request):
         "hats_owned": hats_owned,
         "shirts_owned": shirts_owned,
         "shoes_owned": shoes_owned,
+        "backgrounds_owned": backgrounds_owned,
         "hat_wearing": hat_wearing,
         "shirt_wearing": shirt_wearing,
-        "shoes_wearing": shoes_wearing
+        "shoes_wearing": shoes_wearing,
+        "background_wearing": background_wearing,
     }
     
     return render(request, 'dress.html', data)
@@ -124,6 +126,11 @@ def update_clothing(request):
             pet.shoes = None
         else: 
             pet.shoes = clothing
+    elif clothing.clothing_type == 'Background':
+        if pet.backgrond and pet.background.clothing_id == clothing.clothing_id:
+            pet.background = None
+        else: 
+            pet.background = clothing
 
     pet.save()
 
