@@ -251,22 +251,24 @@ def register(request):
         if form.is_valid():
             ## Use Django capabilities to save information of the User
             user = form.save()
+            name = form.cleaned_data.get('name')
+            pet_name = form.cleaned_data.get('pet_name')
             userFP = FPUser.objects.create(
                 ## User_id is automatically generated
                 djuser = user,
                 username = user.username,
                 ## Can set name changing capabilities later
-                name = "",
+                name = name,
                 coins = 0
             )
             Pet.objects.create(
             ## Can set name changing capabilities later
-            name = "",
+            name = pet_name,
             xp=0,
             owner = userFP
             )
             ## After successful account creation, return to main page
-            return redirect('index')
+            return redirect('home')
     else:
         form = CreateUserForm()
     return render(request, 'register.html', {'form': form})

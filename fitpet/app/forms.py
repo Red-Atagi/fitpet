@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 
 
 class CreateUserForm(UserCreationForm):
+    name = forms.CharField(max_length=255, label="What’s your name?")
+    pet_name = forms.CharField(max_length=255, label="Your Pet's Name?")
+
     class Meta:
         # Form is based on User Model
         model = User
