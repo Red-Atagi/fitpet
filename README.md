@@ -19,7 +19,15 @@
 2. Run `python manage.py test app`.
 
 ### Acceptance Tests Using Web Interface
-[[TODO]]
+1. Register a user using any username, password (at least 8 characters, not too similar to your username), name, and pet's name.
+2. Log in with your new account. This should bring you to the home page.
+3. From the home page, navigate to the workout page by pressing the button or going to `http://127.0.0.1:8000/workout/`.
+4. Log a workout to earn coins.
+5. From the home page, navigate to the shop page by pressing the button or going to `http://127.0.0.1:8000/api/buyclothing`.
+6. Buy some items with your earned coins.
+7. From the home page, navigate to the dress pet page by pressing the button or going to `http://127.0.0.1:8000/dress/`.
+8. See your different purchased clothings on your pet.
+9. Go back to the home page to see that your pet and its background are updated to what you selected on the dress page.
 
 ### Use Cases Implemented
 #### Account Creation and Log In
