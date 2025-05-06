@@ -32,7 +32,7 @@ Users can view the clothing shop, where they can purchase clothing items they do
 Users can try different clothing items on their pets.
 
 #### Workout Plans
-[[TODO]]
+Users can log their workout from the given exercises and they will recieve XP for their pet and Coins based on the exercise and reps done.
 
 ### Who Did What
 - Account Creation: Eric and Gabe
