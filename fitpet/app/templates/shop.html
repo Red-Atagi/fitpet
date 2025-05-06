@@ -102,95 +102,185 @@
     align-content: center;
     vertical-align: middle;
 }
+
+.clothing-grid {
+    display: flex;
+}
+
+.center {
+    text-align: center;
+    margin: 20px 0;
+}
+
+h1 {
+    font-family: Helvetica, sans-serif;
+    font-size: 2.5rem;
+    color: #333;
+}
+h2 {
+    font-family: Helvetica, sans-serif;
+    font-size: 2rem;
+    color: #666;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-left {
+    display: flex;
+    gap: 10px;
+}
+
+.header-center {
+    text-align: center;
+    flex: 1;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-left {
+    background-color: #1377e2; /* Blue */
+}
+
 </style>
 <body>
-    <center>
-        <h1> Welcome to the Shop!</h1>
-    </center>
-        <h2>Hats</h2>
-        <center>
-            <div id="image-container-hat">
-                <div id="image-modal" class="modal" onclick="closeModal(event)">
-                    <div class="modal-content">
-                        <div class="modal-left">
-                          <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
-                          <img id="modal-img" src="" alt="Enlargeed Image" />
-                        </div>
-                        <div class="modal-right">
-                          <span class="close-btn" onclick="hideModal()">&times;</span>
-                            <div class="desc">
-                                <h2>Item</h2>
-                                <p>Price: 🪙200</p>
-                                <button id="buy-btn" onclick="buyItem()">Buy</button>
-                            </div>
-                        </div>
-                </div>
-            </div>   
-        </center>
-    <div>
-        <h2>Shirts</h2>
-        <center>
-            <div id="image-container-shirt">
-                <div id="image-modal" class="modal" onclick="closeModal(event)">
-                    <span class="close-btn" onclick="hideModal()">&times;</span>
-                    <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
-                    <img id="modal-img" src="" alt="Enlarged Image">
-                    <input type="button" id="buy-btn" value="Buy"/>
-                </div>
-            </div>
-        </center>
+    {% load static %}
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <a href="{% url 'index' %}" class="button button-left">Back to Home</a>
+            <a href="{% url 'dress_page' %}" class="button button-left">Dress Pet</a>        </div>
+        <div class="header-center">
+            <h1>Welcome to the Shop!</h1>
+            {% if user %}
+                <h2>Your coins: {{ user.coins }}</h2>
+            {% else %}
+                <h2>Hello Stranger</h2>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Hats Section -->
+    <h2 class="section-title">Hats</h2>
+    <div class="clothing-grid">
+        {% for hat in hats_unowned %}
+        <div class="clothing-item" onclick="showModal('{% static hat.image_path %}?v={{ timestamp }}', '{{ hat.clothing_id }}', 'Hat', '{{ hat.price }}')">
+            <img src="{% static hat.image_path %}?v={{ timestamp }}" alt="Hat" style="max-width: 200px; max-height: 200px;">
+            <p>Price: {{ hat.price }} coins</p>
+        </div>
+        {% empty %}
+            <p>You own all available hats!</p>
+        {% endfor %}
     </div>
-    <div>
-        <h2>Shoes</h2>
-        <center>
-            <div id="image-container-shoes">
-                <div id="image-modal" class="modal" onclick="closeModal(event)">
-                    <span class="close-btn" onclick="hideModal()">&times;</span>
-                    <img id="preview-img" src="app/images/test_pet.png" alt="Pet">
-                    <img id="modal-img" src="" alt="Enlarged Image">
-                    <button id="buy-btn" value="Buy"></button>
+
+<!-- Shirts Sections -->
+    <h2>Shirts</h2>
+    <div class="clothing-grid">
+        {% for shirt in shirts_unowned %}
+        <div class="clothing-item" onclick="showModal('{% static shirt.image_path %}?v={{ timestamp }}', '{{ shirt.clothing_id }}', 'Shirt', '{{ shirt.price }}')">
+            <img src="{% static shirt.image_path %}?v={{ timestamp }}" alt="Shirt" style="max-width: 200px; max-height: 200px;">
+            <p>Price: {{ shirt.price }} coins</p>
+        </div>
+        {% empty %}
+            <p>You own all available shirts!</p>
+        {% endfor %}
+    </div>
+
+<!-- Shoes Section -->
+    <h2>Shoes</h2>
+    <div class="clothing-grid">
+        {% for shoe in shoes_unowned %}
+        <div class="clothing-item" onclick="showModal('{% static shoe.image_path %}?v={{ timestamp }}', '{{ shoe.clothing_id }}', 'Shoe', '{{ shoe.price }}')">
+            <img src="{% static shoe.image_path %}?v={{ timestamp }}" alt="Shoe" style="max-width: 200px; max-height: 200px;">
+            <p>Price: {{ shoe.price }} coins</p>
+        </div>
+        {% empty %}
+            <p>You own all available shoes!</p>
+        {% endfor %}
+    </div>
+
+    <!-- The Pop Up Image -->
+    <div id="image-modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <div class="modal-left">
+                <img id="preview-img" src="{% static pet.image_path %}?v={{ timestamp }}" alt="Pet">
+                <img id="modal-img" src="" alt="Enlarged Image">
+            </div>
+            <div class="modal-right">
+                <span class="close-btn" onclick="hideModal()">&times;</span>
+                <div class="desc">
+                    <h2 id="modal-item-title">Item</h2>
+                    <p id="modal-item-price">Price: 🪙200</p>
+                    <form method="post" action="{% url 'buy_clothing' %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="modal-clothing-id" name="clothing_id" value="">
+                        <button type="submit" class="button">Buy</button>
+                    </form>
                 </div>
             </div>
-        </center>
+        </div>
     </div>
 </body>
 <script>
     // import clothing data TODO: check if account checking is needed
 
-    // check shirts owned
-    fetch('/app/data/clothing.json')
-    .then(response => response.json())
-    .then(imageUrls => {
+    // // check shirts owned
+    // fetch('/app/data/clothing.json')
+    // .then(response => response.json())
+    // .then(imageUrls => {
 
-        imageUrls.forEach(url => {
-        const img = document.createElement('img');
-        img.src = `/app/${url["image_path"]}`;
-        img.alt = url["clothing_type"];
-        let container = document.getElementById(`image-container-${img.alt.toLowerCase()}`);
-        img.style.width = '500px';
-        img.style.height = '500px';
-        img.style.margin = '10px';
-        img.style.objectFit = 'cover';
+    //     imageUrls.forEach(url => {
+    //     const img = document.createElement('img');
+    //     img.src = `/app/${url["image_path"]}`;
+    //     img.alt = url["clothing_type"];
+    //     let container = document.getElementById(`image-container-${img.alt.toLowerCase()}`);
+    //     img.style.width = '500px';
+    //     img.style.height = '500px';
+    //     img.style.margin = '10px';
+    //     img.style.objectFit = 'cover';
 
-        // If image fails to load, replace with blank square (gray box)
-        img.onerror = function () {
-            img.src = '';
-            img.style.backgroundColor = '#ccc'; // light gray
-        };
-        img.onclick = () => showModal(`/app/${url["image_path"]}`);
-        container.appendChild(img);
-        });
-    })
-    .catch(error => {
-        console.error('Error loading images:', error);
-    });
+    //     // If image fails to load, replace with blank square (gray box)
+    //     img.onerror = function () {
+    //         img.src = '';
+    //         img.style.backgroundColor = '#ccc'; // light gray
+    //     };
+    //     img.onclick = () => showModal(`/app/${url["image_path"]}`);
+    //     container.appendChild(img);
+    //     });
+    // })
+    // .catch(error => {
+    //     console.error('Error loading images:', error);
+    // });
         
      // Modal functionality
-    function showModal(src) {
+    function showModal(src, clothingId, title, price) {
         const modal = document.getElementById('image-modal');
         const modalImg = document.getElementById('modal-img');
+        const clothingIdInput = document.getElementById('modal-clothing-id');
+        const modalTitle = document.getElementById('modal-item-title');
+        const modalPrice = document.getElementById('modal-item-price');
+
         modal.style.display = 'flex';
         modalImg.src = src;
+        clothingIdInput.value = clothingId;
+        modalTitle.textContent = title;
+        modalPrice.textContent = `Price: 🪙${price}`;
         previewClothing();
         showBuyButton();
     }
