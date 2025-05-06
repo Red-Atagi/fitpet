@@ -191,9 +191,7 @@ def shop_page(request):
             "hats_unowned": hats,
             "shirts_unowned": shirts,
             "shoes_unowned": shoes,
-            # "hat_wearing": hat_wearing,
-            # "shirt_wearing": shirt_wearing,
-            # "shoes_wearing": shoes_wearing
+            "user": None
         }
         return render(request, 'shop.html', data)
     user = request.user
@@ -213,6 +211,8 @@ def shop_page(request):
         "hats_unowned": hats,
         "shirts_unowned": shirts,
         "shoes_unowned": shoes,
+        "user": user,
+        "pet": pet
         # "hat_wearing": hat_wearing,
         # "shirt_wearing": shirt_wearing,
         # "shoes_wearing": shoes_wearing
