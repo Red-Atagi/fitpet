@@ -117,8 +117,8 @@ class Pet(models.Model):
         Adds XP and Levels Up Pet if threshold is met
         """
         while (gainedXP > 0):
-            neededXP = neededXP(self)
-            gainedXP -= neededXP
+            XP = self.neededXP()
+            gainedXP -= XP
             if (gainedXP >= 0):
                 self.level += 1
                 self.xp = 0

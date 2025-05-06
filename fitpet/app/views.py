@@ -249,53 +249,55 @@ def load_exercises():
 def workout_page(request):
 
     if not request.user.is_authenticated:
-        redirect('login')
+        return redirect('login')
 
-    exercises = load_exercises()
-    return render(request, 'workout.html',{'exercises': exercises})
+    return render(request, 'workout.html',{"exercises": load_exercises()})
 
 def findExercise(name):
     exercises = load_exercises()
     for exercise in exercises:
-        if exercise['exercise'] == name:
+        if exercise['name'] == name:
             return Exercise(
-                name = exercise['exercise'],
+                name = exercise['name'],
                 tier = int(exercise['tier']),
                 max_reps = int(exercise['max_reps'])
             )
     return None
 
 def log_workout(request):
+
     if not request.user.is_authenticated:
-        redirect ('login')
+        return redirect ('login')
+    
     if request.method == 'POST':
-        """
+
         # Get the fpuser
         user = request.user
         fpuser = FPUser.objects.get(djuser = user)
         # Get the Pet of the Fpuser
-        pet = Pet.objects.filter(owner = fpuser)
-        """
+        pet = Pet.objects.filter(owner=fpuser).first()
+
         # Get the amount of reps done, max_reps, level /tier of exercise
         reps = int(request.POST.get('reps'))
         name = request.POST.get('exercise')
         
         CurrentExercise = findExercise(name)
 
-        
+        # calculate XP, coins, and if the pet has leveled up
         gainedXP = CurrentExercise.calculateXP(reps)
         gainedCoins = CurrentExercise.calculateCoins(reps)
-        #canLevelUp = gainedXP >= pet.neededXP 
-        """
-        user.addCoins(gainedCoins)
+        canLevelUp = gainedXP >= pet.neededXP()
+
+
+        # Add the coins and XP to the user and pet
+        fpuser.addCoins(gainedCoins)
         pet.addXP(gainedXP)
-        """
-            # add the coins and xp to the user and the pet
-            
+       
+        user.save()
+        pet.save()
 
         return render(request, 'logged_workout.html', {
             'gainedXP': gainedXP,
             'gainedCoins': gainedCoins,
-            #'leveled_up' : canLevelUp
-            'exercises': load_exercises()
+            'leveled_up' : canLevelUp,
         })

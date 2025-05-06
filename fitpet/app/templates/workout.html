@@ -47,7 +47,7 @@
         <select name="exercise" id="exerciseSelect" required>
             <option disabled selected></option>
             {% for ex in exercises %}
-                <option value="{{ ex.exercise }}">{{ ex.exercise }}</option>
+                <option value="{{ ex.name }}">{{ ex.name }}</option>
             {% endfor %}
         </select>
 
