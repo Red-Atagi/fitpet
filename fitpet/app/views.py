@@ -48,46 +48,8 @@ def display_dress_page(request):
 
     try:
         fpuser = FPUser.objects.get(djuser=user)
-        # background1 = Clothing.objects.get(clothing_id=10)  # background1
-        # fpuser.owns.add(background1)
-        # background2 = Clothing.objects.get(clothing_id=11)  # background2
-        # background3 = Clothing.objects.get(clothing_id=12)  # background3
-        # background4 = Clothing.objects.get(clothing_id=13)  # background4
-        # background5 = Clothing.objects.get(clothing_id=14)  # background5
-        # fpuser.owns.add(background2, background3, background4, background5)
     
     except FPUser.DoesNotExist:
-        fpuser = FPUser.objects.create(
-            djuser=user,
-            username=user.username,
-            name=user.get_full_name() or user.username,
-            coins=0
-        )
-        # Optionally, assign default clothing items if needed
-        # Example: give them all clothing with "starter" tag
-        # Get clothing items
-        clothing1 = Clothing.objects.get(clothing_id=1)  # hat1
-        clothing2 = Clothing.objects.get(clothing_id=2)  # hat2
-        clothing3 = Clothing.objects.get(clothing_id=3)  # shirt1
-        clothing4 = Clothing.objects.get(clothing_id=4)  # shirt2
-        clothing5 = Clothing.objects.get(clothing_id=5)  # shoes1
-        clothing6 = Clothing.objects.get(clothing_id=6)  # shoes2
-        clothing7 = Clothing.objects.get(clothing_id=7)  # shoes3
-        clothing8 = Clothing.objects.get(clothing_id=8)  # shoes4
-        clothing9 = Clothing.objects.get(clothing_id=9)  # shoes5
-        background1 = Clothing.objects.get(clothing_id=10)  # background1
-        background2 = Clothing.objects.get(clothing_id=11)  # background2
-        background3 = Clothing.objects.get(clothing_id=12)  # background3
-        background4 = Clothing.objects.get(clothing_id=13)  # background4
-        background5 = Clothing.objects.get(clothing_id=14)  # background5
-
-        # Assign clothing to users
-        fpuser.owns.add(clothing1, clothing2, clothing3, clothing4, clothing5, clothing6, clothing7, clothing8, clothing9)
-
-        pet1 = Pet.objects.create(
-            owner=fpuser, name="PetOne", image_path="images/test_pet.png", hat=clothing1
-        )
-    
         return redirect('login')  
 
     hats_owned, shirts_owned, shoes_owned, backgrounds_owned = fpuser.clothing_owned()
