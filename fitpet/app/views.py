@@ -199,7 +199,7 @@ def buy_clothing(request):
     if not fpuser:
         return JsonResponse({"success": False, "error": "User profile not found."})
     
-    if fpuser.buy_clothing(Clothing.objects.filter(clothin_id=new_clothing_id).first()):
+    if fpuser.buy_clothing(Clothing.objects.filter(clothing_id=new_clothing_id).first()):
         return JsonResponse({
             'success': True,
         })

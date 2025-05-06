@@ -158,17 +158,18 @@ header {
 }
 
 .button-left {
-    background-color: #1377e2; /* Blue */
+    background-color: #5d5d5d; 
 }
 
 </style>
 <body>
     {% load static %}
     <!-- Header -->
+    <a href="{% url 'home' %}" class="button button-left">Back to Home</a>
+
     <header>
         <div class="header-left">
-            <a href="{% url 'home' %}" class="button button-left">Back to Home</a>
-            <a href="{% url 'dress_page' %}" class="button button-left">Dress Pet</a>        </div>
+        </div>
         <div class="header-center">
             <h1>Welcome to the Shop!</h1>
             {% if user %}
@@ -183,7 +184,7 @@ header {
     <h2 class="section-title">Hats</h2>
     <div class="clothing-grid">
         {% for hat in hats_unowned %}
-        <div class="clothing-item" onclick="showModal('{% static hat.image_path %}?v={{ timestamp }}', '{{ hat.clothing_id }}', 'Hat', '{{ hat.price }}')">
+        <div id='{{ hat.clothing_id }}' class="clothing-item" onclick="showModal('{% static hat.image_path %}?v={{ timestamp }}', '{{ hat.clothing_id }}', 'Hat', '{{ hat.price }}')">
             <img src="{% static hat.image_path %}?v={{ timestamp }}" alt="Hat" style="max-width: 200px; max-height: 200px;">
             <p>Price: {{ hat.price }} coins</p>
         </div>
@@ -196,7 +197,7 @@ header {
     <h2>Shirts</h2>
     <div class="clothing-grid">
         {% for shirt in shirts_unowned %}
-        <div class="clothing-item" onclick="showModal('{% static shirt.image_path %}?v={{ timestamp }}', '{{ shirt.clothing_id }}', 'Shirt', '{{ shirt.price }}')">
+        <div id='{{ shirt.clothing_id }}' class="clothing-item" onclick="showModal('{% static shirt.image_path %}?v={{ timestamp }}', '{{ shirt.clothing_id }}', 'Shirt', '{{ shirt.price }}')">
             <img src="{% static shirt.image_path %}?v={{ timestamp }}" alt="Shirt" style="max-width: 200px; max-height: 200px;">
             <p>Price: {{ shirt.price }} coins</p>
         </div>
@@ -209,7 +210,7 @@ header {
     <h2>Shoes</h2>
     <div class="clothing-grid">
         {% for shoe in shoes_unowned %}
-        <div class="clothing-item" onclick="showModal('{% static shoe.image_path %}?v={{ timestamp }}', '{{ shoe.clothing_id }}', 'Shoe', '{{ shoe.price }}')">
+        <div id='{{ shoe.clothing_id }}' class="clothing-item" onclick="showModal('{% static shoe.image_path %}?v={{ timestamp }}', '{{ shoe.clothing_id }}', 'Shoe', '{{ shoe.price }}')">
             <img src="{% static shoe.image_path %}?v={{ timestamp }}" alt="Shoe" style="max-width: 200px; max-height: 200px;">
             <p>Price: {{ shoe.price }} coins</p>
         </div>
@@ -220,6 +221,7 @@ header {
 
     <!-- The Pop Up Image -->
     <div id="image-modal" class="modal" onclick="closeModal(event)">
+        <div id="modal-clothing-id" style="display: none;"></div>
         <div class="modal-content">
             <div class="modal-left">
                 {% if user %}
@@ -232,15 +234,13 @@ header {
                 <div class="desc">
                     <h2 id="modal-item-title">Item</h2>
                     <p id="modal-item-price">Price: 🪙200</p>
-                    <form method="post" action="{% url 'buy_clothing' %}">
-                        {% csrf_token %}
-                        <input type="hidden" id="modal-clothing-id" name="clothing_id" value="">
-                        <button type="submit" class="button">Buy</button>
-                    </form>
+                    <button type="button" class="button" onclick="buyClothing()">Buy</button>
                 </div>
             </div>
         </div>
     </div>
+
+
 </body>
 <script>
     // import clothing data TODO: check if account checking is needed
@@ -323,8 +323,41 @@ header {
         document.getElementById('preview-img').style.display = 'none';
     }
 
-    function buyItem() {
-        console.log("Purchase successful!")
+    function buyClothing() {
+        const clothingId = document.getElementById('modal-clothing-id').value;
+        const data = new URLSearchParams();
+        data.append("clothing_id", parseInt(clothingId)); // Append clothing_id to the request data
+        console.log("Attempting to buy clothing with ID:", clothingId); // Debug log
+        fetch("{% url 'buy_clothing' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: data.toString(),
+        })
+        .then(response => {
+            console.log("Response status:", response.status); 
+            return response.json(); 
+        })
+        .then(data => {
+            console.log("Response data:", data); 
+            if (data.success) {
+                alert("Purchase successful!");
+                const element = document.getElementById(clothingId); // Get the clothing item
+                if (element) {
+                    element.parentNode.removeChild(element); // remove item from shop
+                }
+                hideModal();
+            } else {
+                alert("Can't buy clothing. Please check your coins.");
+                console.log("Purchase failed:", data.error); 
+            }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error); // Debug log
+            alert("An error occurred. Please try again.");
+        });
     }
 </script>
 
