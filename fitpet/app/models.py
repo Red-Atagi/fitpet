@@ -129,6 +129,7 @@ class Pet(models.Model):
         
     
 class Exercise(models.Model):
+    exercise_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, default=None)
     tier = models.IntegerField() # degree of difficulty
     max_reps = models.IntegerField()
