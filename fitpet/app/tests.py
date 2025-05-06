@@ -665,8 +665,10 @@ class WorkoutTestCase(TestCase):
 
     """
     Test not level up was taken out because it was redundant with the 
-    base case which is the coins and xp test. The format of the 
-    workout tests were changed so that they could properly go through
-    the logic the user goes through.
+    base case which is the coins and xp test. An update was made to the exercise tests — 
+    the original tests were not done well with how the exercise logic was implemented, 
+    so they were rewritten to better match the model behavior and ensure the tests run
+    correctly. The tests were restructured in a way that the user would navigate through
+    the workout case compared to before where values were just being placed in.
     """
        
