@@ -37,7 +37,7 @@
 
     <h1>Exercise Log</h1>
 
-    <a href = "{% url 'index' %}" class="button cancel"> Cancel Workout </a>
+    <a href = "{% url 'home' %}" class="button cancel"> Cancel Workout </a>
     
     <form method = "POST" action = "{%url 'workout_logged'%}">
         {% csrf_token %}
@@ -59,15 +59,4 @@
         <p></p>
         <button class = "button confirm" type="Submit">Calculate XP and Coins</button>
     </form>
-
-    {% if gainedXP and gainedCoins %}
-    <div id="result-box">
-        <p>You earned <strong>{{ gainedXP }}</strong> XP and <strong>{{ gainedCoins }}</strong> Coins!</p>
-        {% if leveled_up %}
-            <p><strong>🎉 You leveled up!</strong></p>
-        {% endif %}
-        <button href="{% url 'index' %}" class="button">Back to Home Page</button>
-    </div>
-    {% endif %}
-
 </html>
