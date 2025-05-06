@@ -434,78 +434,190 @@ class DressPetTestCase(TestCase):
 class WorkoutTestCase(TestCase):
 
     def setUp(self):
-        # Create a User
-        self.user = User.objects.create_user(username="workout_user", password="testpass")
-        # Create a Fpuser
-        self.fpuser = FPUser.objects.create(djuser=self.user, username="workout_user", name="Workout User", coins=0)
+        """
+        Added multiple users, fpusers, and pets so that testing would be 
+        easier for different test cases.
+        """
 
-        #Create exercises
-        self.exercise1 = Exercise.objects.create(name="Pushups", tier=2, max_reps=20)
-        self.exercise2 = Exercise.objects.create(name="Squats", tier=3, max_reps=25)
+        # Create a Users
+        self.user1 = User.objects.create_user(username="user1", password="testpass")
+        self.user2 = User.objects.create_user(username="user2", password="testpass")
+        self.user3 = User.objects.create_user(username="user3", password="testpass")
 
-        #Create pet 
-        self.pet = Pet.objects.create(owner=self.fpuser, name="Fitty", image_path="images/test_pet.png", level=1, xp=0)
-        
-    def test_add_xp_and_coins(self): 
+        # Create a Fpusers
+        self.fpuser1 = FPUser.objects.create(
+            djuser=self.user1, username="user1", name="User One", coins = 20,
+        )
+        self.fpuser2 = FPUser.objects.create(
+            djuser=self.user2, username="user2", name="User Two", coins =0,
+        )
+        self.fpuser3 = FPUser.objects.create(
+            djuser=self.user3, username="user3", name="User Three", coins = 10,
+        )
+
+        # Create Pets
+        self.pet1 = Pet.objects.create(
+            owner=self.fpuser1, name="PetOne", image_path="images/test_pet.png", 
+            xp = 0, level = 1,
+        )
+        self.pet2 = Pet.objects.create(
+            owner=self.fpuser2, name="PetTwo", image_path="images/test_pet.png",
+            xp = 50, level = 1,
+        )
+        self.pet3 = Pet.objects.create (
+            owner=self.fpuser3, name="PetThree", image_path="images/test_pet.png",
+            xp = 200, level = 10,
+        )
+
+        # Create Exercises 
+        # These are new exercises and they are taken from the json file
+
+        self.exercise1 = Exercise.objects.create(
+            name = "standard pullup", tier = 2, max_reps = 200
+        )
+        self.exercise2 = Exercise.objects.create(
+            name = "knees pushup", tier = 1, max_reps = 300
+        )
+        self.exercise3 = Exercise.objects.create(
+            name = "decline pushup", tier = 3, max_reps = 300
+        )
+
+    def test_base_case(self): 
         """
         Simulate adding XP and coins to the pet and FPUser after a workout.
         This will eventually be triggered by a view (e.g., workout completion).
         """
-        # number of reps
-        reps_done = 15
-        # calculation for XP and Coins
-        gained_xp = Exercise.calculateXP(self.exercise1.max_reps, self.exercise1.tier, reps_done)
-        gained_coins = Exercise.calculateCoins(self.exercise1.max_reps, self.exercise1.tier, reps_done)
+        # Log in
+        self.client.login(username ="user1", password ="testpass")
 
-        #Saving XP and Coins
-        self.pet.addXP(gained_xp)
-        self.pet.save()
-        self.fpuser.addCoins(gained_coins)
-        self.fpuser.save()
+        # Go to workout page
+        response = self.client.get(reverse("workout_page"))
 
-        self.pet.refresh_from_db()
-        self.fpuser.refresh_from_db()
+        # Select Exercise and Input Reps
+        CurrentExercise = self.exercise1
+        reps = 20
 
-        # Can change due to equation changes
-        self.assertEqual(self.pet.xp, 15)
-        self.assertEqual(self.fpuser.coins, 3)
+        # Submit Log of Workout
+        response = self.client.post(
+            reverse("workout_logged"), 
+            {"exercise": self.exercise1.name, "reps": 20})
+        
 
-    def test_max_reps_cap(self):
+        # Calculate XP and Coins
+        gained_xp = CurrentExercise.calculateXP(reps)
+        gained_coins = CurrentExercise.calculateCoins(reps)
+
+        # Save XP and Coins
+        self.pet1.addXP(gained_xp)
+        self.pet1.save()
+
+        self.fpuser1.addCoins(gained_coins)
+        self.fpuser1.save()
+
+        self.assertEqual(self.pet1.xp, 20)
+        self.assertEqual(self.fpuser1.coins, 24)
+        self.assertEqual(self.pet1.level, 1)
+
+        # Go Back to Main Page
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+    
+
+    def test_max_reps(self):
         """
         Ensure XP and Coins are capped when reps exceed max_reps.
         """
-        self.client.login(username="user", password="testpass")
+        # Log in
+        self.client.login(username ="user3", password ="testpass")
 
-        # reps exceed max_reps
-        reps_done = self.exercise.max_reps + 20  
+        # Go to workout page
+        response = self.client.get(reverse("workout_page"))
 
-        expected_xp = Exercise.calculateXP(self.exercise.max_reps, self.exercise.tier, reps_done)
-        expected_coins = Exercise.calculateCoins(self.exercise.max_reps, self.exercise.tier, reps_done)
+        # Select Exercise and Input Reps
+        CurrentExercise = self.exercise2
+        reps = 400
 
-        # Confirm values are capped
-        capped_xp = round(self.exercise.tier * self.exercise.max_reps * 0.5)
-        capped_coins = round(self.exercise.tier * self.exercise.max_reps * 0.1)
+        # Submit Log of Workout
+        response = self.client.post(
+            reverse("workout_logged"), 
+            {"exercise": self.exercise2.name, "reps": 400})
 
-        self.assertEqual(expected_xp, capped_xp)
-        self.assertEqual(expected_coins, capped_coins)
+        # Calculate XP and Coins
+        gained_xp = CurrentExercise.calculateXP(reps)
+        gained_coins = CurrentExercise.calculateCoins(reps)
+
+        # Save XP and Coins
+        self.pet3.addXP(gained_xp)
+        self.pet3.save()
+
+        self.fpuser3.addCoins(gained_coins)
+        self.fpuser3.save()
+
+        self.assertEqual(self.pet3.xp, 350)
+        self.assertEqual(self.fpuser3.coins, 40)
+        self.assertEqual(self.pet3.level, 10)
+
+        # Go Back to Main Page
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+    
 
     def test_leveling_up(self):
         """
         Pet should level up when gaining enough XP.
         """
-        self.pet.xp = 90
-        self.pet.level = 1
-        self.pet.save()
+        # Log in
+        self.client.login(username ="user2", password ="testpass")
 
-        reps_done = 10  # enough to push XP over 100
-        gained_xp = Exercise.calculateXP(self.exercise1.max_reps, self.exercise1.tier, reps_done)
+        # Go to workout page
+        response = self.client.get(reverse("workout_page"))
+        self.assertEqual(response.status_code, 200)
 
-        self.pet.addXP(gained_xp)
-        self.pet.save()
-        self.pet.refresh_from_db()
+        # Select Exercise and Input Reps
+        CurrentExercise = self.exercise3
+        reps = 150
 
-        self.assertEqual(self.pet.level, 2)
-        self.assertLess(self.pet.xp, 100)
+        # Submit Log of Workout
+        response = self.client.post(
+            reverse("workout_logged"), 
+            {"exercise": self.exercise3.name, "reps": 150})
+
+        # Calculate XP and Coins
+        gained_xp = CurrentExercise.calculateXP(reps)
+        gained_coins = CurrentExercise.calculateCoins(reps)
+
+        # Save XP and Coins
+        self.pet2.addXP(gained_xp)
+        self.pet2.save()
+
+        self.fpuser2.addCoins(gained_coins)
+        self.fpuser2.save()
+
+        self.assertEqual(self.pet2.xp, 175)
+        self.assertEqual(self.fpuser2.coins, 45)
+        self.assertEqual(self.pet2.level, 2)
+
+        # Go Back to Main Page
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+    
+
+    def test_abort_exercise(self): 
+        """
+        Simulate user aborting the workout session before completion.
+        Should not result in XP/coin gain.
+        """
+        # Log in
+        self.client.login(username ="user1", password ="testpass")
+
+        # Go to workout page
+        response = self.client.get(reverse("workout_page"))
+        self.assertEqual(response.status_code, 200)
+
+        # Go Back to Main Page
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+    
 
 
     def test_change_exercise(self): 
@@ -513,57 +625,48 @@ class WorkoutTestCase(TestCase):
         Simulate a user switching from one exercise to another.
         This will eventually test session data or state cleanup.
         """
-        # Placeholder for logic like: current_exercise = self.exercise
-        # Then user switches to a new one
-        new_exercise = Exercise.objects.create(name="Squats", tier=3, max_reps=25)
+        # Log in
+        self.client.login(username ="user3", password ="testpass")
 
-        # Simulate user "switching" exercises
-        current_exercise = new_exercise  # In a real view, this might be in session
+        # Go to workout page
+        response = self.client.get(reverse("workout_page"))
+        self.assertEqual(response.status_code, 200)
 
-        """
-        views implemenation has not been added but will fix when it is
-        """
+        # Select Exercise and Input Reps
+        CurrentExercise = self.exercise1
+        CurrentExercise = self.exercise3
+        reps = 20
 
-        self.assertEqual(current_exercise.name, "Squats")
-        self.assertEqual(current_exercise.tier, 3)
-
-    def test_abort_exercise(self): 
-        """
-        Simulate user aborting the workout session before completion.
-        Should not result in XP/coin gain.
-        """
-        
-
-        """
-        views implemenation has not been added but will fix when it is
-
-        supposed to go back to main page
-        """
+        # Submit Log of Workout
+        response = self.client.post(
+            reverse("workout_logged"), 
+            {"exercise": self.exercise3.name, "reps": 20})
 
 
-    def test_not_leveling_up(self): 
+        # Calculate XP and Coins
+        gained_xp = CurrentExercise.calculateXP(reps)
+        gained_coins = CurrentExercise.calculateCoins(reps)
 
-        """
-        Simulate a small workout that does not cross the XP threshold to level up.
-        """
-        self.pet.xp = 10
-        self.pet.level = 1
-        self.pet.save()
+        # Save XP and Coins
+        self.pet3.addXP(gained_xp)
+        self.pet3.save()
 
-        reps_done = 1
-        gained_xp = Exercise.calculateXP(self.exercise1.max_reps, self.exercise1.tier, reps_done)
+        self.fpuser3.addCoins(gained_coins)
+        self.fpuser3.save()
 
-        self.pet.addXP(gained_xp)
-        self.pet.save()
-        self.pet.refresh_from_db()
+        self.assertEqual(self.pet3.xp, 230)
+        self.assertEqual(self.fpuser3.coins, 16)
+        self.assertEqual(self.pet3.level, 10)
 
-        self.assertEqual(self.pet.level, 1)
-        self.assertLess(self.pet.xp, 100)
+        # Go Back to Main Page
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
 
-        """
-        views implemenation has not been added but will fix when it is
 
-        supposed to go back to main page
-        """
-
+    """
+    Test not level up was taken out because it was redundant with the 
+    base case which is the coins and xp test. The format of the 
+    workout tests were changed so that they could properly go through
+    the logic the user goes through.
+    """
        
