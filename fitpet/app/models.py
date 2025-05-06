@@ -21,6 +21,7 @@ class FPUser(models.Model):
         hats = []
         shirts = []
         shoes = []
+        backgrounds = []
 
         for item in self.owns.all():
             if item.clothing_type == "Hat":
@@ -29,8 +30,10 @@ class FPUser(models.Model):
                 shirts.append(item)
             elif item.clothing_type == "Shoes":
                 shoes.append(item)
+            elif item.clothing_type == "Background":
+                backgrounds.append(item)
 
-        return hats, shirts, shoes
+        return hats, shirts, shoes, backgrounds
 
 
     def buy_clothing(self, clothing):
@@ -65,6 +68,7 @@ class Clothing(models.Model):
         ("Hat", "Hat"),
         ("Shirt", "Shirt"),
         ("Shoes", "Shoes"),
+        ("Background", "Background"),
     ]
     
     clothing_id = models.AutoField(primary_key=True)
@@ -80,6 +84,7 @@ class Pet(models.Model):
     hat = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_this_hat', default=None)
     shirt = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_this_shirt', default = None)
     shoes = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_these_shoes', default = None)
+    background = models.ForeignKey(Clothing, on_delete=models.SET_NULL, null=True, related_name='pets_with_this_background', default = None)
     image_path = models.CharField(max_length=255, blank=False, null=False, default='images/')
     level = models.IntegerField(default=1)
         
@@ -87,7 +92,7 @@ class Pet(models.Model):
         """
         Returns tuple (hat, shirt, shoes) that the pet is wearing
         """
-        return (self.hat, self.shirt, self.shoes)
+        return (self.hat, self.shirt, self.shoes, self.background)
         
     def getLevel(self):
         """
@@ -100,16 +105,21 @@ class Pet(models.Model):
         Returns the Pet's XP
         """
         return (self.xp)
-    
+   
+    def neededXP(self):
+        """
+        Amount of XP needed before level up
+        """
+        return ((self.level * 100) - self.xp)
     
     def addXP (self, gainedXP):
         """
         Adds XP and Levels Up Pet if threshold is met
         """
         while (gainedXP > 0):
-            neededXP = (self.level * 100) - self.xp
+            neededXP = neededXP(self)
             gainedXP -= neededXP
-            if (gainedXP > 0):
+            if (gainedXP >= 0):
                 self.level += 1
                 self.xp = 0
             else: 
@@ -119,35 +129,28 @@ class Pet(models.Model):
         
     
 class Exercise(models.Model):
-    exercise_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, default=None)
     tier = models.IntegerField() # degree of difficulty
     max_reps = models.IntegerField()
 
-    def calculateXP(max_reps, tier, reps):
+    def calculateXP(self, reps):
         """
         If the reps are higher than max_reps then cap XP gain
         """
-        if (reps > max_reps):
-            return round(tier * max_reps * 0.5)
+        if (reps > self.max_reps):
+            return round(self.tier * self.max_reps * 0.5)
         else: 
-            return round(tier * reps * 0.5)
+            return round(self.tier * reps * 0.5)
             
-    def calculateCoins(max_reps, tier, reps): 
+    def calculateCoins(self, reps): 
         """
         If the reps are higher than max_reps then cap Coin gain
         """
-        if (reps > max_reps):
-            return round(tier * max_reps * 0.1)
+        if (reps > self.max_reps):
+            return round(self.tier * self.max_reps * 0.1)
         else: 
-            return round(tier * reps * 0.1)
+            return round(self.tier * reps * 0.1)
         
-    def canLevelUP(self, gainedXP):
-        """
-        Returns true if there is a level up
-        """
-        neededXP = (Pet.getLevel * 100) - Pet.getXP
-        return (neededXP <= gainedXP)
     
     
     

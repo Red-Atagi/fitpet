@@ -17,6 +17,11 @@
       integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ"
       crossorigin="anonymous"
     />
+    <!-- fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Viga&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Latest compiled and minified JavaScript -->
     <script
@@ -26,24 +31,124 @@
     ></script>
     <meta charset="utf-8" />
     <title>{% block title %}FitPet{% endblock %}</title>
+    <style>
+      .pet-container {
+        position: relative;
+        width: 100%;
+        height: 300px;
+      }
+
+      .background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+
+      .pet {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Centers the pet image */
+        z-index: 2;
+      }
+
+      .pet-clothing {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 3;
+      }
+
+      .pet-shoes {
+        position: absolute;
+        height: 50px;
+        width: 50px;
+        top: 75%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 3;
+      }
+
+      .container {
+        width: 300px;
+        height: 650px;
+        margin: 0 auto;
+        border: 1px solid #effbfd;
+        background-color: #fcfcfc;
+        overflow-y: auto;
+      }
+
+      /* welcome user text */
+      .welcome-user {
+        font-family: "Viga", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <main>
-      <text> base page </text>
+      <div class="container">
+        {% if user.is_authenticated %}
+        <h2 class="welcome-user">Hi {{ user.username }}!</h2>
+        <div class="pet-container">
+          {%load static%} {% if background_wearing %}
+          <img
+            class="background"
+            src="{% static background_wearing.image_path %}?v={{ timestamp }}"
+            alt="Background Image"
+          />
+          {%endif%}
+          <img
+            class="pet"
+            id="pet-image"
+            src="/static/images/pet_example.png"
+            alt="Your Pet"
+            style="width: 200px; height: 200px"
+          />
+          {% if hat_wearing %}
+          <img
+            src="{% static hat_wearing.image_path %}?v={{ timestamp }}"
+            alt="Hat"
+            style="width: 200px; height: 200px"
+            class="pet-clothing"
+          />
+          {% endif %} {% if shirt_wearing %}
+          <img
+            src="{% static shirt_wearing.image_path %}?v={{ timestamp }}"
+            alt="Hat"
+            style="width: 200px; height: 200px"
+            class="pet-clothing"
+          />
+          {% endif %} {% if shoes_wearing %}
+          <!-- TODO: fix shoes heightand class when add actual images -->
+          <img
+            src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
+            alt="Hat"
+            style="width: 50px; height: 50px"
+            class="pet-shoes"
+          />
+          {% endif %}
+        </div>
 
-      {% if user.is_authenticated %} Hi {{ user.username }}!
-      <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Log Out</button>
-      </form>
-      {% else %}
-      <p>You are not logged in</p>
-      <a href="{% url 'login' %}">Log In</a>
-      {% endif %}
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Log Out</button>
+        </form>
+        {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">Log In</a>
+        {% endif %}
 
-      <a href="{% url 'dress_page' %}">
-        <button type="button">Dress Your Pet</button>
-      </a>
+        <a href="{% url 'dress_page' %}">
+          <button type="button">Dress Your Pet</button>
+        </a>
+      </div>
 
       {% block content %} {% endblock %}
     </main>

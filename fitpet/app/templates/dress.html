@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>Dress Your Pet</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Roboto:ital,wght@0,100..900;1,100..900&family=Viga&display=swap"
       rel="stylesheet"
     />
     <link
@@ -21,6 +21,7 @@
         flex: 0 0 auto;
         margin-right: 10px;
         text-align: center;
+        border: 3px solid rgb(162, 162, 162);
 
         border-radius: 15px;
         justify-content: center;
@@ -37,21 +38,23 @@
       }
 
       .clothing-item.selected {
-        border: 3px solid rgb(123, 123, 123);
+        border-color: #f7b3f9;
       }
 
       .clothing-container {
         padding-left: 20px;
         padding-right: 20px;
-        margin-top: 10px;
+        margin-top: 0px;
         margin-bottom: 10px;
       }
 
       .container {
         width: 300px;
+        height: 650px;
         margin: 0 auto;
         border: 1px solid #effbfd;
-        background-color: #ebf9f8;
+        background-color: #fcfcfc;
+        overflow-y: auto;
       }
 
       h1 {
@@ -59,11 +62,26 @@
         font-weight: 400;
         font-style: normal;
         text-align: center;
+        color: white;
+      }
+
+      .dress-pet-header {
+        border: 3px solid transparent;
+        border-radius: 35px;
+        margin-bottom: 10px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f7b3f9;
       }
 
       h2 {
-        font-family: "Viga", sans-serif;
-        font-weight: 200;
+        font-family: "Roboto", sans-serif;
+        font-size: large;
+        font-style: normal;
+        font-variation-settings: "wdth" 200;
+        font-weight: 500;
         font-style: normal;
         display: block;
         margin-top: 0px;
@@ -83,35 +101,108 @@
         height: 30px;
         font-family: "Viga", sans-serif;
         font-weight: 0.01;
-        background-color: #c9eefb83;
-        color: #2ac6e9;
+        background-color: #f7b3f9;
+        color: white;
+        margin-top: 10px;
       }
 
       .return-button:hover {
-        background-color: #fdfdfd;
-        color: #2ac6e9;
+        background-color: white;
+        color: #f7b3f9;
         transform: scale(1.05);
-        /* border: 2px solid #2ac6e9; */
+      }
+
+      .pet-container {
+        position: relative;
+        width: 100%;
+        height: 300px;
+      }
+
+      .background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+
+      .pet {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Centers the pet image */
+        z-index: 2;
+      }
+
+      .pet-clothing {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 3;
+      }
+
+      .pet-shoes {
+        position: absolute;
+        height: 50px;
+        width: 50px;
+        top: 75%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 3;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Dress Your Pet</h1>
+      <div class="dress-pet-header">
+        <h1>Dress Your Pet</h1>
+      </div>
 
       <!-- Pet Display -->
-
-      <div style="text-align: center">
+      <div class="pet-container">
+        {%load static%} {% if background_wearing %}
         <img
+          class="background"
+          src="{% static background_wearing.image_path %}?v={{ timestamp }}"
+          alt="Background Image"
+        />
+        {%endif%}
+        <img
+          class="pet"
           id="pet-image"
           src="/static/images/pet_example.png"
           alt="Your Pet"
           style="width: 200px; height: 200px"
         />
+        {% if hat_wearing %}
+        <img
+          src="{% static hat_wearing.image_path %}?v={{ timestamp }}"
+          alt="Hat"
+          style="width: 200px; height: 200px"
+          class="pet-clothing"
+        />
+        {% endif %} {% if shirt_wearing %}
+        <img
+          src="{% static shirt_wearing.image_path %}?v={{ timestamp }}"
+          alt="Hat"
+          style="width: 200px; height: 200px"
+          class="pet-clothing"
+        />
+        {% endif %} {% if shoes_wearing %}
+        <!-- TODO: fix shoes heightand class when add actual images -->
+        <img
+          src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
+          alt="Hat"
+          style="width: 50px; height: 50px"
+          class="pet-shoes"
+        />
+        {% endif %}
       </div>
 
       <div class="center-content">
-        <a href="{% url 'index' %}"
+        <a href="{% url 'home' %}"
           ><button class="return-button">return home</button></a
         >
       </div>
@@ -165,6 +256,22 @@
           </div>
           {% endfor %}
         </div>
+
+        <!-- Background Section -->
+        <h2>Background</h2>
+        <div class="scroll-row" id="background-row">
+          {% for background in backgrounds_owned %}
+          <div
+            class="clothing-item {% if background.clothing_id == background_wearing.clothing_id %}selected{% endif %}"
+          >
+            <img
+              src="{% static background.image_path %}?v={{ timestamp }}"
+              alt="Background"
+              onclick="wearClothing({{ background.clothing_id }},'Background')"
+            />
+          </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
 
@@ -181,13 +288,13 @@
         const data = new URLSearchParams();
         data.append("clothing_id", newClothingId); // Append clothing_id to the request data
 
+        console.log("here");
         fetch("{% url 'update_clothing' %}", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "X-CSRFToken": csrfToken,
           },
-          //   body: "new_clothing_id=" + newClothingId,
           body: data.toString(),
         })
           .then((response) => response.json())

@@ -57,6 +57,8 @@
   background-color: #fff;
   color: #333;
   position: relative;
+  align-content: center;
+  vertical-align: middle;
 }
 
 .close-btn {
@@ -64,7 +66,7 @@
     top: 20px;
     right: 30px;
     font-size: 2rem;
-    color: white;
+    color: black;
     cursor: pointer;
     user-select: none;
 }
@@ -77,7 +79,6 @@
 }
 
 #buy-btn {
-    position: absolute;
     top: 50%;
     right: 25%;
     font-size: 1rem;
@@ -105,6 +106,7 @@
 
 .clothing-grid {
     display: flex;
+    flex-wrap: wrap;    
 }
 
 .center {
@@ -125,7 +127,6 @@ h2 {
 
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
     padding: 20px;
 }
 
@@ -166,7 +167,7 @@ header {
     <!-- Header -->
     <header>
         <div class="header-left">
-            <a href="{% url 'index' %}" class="button button-left">Back to Home</a>
+            <a href="{% url 'home' %}" class="button button-left">Back to Home</a>
             <a href="{% url 'dress_page' %}" class="button button-left">Dress Pet</a>        </div>
         <div class="header-center">
             <h1>Welcome to the Shop!</h1>
@@ -221,7 +222,9 @@ header {
     <div id="image-modal" class="modal" onclick="closeModal(event)">
         <div class="modal-content">
             <div class="modal-left">
-                <img id="preview-img" src="{% static pet.image_path %}?v={{ timestamp }}" alt="Pet">
+                {% if user %}
+                    <img id="preview-img" src="{% static pet.image_path %}?v={{ timestamp }}" alt="Pet">
+                {% endif %}
                 <img id="modal-img" src="" alt="Enlarged Image">
             </div>
             <div class="modal-right">

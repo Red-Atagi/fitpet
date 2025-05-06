@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Exercise Log</title>
+    <style>
+        .button {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .cancel {
+            background-color: #e53935;    
+        }
+
+        .confirm {
+            background-color: #43a047;    
+        }
+
+        #result-box {
+            margin-top: 1em;
+            padding: 1em;
+            background-color: #e3fbe3;
+            border: 1px solid #8fda8f;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<html>
+
+    <h1>Exercise Log</h1>
+
+    <a href = "{% url 'index' %}" class="button cancel"> Cancel Workout </a>
+    
+    <form method = "POST" action = "{%url 'workout_logged'%}">
+        {% csrf_token %}
+
+        <h3> Select your Exercise! </h3>
+        <label for="exerciseSelect"></label>
+        <select name="exercise" id="exerciseSelect" required>
+            <option disabled selected></option>
+            {% for ex in exercises %}
+                <option value="{{ ex.exercise }}">{{ ex.exercise }}</option>
+            {% endfor %}
+        </select>
+
+
+        <h3> How many reps have you done? </h3>
+        <label for="reps" class="input-label">Reps:</label>
+        <input type="number" id="reps" name="reps" min="1" required>
+
+        <p></p>
+        <button class = "button confirm" type="Submit">Calculate XP and Coins</button>
+    </form>
+
+    {% if gainedXP and gainedCoins %}
+    <div id="result-box">
+        <p>You earned <strong>{{ gainedXP }}</strong> XP and <strong>{{ gainedCoins }}</strong> Coins!</p>
+        {% if leveled_up %}
+            <p><strong>🎉 You leveled up!</strong></p>
+        {% endif %}
+        <button href="{% url 'index' %}" class="button">Back to Home Page</button>
+    </div>
+    {% endif %}
+
+</html>
