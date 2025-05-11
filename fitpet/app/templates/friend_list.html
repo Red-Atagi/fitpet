@@ -2,7 +2,7 @@
     <div class="friend">
         <h2>{{ friend.name }}</h2>
         <p>Username: {{ friend.username }}</p>
-        <a href="{%url 'visit_friend' %}">
+        <a href="{%url 'visit_friend' friend.user_id %}">
           <button type="button">Visit {{friend.name}}!</button>
         </a>
     </div>

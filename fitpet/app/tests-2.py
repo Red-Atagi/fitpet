@@ -74,7 +74,7 @@ class VisitFriendTestCase(TestCase):
         response = self.client.get(reverse("visit_friend", args=[new_fpuser.user_id]))
 
         # Check that the response redirects to the home page
-        self.assertRedirects(response, reverse("home"))
+        self.assertRedirects(response, reverse("friend_list"))
 
     def test_visit_friend_does_not_exist(self):
         """
@@ -87,7 +87,7 @@ class VisitFriendTestCase(TestCase):
         response = self.client.get(reverse("visit_friend", args=[9999]))
 
         # Check that the response redirects to the home page
-        self.assertRedirects(response, reverse("home"))
+        self.assertRedirects(response, reverse("friend_list"))
 
 
 class FriendListTestCase(TestCase):
