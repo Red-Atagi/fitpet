@@ -7,56 +7,71 @@ from .models import FPUser, Pet, Clothing
 
 class CreateAcountTestCase(TestCase):
     def testValidUser(self):
-        response = self.client.post(reverse('register'), {
-            'username': 'testingUsername',
-            'password1': 'testPass189',
-            'password2': 'testPass189'
-        })
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": "testingUsername",
+                "password1": "testPass189",
+                "password2": "testPass189",
+            },
+        )
 
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(User.objects.filter(username='testingUsername').exists())
+        self.assertTrue(User.objects.filter(username="testingUsername").exists())
 
     def testUserExists(self):
-        User.objects.create_user(username='existingUser', password='testpass')
+        User.objects.create_user(username="existingUser", password="testpass")
 
-        response = self.client.post(reverse('register'), {
-            'username': 'existingUser',
-            'password1': 'testPass123',
-            'password2': 'testPass123'
-        })
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": "existingUser",
+                "password1": "testPass123",
+                "password2": "testPass123",
+            },
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "A user with that username already exists", status_code=200)
-    
+        self.assertContains(
+            response, "A user with that username already exists", status_code=200
+        )
+
     def test_passwords_do_not_match(self):
-        response = self.client.post(reverse('register'), {
-            'username': 'newUser',
-            'password1': 'testPass123',
-            'password2': 'differentPass123'
-        })
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": "newUser",
+                "password1": "testPass123",
+                "password2": "differentPass123",
+            },
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "The two password fields didn’t match", status_code=200)
-    
+        self.assertContains(
+            response, "The two password fields didn’t match", status_code=200
+        )
+
     def test_weak_password(self):
-        response = self.client.post(reverse('register'), {
-            'username': 'weakpassuser',
-            'password1': '123',
-            'password2': '123'
-        })
+        response = self.client.post(
+            reverse("register"),
+            {"username": "weakpassuser", "password1": "123", "password2": "123"},
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "This password is too short", status_code=200)
-    
+
     def test_empty_form_submission(self):
-        response = self.client.post(reverse('register'), {})
+        response = self.client.post(reverse("register"), {})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "This field is required", status_code=200)
-    
+
     def test_username_too_long(self):
-        long_username = 'a' * 200
-        response = self.client.post(reverse('register'), {
-            'username': long_username,
-            'password1': 'ValidPass123',
-            'password2': 'ValidPass123'
-        })
+        long_username = "a" * 200
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": long_username,
+                "password1": "ValidPass123",
+                "password2": "ValidPass123",
+            },
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Ensure this value has at most", status_code=200)
 
@@ -65,61 +80,63 @@ class UserAuthTestCase(TestCase):
     """Tests for login, logout, password change, password reset."""
 
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='oldpassword')
+        self.user = User.objects.create_user(
+            username="testuser", password="oldpassword"
+        )
 
     def test_login_success(self):
-        response = self.client.post(reverse('login'), {
-            'username': 'testuser',
-            'password': 'oldpassword'
-        })
+        response = self.client.post(
+            reverse("login"), {"username": "testuser", "password": "oldpassword"}
+        )
         self.assertEqual(response.status_code, 302)
-        self.assertTrue('_auth_user_id' in self.client.session)
+        self.assertTrue("_auth_user_id" in self.client.session)
 
     def test_login_failure(self):
-        response = self.client.post(reverse('login'), {
-            'username': 'testuser',
-            'password': 'wrongpass'
-        })
+        response = self.client.post(
+            reverse("login"), {"username": "testuser", "password": "wrongpass"}
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertFalse('_auth_user_id' in self.client.session)
+        self.assertFalse("_auth_user_id" in self.client.session)
 
     def test_logout(self):
-        self.client.login(username='testuser', password='oldpassword')
-        response = self.client.get(reverse('logout'))
-        self.assertEqual(response.status_code, 302) 
-        self.assertFalse('_auth_user_id' in self.client.session)
+        self.client.login(username="testuser", password="oldpassword")
+        response = self.client.get(reverse("logout"))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse("_auth_user_id" in self.client.session)
 
     def test_password_change_success(self):
-        self.client.login(username='testuser', password='oldpassword')
-        response = self.client.post(reverse('password_change'), {
-            'old_password': 'oldpassword',
-            'new_password1': 'newsecurepass123',
-            'new_password2': 'newsecurepass123'
-        })
+        self.client.login(username="testuser", password="oldpassword")
+        response = self.client.post(
+            reverse("password_change"),
+            {
+                "old_password": "oldpassword",
+                "new_password1": "newsecurepass123",
+                "new_password2": "newsecurepass123",
+            },
+        )
         self.assertEqual(response.status_code, 302)
 
         # Logout and try logging in with the new password
         self.client.logout()
-        login_success = self.client.login(username='testuser', password='newsecurepass123')
+        login_success = self.client.login(
+            username="testuser", password="newsecurepass123"
+        )
         self.assertTrue(login_success)
 
     def test_password_reset_request(self):
-        response = self.client.post(reverse('password_reset'), {
-            'email': self.user.email if self.user.email else 'test@example.com'
-        })
+        response = self.client.post(
+            reverse("password_reset"),
+            {"email": self.user.email if self.user.email else "test@example.com"},
+        )
         self.assertEqual(response.status_code, 302)
 
     def test_cannot_access_secure_page_after_logout(self):
-        self.client.login(username='testuser', password='oldpassword')
+        self.client.login(username="testuser", password="oldpassword")
 
         self.client.logout()
 
-        response = self.client.get(reverse('secure_page_url'))
+        response = self.client.get(reverse("secure_page_url"))
         self.assertEqual(response.status_code, 302)
-
-
-
-
 
 
 class ShopTestCase(TestCase):
@@ -135,35 +152,54 @@ class ShopTestCase(TestCase):
         )
 
         self.fpuserNoClothes = FPUser.objects.create(
-            djuser=self.userNoClothes, username="userNoClothes", name="User NoClothes", coins=50
+            djuser=self.userNoClothes,
+            username="userNoClothes",
+            name="User NoClothes",
+            coins=50,
         )
         self.fpuserSomeClothes = FPUser.objects.create(
-            djuser=self.userSomeClothes, username="userSomeClothes", name="User SomeClothes", coins=50
+            djuser=self.userSomeClothes,
+            username="userSomeClothes",
+            name="User SomeClothes",
+            coins=50,
         )
         self.fpuserAllClothes = FPUser.objects.create(
-            djuser=self.userAllClothes, username="userAllClothes", name="User AllClothes", coins=50
+            djuser=self.userAllClothes,
+            username="userAllClothes",
+            name="User AllClothes",
+            coins=50,
         )
 
         # Create test clothing items
-        self.hat1 = Clothing.objects.create(price=10, clothing_type="Hat", image_path="images/hat1.png")
-        self.hat2 = Clothing.objects.create(price=10, clothing_type="Hat", image_path="images/hat2.png")
-        self.shirt1 = Clothing.objects.create(price=50, clothing_type="Shirt", image_path="images/shirt1.png")
-        self.shirt2 = Clothing.objects.create(price=50, clothing_type="Shirt", image_path="images/shirt2.png")
-        self.shoes1 = Clothing.objects.create(price=100, clothing_type="Shoes", image_path="images/shoes1.png")
-        self.shoes2 = Clothing.objects.create(price=100, clothing_type="Shoes", image_path="images/shoes2.png")
+        self.hat1 = Clothing.objects.create(
+            price=10, clothing_type="Hat", image_path="images/hat1.png"
+        )
+        self.hat2 = Clothing.objects.create(
+            price=10, clothing_type="Hat", image_path="images/hat2.png"
+        )
+        self.shirt1 = Clothing.objects.create(
+            price=50, clothing_type="Shirt", image_path="images/shirt1.png"
+        )
+        self.shirt2 = Clothing.objects.create(
+            price=50, clothing_type="Shirt", image_path="images/shirt2.png"
+        )
+        self.shoes1 = Clothing.objects.create(
+            price=100, clothing_type="Shoes", image_path="images/shoes1.png"
+        )
+        self.shoes2 = Clothing.objects.create(
+            price=100, clothing_type="Shoes", image_path="images/shoes2.png"
+        )
 
-        #add only somes items to some clothes user
+        # add only somes items to some clothes user
         self.fpuserSomeClothes.owns.add(self.hat1, self.shirt1)
-    
-        #add all the clothes to own to user
+
+        # add all the clothes to own to user
         all_clothing = Clothing.objects.all()
         for item in all_clothing:
             self.fpuserAllClothes.owns.add(item)
 
         self.petNone = Pet.objects.create(
-            owner=self.fpuserNoClothes, 
-            name="PetNone", 
-            image_path="images/test_pet.png"
+            owner=self.fpuserNoClothes, name="PetNone", image_path="images/test_pet.png"
         )
 
         self.petSome = Pet.objects.create(
@@ -173,14 +209,12 @@ class ShopTestCase(TestCase):
         )
 
         self.petAll = Pet.objects.create(
-            owner=self.fpuserAllClothes, 
-            name="PetAll", 
-            image_path="images/test_pet.png"
+            owner=self.fpuserAllClothes, name="PetAll", image_path="images/test_pet.png"
         )
 
     def test_shop_no_clothing_owned(self):
         """
-        Shop only shows the clothing items that are not owned by the user 
+        Shop only shows the clothing items that are not owned by the user
         accessing them. So when the user loads the shop only items not owned by
         user should be given in the context
 
@@ -193,12 +227,12 @@ class ShopTestCase(TestCase):
         response = self.client.get(reverse("shop_page"))
         self.assertEqual(response.status_code, 200)
 
-        #seperate the ids into a list of all unowned items
-        hat_ids = [hat.clothing_id for hat in response.context['hats_unowned']]
-        shirt_ids = [shirt.clothing_id for shirt in response.context['shirts_unowned']]
-        shoe_ids = [shoe.clothing_id for shoe in response.context['shoes_unowned']]
+        # seperate the ids into a list of all unowned items
+        hat_ids = [hat.clothing_id for hat in response.context["hats_unowned"]]
+        shirt_ids = [shirt.clothing_id for shirt in response.context["shirts_unowned"]]
+        shoe_ids = [shoe.clothing_id for shoe in response.context["shoes_unowned"]]
 
-        #all hats and clothes should be returned from page
+        # all hats and clothes should be returned from page
         self.assertIn(self.hat1.clothing_id, hat_ids)
         self.assertIn(self.hat2.clothing_id, hat_ids)
         self.assertIn(self.shirt1.clothing_id, shirt_ids)
@@ -208,7 +242,7 @@ class ShopTestCase(TestCase):
 
     def test_shop_some_clothing_owned(self):
         """
-        Shop only shows the clothing items that are not owned by the user 
+        Shop only shows the clothing items that are not owned by the user
         accessing them. So when the user loads the shop only items not owned by
         user should be given in the context
 
@@ -221,16 +255,16 @@ class ShopTestCase(TestCase):
         response = self.client.get(reverse("shop_page"))
         self.assertEqual(response.status_code, 200)
 
-        #seperate the ids into a list of all unowned items
-        hat_ids = [hat.clothing_id for hat in response.context['hats_unowned']]
-        shirt_ids = [shirt.clothing_id for shirt in response.context['shirts_unowned']]
-        shoe_ids = [shoe.clothing_id for shoe in response.context['shoes_unowned']]
+        # seperate the ids into a list of all unowned items
+        hat_ids = [hat.clothing_id for hat in response.context["hats_unowned"]]
+        shirt_ids = [shirt.clothing_id for shirt in response.context["shirts_unowned"]]
+        shoe_ids = [shoe.clothing_id for shoe in response.context["shoes_unowned"]]
 
-        #hat1 and shirt1 is owned by user
+        # hat1 and shirt1 is owned by user
         self.assertNotIn(self.hat1.clothing_id, hat_ids)
         self.assertNotIn(self.shirt1.clothing_id, hat_ids)
 
-        #other hats a shirt should be in the response
+        # other hats a shirt should be in the response
         self.assertIn(self.hat2.clothing_id, hat_ids)
         self.assertIn(self.shirt2.clothing_id, shirt_ids)
         self.assertIn(self.shoes1.clothing_id, shoe_ids)
@@ -238,7 +272,7 @@ class ShopTestCase(TestCase):
 
     def test_shop_all_clothing_owned(self):
         """
-        Shop only shows the clothing items that are not owned by the user 
+        Shop only shows the clothing items that are not owned by the user
         accessing them. So when the user loads the shop only items not owned by
         user should be given in the context
 
@@ -250,10 +284,10 @@ class ShopTestCase(TestCase):
         # Get dress page
         response = self.client.get(reverse("shop_page"))
         self.assertEqual(response.status_code, 200)
-    
-        self.assertEqual(len(response.context['hats_unowned']), 0)
-        self.assertEqual(len(response.context['shirts_unowned']), 0)
-        self.assertEqual(len(response.context['shoes_unowned']), 0)
+
+        self.assertEqual(len(response.context["hats_unowned"]), 0)
+        self.assertEqual(len(response.context["shirts_unowned"]), 0)
+        self.assertEqual(len(response.context["shoes_unowned"]), 0)
 
     def test_buy_clothing_all(self):
         """
@@ -261,7 +295,7 @@ class ShopTestCase(TestCase):
 
         Must return False.
         """
-        # Log in 
+        # Log in
         self.client.login(username="userAllClothes", password="testpass")
         # Get dress page
         response = self.client.get(reverse("shop_page"))
@@ -272,12 +306,12 @@ class ShopTestCase(TestCase):
 
     def test_buy_clothing_cant_buy(self):
         """
-        Considers the case where a user does not have enough coins to buy an 
+        Considers the case where a user does not have enough coins to buy an
         item.
 
         Must return False.
         """
-        # Log in 
+        # Log in
         self.client.login(username="userSomeClothes", password="testpass")
         # Get dress page
         response = self.client.get(reverse("shop_page"))
@@ -292,15 +326,15 @@ class ShopTestCase(TestCase):
 
         Must return True.
         """
-        # Log in 
+        # Log in
         self.client.login(username="userSomeClothes", password="testpass")
         # Get dress page
         response = self.client.get(reverse("shop_page"))
         self.assertEqual(response.status_code, 200)
 
         # Check purchase is possible
-        # This line of code was edited: the clothing item being bought was 
-        # originally self.hat2 however the user alread owns that clothing which 
+        # This line of code was edited: the clothing item being bought was
+        # originally self.hat2 however the user alread owns that clothing which
         # meant that they could not buy the clothing however that is not the
         # behavoir we meant to test so it was changed to self.hat2 which the user
         # had not bought
@@ -435,7 +469,7 @@ class WorkoutTestCase(TestCase):
 
     def setUp(self):
         """
-        Added multiple users, fpusers, and pets so that testing would be 
+        Added multiple users, fpusers, and pets so that testing would be
         easier for different test cases.
         """
 
@@ -446,49 +480,67 @@ class WorkoutTestCase(TestCase):
 
         # Create a Fpusers
         self.fpuser1 = FPUser.objects.create(
-            djuser=self.user1, username="user1", name="User One", coins = 20,
+            djuser=self.user1,
+            username="user1",
+            name="User One",
+            coins=20,
         )
         self.fpuser2 = FPUser.objects.create(
-            djuser=self.user2, username="user2", name="User Two", coins =0,
+            djuser=self.user2,
+            username="user2",
+            name="User Two",
+            coins=0,
         )
         self.fpuser3 = FPUser.objects.create(
-            djuser=self.user3, username="user3", name="User Three", coins = 10,
+            djuser=self.user3,
+            username="user3",
+            name="User Three",
+            coins=10,
         )
 
         # Create Pets
         self.pet1 = Pet.objects.create(
-            owner=self.fpuser1, name="PetOne", image_path="images/test_pet.png", 
-            xp = 0, level = 1,
+            owner=self.fpuser1,
+            name="PetOne",
+            image_path="images/test_pet.png",
+            xp=0,
+            level=1,
         )
         self.pet2 = Pet.objects.create(
-            owner=self.fpuser2, name="PetTwo", image_path="images/test_pet.png",
-            xp = 50, level = 1,
+            owner=self.fpuser2,
+            name="PetTwo",
+            image_path="images/test_pet.png",
+            xp=50,
+            level=1,
         )
-        self.pet3 = Pet.objects.create (
-            owner=self.fpuser3, name="PetThree", image_path="images/test_pet.png",
-            xp = 200, level = 10,
+        self.pet3 = Pet.objects.create(
+            owner=self.fpuser3,
+            name="PetThree",
+            image_path="images/test_pet.png",
+            xp=200,
+            level=10,
         )
 
-        # Create Exercises 
+        # Create Exercises
         # These are new exercises and they are taken from the json file
 
         self.exercise1 = Exercise.objects.create(
-            name = "standard pullup", tier = 2, max_reps = 200
+            name="standard pullup", tier=2, max_reps=200
         )
         self.exercise2 = Exercise.objects.create(
-            name = "knees pushup", tier = 1, max_reps = 300
+            name="knees pushup", tier=1, max_reps=300
         )
         self.exercise3 = Exercise.objects.create(
-            name = "decline pushup", tier = 3, max_reps = 300
+            name="decline pushup", tier=3, max_reps=300
         )
 
-    def test_base_case(self): 
+    def test_base_case(self):
         """
         Simulate adding XP and coins to the pet and FPUser after a workout.
         This will eventually be triggered by a view (e.g., workout completion).
         """
         # Log in
-        self.client.login(username ="user1", password ="testpass")
+        self.client.login(username="user1", password="testpass")
 
         # Go to workout page
         response = self.client.get(reverse("workout_page"))
@@ -499,9 +551,8 @@ class WorkoutTestCase(TestCase):
 
         # Submit Log of Workout
         response = self.client.post(
-            reverse("workout_logged"), 
-            {"exercise": self.exercise1.name, "reps": 20})
-        
+            reverse("workout_logged"), {"exercise": self.exercise1.name, "reps": 20}
+        )
 
         # Calculate XP and Coins
         gained_xp = CurrentExercise.calculateXP(reps)
@@ -521,14 +572,13 @@ class WorkoutTestCase(TestCase):
         # Go Back to Main Page
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
-    
 
     def test_max_reps(self):
         """
         Ensure XP and Coins are capped when reps exceed max_reps.
         """
         # Log in
-        self.client.login(username ="user3", password ="testpass")
+        self.client.login(username="user3", password="testpass")
 
         # Go to workout page
         response = self.client.get(reverse("workout_page"))
@@ -539,8 +589,8 @@ class WorkoutTestCase(TestCase):
 
         # Submit Log of Workout
         response = self.client.post(
-            reverse("workout_logged"), 
-            {"exercise": self.exercise2.name, "reps": 400})
+            reverse("workout_logged"), {"exercise": self.exercise2.name, "reps": 400}
+        )
 
         # Calculate XP and Coins
         gained_xp = CurrentExercise.calculateXP(reps)
@@ -560,14 +610,13 @@ class WorkoutTestCase(TestCase):
         # Go Back to Main Page
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
-    
 
     def test_leveling_up(self):
         """
         Pet should level up when gaining enough XP.
         """
         # Log in
-        self.client.login(username ="user2", password ="testpass")
+        self.client.login(username="user2", password="testpass")
 
         # Go to workout page
         response = self.client.get(reverse("workout_page"))
@@ -579,8 +628,8 @@ class WorkoutTestCase(TestCase):
 
         # Submit Log of Workout
         response = self.client.post(
-            reverse("workout_logged"), 
-            {"exercise": self.exercise3.name, "reps": 150})
+            reverse("workout_logged"), {"exercise": self.exercise3.name, "reps": 150}
+        )
 
         # Calculate XP and Coins
         gained_xp = CurrentExercise.calculateXP(reps)
@@ -600,15 +649,14 @@ class WorkoutTestCase(TestCase):
         # Go Back to Main Page
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
-    
 
-    def test_abort_exercise(self): 
+    def test_abort_exercise(self):
         """
         Simulate user aborting the workout session before completion.
         Should not result in XP/coin gain.
         """
         # Log in
-        self.client.login(username ="user1", password ="testpass")
+        self.client.login(username="user1", password="testpass")
 
         # Go to workout page
         response = self.client.get(reverse("workout_page"))
@@ -617,16 +665,14 @@ class WorkoutTestCase(TestCase):
         # Go Back to Main Page
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
-    
 
-
-    def test_change_exercise(self): 
+    def test_change_exercise(self):
         """
         Simulate a user switching from one exercise to another.
         This will eventually test session data or state cleanup.
         """
         # Log in
-        self.client.login(username ="user3", password ="testpass")
+        self.client.login(username="user3", password="testpass")
 
         # Go to workout page
         response = self.client.get(reverse("workout_page"))
@@ -639,9 +685,8 @@ class WorkoutTestCase(TestCase):
 
         # Submit Log of Workout
         response = self.client.post(
-            reverse("workout_logged"), 
-            {"exercise": self.exercise3.name, "reps": 20})
-
+            reverse("workout_logged"), {"exercise": self.exercise3.name, "reps": 20}
+        )
 
         # Calculate XP and Coins
         gained_xp = CurrentExercise.calculateXP(reps)
@@ -662,7 +707,6 @@ class WorkoutTestCase(TestCase):
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
 
-
     """
     Test not level up was taken out because it was redundant with the 
     base case which is the coins and xp test. An update was made to the exercise tests — 
@@ -671,4 +715,3 @@ class WorkoutTestCase(TestCase):
     correctly. The tests were restructured in a way that the user would navigate through
     the workout case compared to before where values were just being placed in.
     """
-       

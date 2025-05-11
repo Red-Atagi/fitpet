@@ -12,6 +12,7 @@ class FPUser(models.Model):
     username = models.CharField(max_length=255, default=None)
     name = models.CharField(max_length=255, default=None)
     owns = models.ManyToManyField('Clothing', related_name='users')
+    friends = models.ManyToManyField('self', symmetrical=False, related_name='friends_of')
 
     def clothing_owned(self):
         """

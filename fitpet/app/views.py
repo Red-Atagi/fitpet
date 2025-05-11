@@ -8,59 +8,60 @@ from .models import FPUser, Pet, Clothing, Exercise
 from .forms import CreateUserForm
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
 # def index(request):
 #     return render(request, 'base.html', {})
 
+
 def display_home_page(request):
-    
+
     if not request.user.is_authenticated:
-        return redirect('login') 
+        return redirect("login")
     user = request.user
 
     try:
         fpuser = FPUser.objects.get(djuser=user)
-    
+
     except FPUser.DoesNotExist:
-        return redirect('login')  
-    
+        return redirect("login")
+
     pet = Pet.objects.get(owner=fpuser)
 
     hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
-    
+
     data = {
         "hat_wearing": hat_wearing,
         "shirt_wearing": shirt_wearing,
         "shoes_wearing": shoes_wearing,
         "background_wearing": background_wearing,
     }
-    
-    return render(request, 'base.html', data)
+
+    return render(request, "base.html", data)
 
 
 def display_dress_page(request):
-    
+
     if not request.user.is_authenticated:
-        return redirect('login') 
-    user = request.user 
+        return redirect("login")
+    user = request.user
 
     try:
         fpuser = FPUser.objects.get(djuser=user)
-    
+
     except FPUser.DoesNotExist:
-        return redirect('login')  
+        return redirect("login")
 
     hats_owned, shirts_owned, shoes_owned, backgrounds_owned = fpuser.clothing_owned()
-    
+
     pet = Pet.objects.get(owner=fpuser)
 
     hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
 
     clothing_lists = [hats_owned, shirts_owned, shoes_owned, backgrounds_owned]
     currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing, background_wearing]
-
 
     # # Sort the list so that the item currently worn is at the head
     for i in range(len(clothing_lists)):
@@ -71,7 +72,7 @@ def display_dress_page(request):
             if wearing_item and item.clothing_id == wearing_item.clothing_id:
                 clothing_list.insert(0, clothing_list.pop(idx))
                 break
-    
+
     data = {
         "hats_owned": hats_owned,
         "shirts_owned": shirts_owned,
@@ -82,8 +83,8 @@ def display_dress_page(request):
         "shoes_wearing": shoes_wearing,
         "background_wearing": background_wearing,
     }
-    
-    return render(request, 'dress.html', data)
+
+    return render(request, "dress.html", data)
 
 
 def update_clothing(request):
@@ -91,10 +92,10 @@ def update_clothing(request):
         return JsonResponse({"success": False, "error": "Invalid request method."})
 
     if not request.user.is_authenticated:
-        return redirect('login') 
+        return redirect("login")
 
     try:
-        new_clothing_id = int(request.POST.get('clothing_id'))
+        new_clothing_id = int(request.POST.get("clothing_id"))
     except (TypeError, ValueError):
         return JsonResponse({"success": False, "error": "Invalid clothing ID."})
 
@@ -110,34 +111,91 @@ def update_clothing(request):
 
     # Update the pet's clothing based on the type
     clothing = Clothing.objects.get(clothing_id=new_clothing_id)
-    if clothing.clothing_type == 'Hat':
+    if clothing.clothing_type == "Hat":
         if pet.hat and pet.hat.clothing_id == clothing.clothing_id:
             pet.hat = None
-        else: 
+        else:
             pet.hat = clothing
-    elif clothing.clothing_type == 'Shirt':
+    elif clothing.clothing_type == "Shirt":
         if pet.shirt and pet.shirt.clothing_id == clothing.clothing_id:
             pet.shirt = None
-        else: 
+        else:
             pet.shirt = clothing
-    elif clothing.clothing_type == 'Shoes':
+    elif clothing.clothing_type == "Shoes":
         if pet.shoes and pet.shoes.clothing_id == clothing.clothing_id:
             pet.shoes = None
-        else: 
+        else:
             pet.shoes = clothing
-    elif clothing.clothing_type == 'Background':
+    elif clothing.clothing_type == "Background":
         if pet.background and pet.background.clothing_id == clothing.clothing_id:
             pet.background = None
-        else: 
+        else:
             pet.background = clothing
 
     pet.save()
 
     # Return the success response with updated pet image or other details
-    return JsonResponse({
-        'success': True,
-        'new_image_url': pet.image_path,  # Assuming you want to return the pet's image path
-    })
+    return JsonResponse(
+        {
+            "success": True,
+            "new_image_url": pet.image_path,  # Assuming you want to return the pet's image path
+        }
+    )
+
+
+def friend_list(request):
+    """
+    Renders the friend list page with the user's friends.
+    """
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    user = request.user
+    fpuser = FPUser.objects.get(djuser=user)
+
+    friends = fpuser.friends.all()
+
+    data = {
+        "friends": friends,
+        "user": user,
+    }
+
+    return render(request, "friend_list.html", data)
+
+
+def visit_friend(request, friend_id):
+    """
+    Renders the friend's page with the friends pet.
+    """
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    user = request.user
+    fpuser = FPUser.objects.get(djuser=user)
+
+    # try to get the user with id friend_id
+    try:
+        friend = FPUser.objects.get(user_id=friend_id)
+    except FPUser.DoesNotExist:
+        return redirect("friend_list")
+
+    # Check if the friend is actially a friend
+    if not fpuser.friends.filter(user_id=friend_id).exists():
+        return redirect("friend_list")
+
+    pet = Pet.objects.filter(owner=friend).first()
+
+    if not pet:
+        return redirect("home")
+    friend.user_id
+
+    data = {
+        "friend": friend,
+        "pet": pet,
+        "user": user,
+    }
+
+    return render(request, "friend.html", data)
 
 
 def shop_page(request):
@@ -153,20 +211,22 @@ def shop_page(request):
             "hats_unowned": hats,
             "shirts_unowned": shirts,
             "shoes_unowned": shoes,
-            "user": None
+            "user": None,
         }
-        return render(request, 'shop.html', data)
+        return render(request, "shop.html", data)
     user = request.user
     fpuser = FPUser.objects.get(djuser=user)
 
     owned_clothing = fpuser.owns.all()
-    unowned_clothing = Clothing.objects.exclude(clothing_id__in=owned_clothing.values_list('clothing_id', flat=True))
-    
+    unowned_clothing = Clothing.objects.exclude(
+        clothing_id__in=owned_clothing.values_list("clothing_id", flat=True)
+    )
+
     hats = unowned_clothing.filter(clothing_type="Hat")
     shirts = unowned_clothing.filter(clothing_type="Shirt")
     shoes = unowned_clothing.filter(clothing_type="Shoes")
 
-    pet = Pet.objects.filter(owner = fpuser)
+    pet = Pet.objects.filter(owner=fpuser)
     # hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
 
     data = {
@@ -174,73 +234,79 @@ def shop_page(request):
         "shirts_unowned": shirts,
         "shoes_unowned": shoes,
         "user": user,
-        "pet": pet
+        "pet": pet,
         # "hat_wearing": hat_wearing,
         # "shirt_wearing": shirt_wearing,
         # "shoes_wearing": shoes_wearing
     }
-    
-    return render(request, 'shop.html', data)
+
+    return render(request, "shop.html", data)
+
 
 def buy_clothing(request):
     if request.method != "POST":
         return JsonResponse({"success": False, "error": "Invalid request method."})
 
     if not request.user.is_authenticated:
-        return redirect('login') 
+        return redirect("login")
 
     try:
-        new_clothing_id = int(request.POST.get('clothing_id'))
+        new_clothing_id = int(request.POST.get("clothing_id"))
     except (TypeError, ValueError):
         return JsonResponse({"success": False, "error": "Invalid clothing ID."})
-    
+
     # Get the FPUser
     fpuser = FPUser.objects.filter(djuser=request.user).first()
     if not fpuser:
         return JsonResponse({"success": False, "error": "User profile not found."})
-    
-    if fpuser.buy_clothing(Clothing.objects.filter(clothing_id=new_clothing_id).first()):
-        return JsonResponse({
-            'success': True,
-        })
+
+    if fpuser.buy_clothing(
+        Clothing.objects.filter(clothing_id=new_clothing_id).first()
+    ):
+        return JsonResponse(
+            {
+                "success": True,
+            }
+        )
     return JsonResponse({"success": False, "error": "Failed to buy clothes"})
 
 
 def register(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CreateUserForm(request.POST)
         ## Django already has capabilities checking if username and password work
         if form.is_valid():
             ## Use Django capabilities to save information of the User
             user = form.save()
-            name = form.cleaned_data.get('name')
-            pet_name = form.cleaned_data.get('pet_name')
+            name = form.cleaned_data.get("name")
+            pet_name = form.cleaned_data.get("pet_name")
             userFP = FPUser.objects.create(
                 ## User_id is automatically generated
-                djuser = user,
-                username = user.username,
+                djuser=user,
+                username=user.username,
                 ## Can set name changing capabilities later
-                name = name,
-                coins = 0
+                name=name,
+                coins=0,
             )
             Pet.objects.create(
-            ## Can set name changing capabilities later
-            name = pet_name,
-            xp=0,
-            owner = userFP
+                ## Can set name changing capabilities later
+                name=pet_name,
+                xp=0,
+                owner=userFP,
             )
             ## After successful account creation, return to main page
-            return redirect('home')
+            return redirect("home")
     else:
         form = CreateUserForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, "register.html", {"form": form})
+
 
 def load_exercises():
     """
     Loads all of the exercises into a list from the exercise json file
     """
-    path = os.path.join(settings.BASE_DIR, 'app', 'data', 'exercise.json')
-    with open(path, 'r') as file:
+    path = os.path.join(settings.BASE_DIR, "app", "data", "exercise.json")
+    with open(path, "r") as file:
         data = json.load(file)
 
     return data
@@ -249,38 +315,40 @@ def load_exercises():
 def workout_page(request):
 
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect("login")
 
-    return render(request, 'workout.html',{"exercises": load_exercises()})
+    return render(request, "workout.html", {"exercises": load_exercises()})
+
 
 def findExercise(name):
     exercises = load_exercises()
     for exercise in exercises:
-        if exercise['name'] == name:
+        if exercise["name"] == name:
             return Exercise(
-                name = exercise['name'],
-                tier = int(exercise['tier']),
-                max_reps = int(exercise['max_reps'])
+                name=exercise["name"],
+                tier=int(exercise["tier"]),
+                max_reps=int(exercise["max_reps"]),
             )
     return None
+
 
 def log_workout(request):
 
     if not request.user.is_authenticated:
-        return redirect ('login')
-    
-    if request.method == 'POST':
+        return redirect("login")
+
+    if request.method == "POST":
 
         # Get the fpuser
         user = request.user
-        fpuser = FPUser.objects.get(djuser = user)
+        fpuser = FPUser.objects.get(djuser=user)
         # Get the Pet of the Fpuser
         pet = Pet.objects.filter(owner=fpuser).first()
 
         # Get the amount of reps done, max_reps, level /tier of exercise
-        reps = int(request.POST.get('reps'))
-        name = request.POST.get('exercise')
-        
+        reps = int(request.POST.get("reps"))
+        name = request.POST.get("exercise")
+
         CurrentExercise = findExercise(name)
 
         # calculate XP, coins, and if the pet has leveled up
@@ -288,16 +356,19 @@ def log_workout(request):
         gainedCoins = CurrentExercise.calculateCoins(reps)
         canLevelUp = gainedXP >= pet.neededXP()
 
-
         # Add the coins and XP to the user and pet
         fpuser.addCoins(gainedCoins)
         pet.addXP(gainedXP)
-       
+
         user.save()
         pet.save()
 
-        return render(request, 'logged_workout.html', {
-            'gainedXP': gainedXP,
-            'gainedCoins': gainedCoins,
-            'leveled_up' : canLevelUp,
-        })
+        return render(
+            request,
+            "logged_workout.html",
+            {
+                "gainedXP": gainedXP,
+                "gainedCoins": gainedCoins,
+                "leveled_up": canLevelUp,
+            },
+        )
