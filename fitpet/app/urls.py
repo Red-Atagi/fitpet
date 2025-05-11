@@ -14,7 +14,9 @@ urlpatterns = [
     path('api/buyclothing/', views.buy_clothing, name='buy_clothing'),
     path('workout/',views.workout_page, name = 'workout_page'),
     path('workout_logged/',views.log_workout, name = 'workout_logged'),
-    path('register', views.register, name='register')
+    path('register', views.register, name='register'),
+    path('friends/list/', views.friend_list, name='friend_list'),
+    path('friends/visit/<int:friend_id>/', views.visit_friend, name='visit_friend'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

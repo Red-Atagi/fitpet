@@ -173,14 +173,15 @@ def visit_friend(request, friend_id):
     user = request.user
     fpuser = FPUser.objects.get(djuser=user)
 
+    # try to get the user with id friend_id
     try:
-        friend = FPUser.objects.get(id=friend_id)
+        friend = FPUser.objects.get(user_id=friend_id)
     except FPUser.DoesNotExist:
-        return redirect("home")
+        return redirect("friend_list")
 
     # Check if the friend is actially a friend
-    if not fpuser.friends.filter(id=friend_id).exists():
-        return redirect("home")
+    if not fpuser.friends.filter(user_id=friend_id).exists():
+        return redirect("friend_list")
 
     pet = Pet.objects.filter(owner=friend).first()
 

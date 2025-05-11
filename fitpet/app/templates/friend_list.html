@@ -1,0 +1,11 @@
+{% for friend in friends %}
+    <div class="friend">
+        <h2>{{ friend.name }}</h2>
+        <p>Username: {{ friend.username }}</p>
+        <a href="{%url 'visit_friend' %}">
+          <button type="button">Visit {{friend.name}}!</button>
+        </a>
+    </div>
+    {% empty %}
+    <p>No friends found :&#40</p>
+{% endfor %}
