@@ -8,6 +8,8 @@
 3. Run `python manage.py makemigrations` in the terminal.
 4. Run `python manage.py migrate` in the terminal.
 
+*If you have trouble migrating try the command* `python manage.py makemigrations app`
+
 ### How to Run the Code
 1. Navigate into the `fitpet` directory. You are in the right directory if there is a file `manage.py` (among others) in the directory.
 2. Run `python manage.py runserver` in the terminal.
