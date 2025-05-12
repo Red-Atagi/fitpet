@@ -233,7 +233,7 @@ def shop_page(request):
         "hats_unowned": hats,
         "shirts_unowned": shirts,
         "shoes_unowned": shoes,
-        "user": user,
+        "user": fpuser,
         "pet": pet,
         # "hat_wearing": hat_wearing,
         # "shirt_wearing": shirt_wearing,
@@ -263,6 +263,7 @@ def buy_clothing(request):
     if fpuser.buy_clothing(
         Clothing.objects.filter(clothing_id=new_clothing_id).first()
     ):
+        fpuser.save()
         return JsonResponse(
             {
                 "success": True,
@@ -360,7 +361,7 @@ def log_workout(request):
         fpuser.addCoins(gainedCoins)
         pet.addXP(gainedXP)
 
-        user.save()
+        fpuser.save()
         pet.save()
 
         return render(
