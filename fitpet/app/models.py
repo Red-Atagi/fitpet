@@ -158,7 +158,14 @@ class Exercise(models.Model):
             return round(self.tier * self.max_reps * 0.1)
         else: 
             return round(self.tier * reps * 0.1)
-        
-    
-    
-    
+
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(FPUser, related_name='sent_requests', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(FPUser, related_name='received_requests', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')
+
+    def __str__(self):
+        return f"{self.from_user.username} → {self.to_user.username}"

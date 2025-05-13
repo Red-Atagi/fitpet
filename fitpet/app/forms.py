@@ -13,3 +13,8 @@ class CreateUserForm(UserCreationForm):
         # Form is based on User Model
         model = User
         fields = ['username', 'password1', 'password2']
+
+
+# Form to search for other users
+class UserSearchForm(forms.Form):
+    query = forms.CharField(label='Search', max_length=100)

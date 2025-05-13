@@ -4,8 +4,8 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from app.models import *
 from django.http import JsonResponse
-from .models import FPUser, Pet, Clothing, Exercise
-from .forms import CreateUserForm
+from .models import FPUser, Pet, Clothing, Exercise, FriendRequest
+from .forms import CreateUserForm, UserSearchForm
 
 import logging
 
@@ -375,3 +375,68 @@ def log_workout(request):
                 "leveled_up": canLevelUp,
             },
         )
+
+def friend_list(request):
+    """
+    Renders the friend list page with the user's friends.
+    """
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    user = request.user
+    fpuser = FPUser.objects.get(djuser=user)
+
+    friends = fpuser.friends.all()
+
+    return render(request, "friend_list.html", {
+        "friends": friends,
+        "fpuser": fpuser,
+    })
+
+def search_users(request):
+    """
+    Search for users to send a friend request to.
+    """
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    fpuser = FPUser.objects.get(djuser=request.user)
+    results = []
+
+    if request.method == "POST":
+        form = UserSearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = FPUser.objects.filter(username__icontains=query).exclude(user_id=fpuser.user_id)
+    else:
+        form = UserSearchForm()
+
+    return render(request, "search_users.html", {
+        "form": form,
+        "results": results,
+        "fpuser": fpuser,
+    })
+
+
+def send_friend_request(request, to_user_id):
+    """
+    Sends a friend request from the logged-in user to another FPUser.
+    """
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    from_user = FPUser.objects.get(djuser=request.user)
+    to_user = FPUser.objects.get(user_id=to_user_id)
+
+    if from_user != to_user:
+        # Avoid duplicate requests
+        already_exists = FriendRequest.objects.filter(from_user=from_user, to_user=to_user).exists()
+        if not already_exists:
+            FriendRequest.objects.create(from_user=from_user, to_user=to_user)
+            print(f"Request sent from {from_user.username} to {to_user.username}")
+        else:
+            print("Friend request already exists.")
+    else:
+        print("Cannot send request to yourself.")
+
+    return redirect("search_users")
