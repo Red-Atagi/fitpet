@@ -182,3 +182,116 @@ class FriendListTestCase(TestCase):
 
         # Check that there are 0 friends
         self.assertEqual(len(friends), 0)
+
+class CheckFriendRequestTestCase(TestCase):
+    def setup(self):
+        # Create a user and a pet for the tests
+        self.user = User.objects.create_user(
+            username="testuser", password="testpass"
+        )
+        self.fpuser = FPUser.objects.create(
+            djuser=self.user, coins=75, username="testuser", name="Test User"
+        )
+        self.pet = Pet.objects.create(name="Test Pet", owner=self.fpuser)
+
+        # Create a friend user and pet for the tests
+        self.friend_user = User.objects.create_user(
+            username="frienduser", password="friendpass"
+        )
+        self.friend_fpuser = FPUser.objects.create(
+            djuser=self.friend_user, coins=60, username="frienduser", name="Friend User"
+        )
+        self.friend_pet = Pet.objects.create(
+            name="Friend Pet", owner=self.friend_fpuser
+        )
+        
+    def test_leave_friend_page(self):
+        """
+        Test that leaves the friend list page
+        """
+        # Log In
+        self.client.login(username="testuser", password="testpass")
+
+        # Go to Friend Page
+        response = self.client.get(reverse("friend_list"))
+        self.assertEqual(response.status_code, 200)
+
+        # Go Home
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_accept_friend_request(self):
+        """
+        Test that accepts a friend request and adds friends to the users
+        """
+        # Log In
+        self.client.login(username="testuser", password="testpass") 
+
+        # Go to Friend Page
+        response = self.client.get(reverse("friend_list"))
+        self.assertEqual(response.status_code, 200)
+
+        # Go to Friend Request Page
+        response = self.client.get(reverse("friend_request"))
+        self.assertEqual(response.status_code, 200)
+
+        # Accept Friend Request
+        answer = 1
+        friend = self.friend_fpuser.user_id
+        response = self.client.post(
+            reverse("friend_request"), {"answer": answer, "friend": friend}
+        )
+        # Add Friend to Friend :ist
+        self.fpuser.friends.add(self.friend_fpuser)
+        self.friend_fpuser.friends.add(self.fpuser)
+
+        self.assertContains(self.fpuser.friends, self.friend_fpuser)
+        self.assertContains(self.friend_fpuser.friends, self.fpuser)
+        # Remove friend from friend request
+        """
+        Need to create a method for the friend requests to be 
+        sent / seen in the backend
+        """
+
+        # Go to Friend Page
+        response = self.client.get(reverse("friend_list"))
+        self.assertEqual(response.status_code, 200)
+
+        # Go Home
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)
+        
+    def test_decline_friend_request(self):
+        """
+        Test that declines the friend request
+        """
+        # Log In
+        self.client.login(username="testuser", password="testpass")
+
+        # Go to Friend Page
+        response = self.client.get(reverse("friend_list"))
+        self.assertEqual(response.status_code, 200)
+
+        # Go to Friend Request Page
+        response = self.client.get(reverse("friend_request"))
+        self.assertEqual(response.status_code, 200)
+
+        # Decline Friend Request
+        answer = 0
+        friend = self.friend_fpuser.user_id
+        response = self.client.post(
+            reverse("friend_request"), {"answer": answer, "friend": friend}
+        )
+
+        # Remove friend from friend request
+        """
+        Need to create a method for the friend requests to be 
+        sent / seen in the backend
+        """
+        
+        # Go to Friend Page
+        response = self.client.get(reverse("friend_list"))
+        self.assertEqual(response.status_code, 200)
+        # Go Home
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)

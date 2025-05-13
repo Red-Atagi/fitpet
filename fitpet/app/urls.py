@@ -17,6 +17,7 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('friends/list/', views.friend_list, name='friend_list'),
     path('friends/visit/<int:friend_id>/', views.visit_friend, name='visit_friend'),
+    path('friends/requests/', views.friend_request, name = "friend_request"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

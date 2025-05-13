@@ -197,6 +197,8 @@ def visit_friend(request, friend_id):
 
     return render(request, "friend.html", data)
 
+def friend_request(request):
+    ...
 
 def shop_page(request):
     """
