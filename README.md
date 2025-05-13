@@ -19,6 +19,7 @@ We plan to finish the use cases for the users which includes visit friend, check
 - accessed thru button on friend list page
 - search for other users
 #### design: Kaitlyn and Lexi
+- redesing the website to add cohesiveness
 
 ### Unit Tests for Iteration 2
 Our unit tests for iteration 2 are loacted in fitpet/app/tests-2.py. You can run all tests including iteration 1 with the command `python manage.py test app` if you want to run just iterations 2 tests you can run `python manage.py test app.tests-2`
