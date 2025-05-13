@@ -1,8 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
 from app.models import *
-from .models import FPUser, Pet, Clothing
+from .models import FPUser, Pet, Clothing, FriendRequest
 
 
 class VisitFriendTestCase(TestCase):
@@ -295,3 +295,50 @@ class CheckFriendRequestTestCase(TestCase):
         # Go Home
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
+
+class FriendRequestTests(TestCase):
+    def setUp(self):
+        # Create two users and their FPUser profiles
+        self.user1 = User.objects.create_user(username='alice', password='pass1234')
+        self.user2 = User.objects.create_user(username='bob', password='pass1234')
+        self.fp1 = FPUser.objects.create(djuser=self.user1, username='alice', name='Alice')
+        self.fp2 = FPUser.objects.create(djuser=self.user2, username='bob', name='Bob')
+
+        self.client = Client()
+        self.client.login(username='alice', password='pass1234')
+
+    def test_create_friend_request_model(self):
+        """Creating a friend request between users should work"""
+        FriendRequest.objects.create(from_user=self.fp1, to_user=self.fp2)
+        req = FriendRequest.objects.get(from_user=self.fp1, to_user=self.fp2)
+        self.assertEqual(req.from_user.username, 'alice')
+        self.assertEqual(req.to_user.username, 'bob')
+
+    def test_duplicate_friend_request_not_allowed(self):
+        """Duplicate friend requests should raise an error"""
+        FriendRequest.objects.create(from_user=self.fp1, to_user=self.fp2)
+        with self.assertRaises(Exception):
+            FriendRequest.objects.create(from_user=self.fp1, to_user=self.fp2)
+
+    def test_search_users_view_returns_results(self):
+        """Searching by username should return matching users"""
+        response = self.client.post('/search_users/', {'query': 'bo'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'bob')
+
+    def test_search_users_does_not_return_self(self):
+        """Search should not return the current user"""
+        response = self.client.post('/search_users/', {'query': 'ali'})
+        self.assertNotContains(response, 'alice')
+
+    def test_send_friend_request_view_creates_request(self):
+        """GET to send_request URL should create a FriendRequest"""
+        response = self.client.get(f'/send_request/{self.fp2.user_id}/')
+        self.assertEqual(response.status_code, 302)  # redirect expected
+        self.assertTrue(FriendRequest.objects.filter(from_user=self.fp1, to_user=self.fp2).exists())
+
+    def test_cannot_send_request_to_self(self):
+        """Sending a request to self should do nothing"""
+        response = self.client.get(f'/send_request/{self.fp1.user_id}/')
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(FriendRequest.objects.filter(from_user=self.fp1, to_user=self.fp1).exists())
