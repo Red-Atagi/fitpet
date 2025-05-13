@@ -1,11 +1,35 @@
 # FitPet
 
+## Project Milestone 4A
+
+### 2nd Iteration Plan
+
+We plan to finish the use cases for the users which includes visit friend, check friend requests, send friend requests, and work on the design and cohesiveness of our html page. We’re not implementing the administrator side of the application which includes add exercise and delete exercise.
+
+### Who will work on what
+
+#### visit friend: Red and Brandin
+- view friend list page
+- display the friend’s pet, background, and clothing
+#### check friend requests: Kate and Josh
+- check friend requests from friend list page
+- see pending requests (name and username of other user)
+- accept or decline friend request
+#### send friend request: Gabe and Eric
+- accessed thru button on friend list page
+- search for other users
+#### design: Kaitlyn and Lexi
+
+### Unit Tests for Iteration 2
+Our unit tests for iteration 2 are loacted in fitpet/app/tests-2.py. You can run all tests including iteration 1 with the command `python manage.py test app` if you want to run just iterations 2 tests you can run `python manage.py test app.tests-2`
+
 ## Project Milestone 3B Specifications
 
 ### How to Compile
 1. Navigate into the `fitpet` directory. You are in the right directory if there is a file `manage.py` (among others) in the directory.
 2. You may need to run `pip install django`.
 3. Run `python manage.py makemigrations` in the terminal.
+	-  make sure you're in fitpet/ directory
 4. Run `python manage.py migrate` in the terminal.
 
 *If you have trouble migrating try the command* `python manage.py makemigrations app`
@@ -69,6 +93,7 @@ data_241_autumn_2024_1/
     │   ├── templates
     │   │   └── base.html
     │   ├── tests.py
+    |   ├── tests-2.py
     │   ├── urls.py
     │   └── views.py
     ├── db.sqlite3
