@@ -173,7 +173,7 @@ header {
         <div class="header-center">
             <h1>Welcome to the Shop!</h1>
             {% if user %}
-                <h2>Your coins: {{ user.coins }}</h2>
+                <h2><span>Your coins: </span><span id="coins">{{ user.coins }}</span></h2>
             {% else %}
                 <h2>Hello Stranger</h2>
             {% endif %}
@@ -233,7 +233,7 @@ header {
                 <span class="close-btn" onclick="hideModal()">&times;</span>
                 <div class="desc">
                     <h2 id="modal-item-title">Item</h2>
-                    <p id="modal-item-price">Price: 🪙200</p>
+                    <p id="modal-item-price"><span>Price: 🪙</span><span id="cost">200</span></p>
                     <button type="button" class="button" onclick="buyClothing()">Buy</button>
                 </div>
             </div>
@@ -274,18 +274,28 @@ header {
     // });
         
      // Modal functionality
+
+    function decrementCoins(amt) {
+        const coinsElement = document.getElementById('coins');
+        let coins = parseInt(coinsElement.textContent);
+        if (coins > 0) {
+            coins -= amt;
+            coinsElement.textContent = coins;
+        }
+    }
+     
     function showModal(src, clothingId, title, price) {
         const modal = document.getElementById('image-modal');
         const modalImg = document.getElementById('modal-img');
         const clothingIdInput = document.getElementById('modal-clothing-id');
         const modalTitle = document.getElementById('modal-item-title');
-        const modalPrice = document.getElementById('modal-item-price');
+        const modalPrice = document.getElementById('cost');
 
         modal.style.display = 'flex';
         modalImg.src = src;
         clothingIdInput.value = clothingId;
         modalTitle.textContent = title;
-        modalPrice.textContent = `Price: 🪙${price}`;
+        modalPrice.textContent = `${price}`;
         previewClothing();
         showBuyButton();
     }
@@ -323,7 +333,7 @@ header {
         document.getElementById('preview-img').style.display = 'none';
     }
 
-    function buyClothing() {
+    function buyClothing(amt) {
         const clothingId = document.getElementById('modal-clothing-id').value;
         const data = new URLSearchParams();
         data.append("clothing_id", parseInt(clothingId)); // Append clothing_id to the request data
@@ -345,6 +355,9 @@ header {
             if (data.success) {
                 alert("Purchase successful!");
                 const element = document.getElementById(clothingId); // Get the clothing item
+                const cost = document.getElementById('cost');
+                const price = parseInt(cost.textContent); // Get the price from the modal
+                decrementCoins(price); // Decrement coins
                 if (element) {
                     element.parentNode.removeChild(element); // remove item from shop
                 }
