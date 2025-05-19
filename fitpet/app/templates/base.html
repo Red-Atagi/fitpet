@@ -31,38 +31,28 @@
 
     <style>
       body {
-        background-color: #bde0fe;
+        background-color: #b3d9ff;
         font-family: 'Viga', sans-serif;
         color: #4a4a4a;
-      }
-
-      .container {
-        width: 300px;
-        height: 650px;
-        margin: 30px auto;
-        border-radius: 12px;
-        border: 2px solid #a2d2ff;
-        background-color: #ffc8dd;
-        overflow-y: auto;
+        margin: 0;
         padding: 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       }
 
       .welcome-user {
         font-family: "Lilita One", cursive;
         font-size: 28px;
-        color: #cdb4db;
+        color: #000000; /* Changed to black */
         text-align: center;
         margin-bottom: 15px;
       }
 
       .pet-container {
         position: relative;
-        width: 100%;
+        width: 300px;
         height: 300px;
         background-color: #ffafcc;
         border-radius: 10px;
-        margin-bottom: 20px;
+        margin: 0 auto 20px;
       }
 
       .background,
@@ -104,8 +94,8 @@
 
       button {
         display: block;
-        width: 100%;
-        margin: 10px 0;
+        width: 300px;
+        margin: 10px auto;
         padding: 10px;
         font-size: 16px;
         background-color: #a2d2ff;
@@ -117,10 +107,6 @@
 
       button:hover {
         background-color: #91c3f8;
-      }
-
-      a {
-        text-decoration: none;
       }
 
       form button {
@@ -135,8 +121,7 @@
 
   <body>
     <main>
-      <div class="container">
-        {% if user.is_authenticated %}
+      {% if user.is_authenticated %}
         <h2 class="welcome-user">Hi {{ user.username }}!</h2>
         <div class="pet-container">
           {% load static %}
@@ -180,30 +165,28 @@
           {% csrf_token %}
           <button type="submit">Log Out</button>
         </form>
-
-        {% else %}
+      {% else %}
         <p>You are not logged in</p>
         <a href="{% url 'login' %}">
           <button type="button">Log In</button>
         </a>
-        {% endif %}
+      {% endif %}
 
-        <a href="{% url 'dress_page' %}">
-          <button type="button">Dress Your Pet</button>
-        </a>
+      <a href="{% url 'dress_page' %}">
+        <button type="button">Dress Your Pet</button>
+      </a>
 
-        <a href="{% url 'shop_page' %}">
-          <button type="button">Shop For Clothes</button>
-        </a>
+      <a href="{% url 'shop_page' %}">
+        <button type="button">Shop For Clothes</button>
+      </a>
 
-        <a href="{% url 'workout_page' %}">
-          <button type="button">Log Exercise</button>
-        </a>
+      <a href="{% url 'workout_page' %}">
+        <button type="button">Log Exercise</button>
+      </a>
 
-        <a href="{% url 'friend_list' %}">
-          <button type="button">Friends</button>
-        </a>
-      </div>
+      <a href="{% url 'friend_list' %}">
+        <button type="button">Friends</button>
+      </a>
 
       {% block content %} {% endblock %}
     </main>
