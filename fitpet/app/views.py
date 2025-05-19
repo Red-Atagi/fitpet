@@ -204,9 +204,11 @@ def visit_friend(request, friend_id):
                 clothing_list.insert(0, clothing_list.pop(idx))
                 break
     # friend.user_id
+    friends = friend.friends.all()
 
     data = {
         "friend": friend,
+        "friends": friends,
         "pet": pet,
         "user": user,
         "hats_owned": hats_owned,
