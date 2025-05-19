@@ -179,7 +179,7 @@ def visit_friend(request, friend_id):
     except FPUser.DoesNotExist:
         return redirect("friend_list")
 
-    # Check if the friend is actially a friend
+    # # Check if the friend is actially a friend
     if not fpuser.friends.filter(user_id=friend_id).exists():
         return redirect("friend_list")
 
@@ -187,12 +187,36 @@ def visit_friend(request, friend_id):
 
     if not pet:
         return redirect("home")
-    friend.user_id
+    
+    hats_owned, shirts_owned, shoes_owned, backgrounds_owned = friend.clothing_owned()
+    hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
+
+    clothing_lists = [hats_owned, shirts_owned, shoes_owned, backgrounds_owned]
+    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing, background_wearing]
+
+    # # Sort the list so that the item currently worn is at the head
+    for i in range(len(clothing_lists)):
+        clothing_list = clothing_lists[i]
+        wearing_item = currently_wearing[i]
+
+        for idx, item in enumerate(clothing_list):
+            if wearing_item and item.clothing_id == wearing_item.clothing_id:
+                clothing_list.insert(0, clothing_list.pop(idx))
+                break
+    # friend.user_id
 
     data = {
         "friend": friend,
         "pet": pet,
         "user": user,
+        "hats_owned": hats_owned,
+        "shirts_owned": shirts_owned,
+        "shoes_owned": shoes_owned,
+        "backgrounds_owned": backgrounds_owned,
+        "hat_wearing": hat_wearing,
+        "shirt_wearing": shirt_wearing,
+        "shoes_wearing": shoes_wearing,
+        "background_wearing": background_wearing,
     }
 
     return render(request, "friend.html", data)
