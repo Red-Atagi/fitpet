@@ -17,7 +17,8 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('friends/list/', views.friend_list, name='friend_list'),
     path('friends/visit/<int:friend_id>/', views.visit_friend, name='visit_friend'),
-    path('friends/requests/', views.friend_request, name="friend_request"),
+    path('friends/requests/', views.view_friend_requests, name="friend_request"),
+    path('friends/requests/<str:action>/<int:from_user_id>', views.confirm_friend_request, name='confirm_friend_request'),
     path('search_users/', views.search_users, name='search_users'),
     path('send_request/<int:to_user_id>/', views.send_friend_request, name='send_friend_request'),
 ]
