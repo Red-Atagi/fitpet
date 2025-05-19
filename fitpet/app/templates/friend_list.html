@@ -1,71 +1,140 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <title>Your Friends | FitPet</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Viga&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      background-color: #f6f8fa;
-      font-family: 'Viga', sans-serif;
-      padding: 30px;
-    }
-    .container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 20px;
-      max-width: 600px;
-      margin: 0 auto;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
-    }
-    .friend-card {
-      padding: 15px;
-      background-color: #eef4f9;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-    .friend-card h4 {
-      margin-top: 0;
-    }
-    .btn-visit {
-      margin-top: 10px;
-    }
-    .no-friends {
-      text-align: center;
-      color: #888;
-      margin: 30px 0;
-    }
-    .top-banner {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .top-banner h2 {
-      color: #2c3e50;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="top-banner">
-      <h2>👯 Your Friends</h2>
-    </div>
+  <head>
+    <meta charset="utf-8" />
+    <title>Your Friends | FitPet</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Viga&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #bde0fe;
+        font-family: "Viga", sans-serif;
+        padding: 20px;
+      }
+      .container {
+        background-color: white;
+        padding: 25px;
+        border-radius: 20px;
+        max-width: 500px;
+        margin: 0 auto;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .top-banner {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+      .top-banner h2 {
+        font-family: "Lilita One", cursive;
+        color: #cdb4db;
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+      .friend-card {
+        padding: 15px;
+        background-color: #f0f9ff;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        border-left: 4px solid #ffafcc;
+        transition: transform 0.2s;
+      }
+      .friend-card:hover {
+        transform: translateY(-3px);
+      }
+      .friend-card h4 {
+        margin-top: 0;
+        color: #ffafcc;
+        font-size: 20px;
+      }
+      .friend-card p {
+        color: #4a4a4a;
+        margin-bottom: 10px;
+      }
+      .btn-visit {
+        background-color: #a2d2ff;
+        border: none;
+        color: white;
+        font-family: "Viga", sans-serif;
+        margin-top: 10px;
+        transition: all 0.3s;
+      }
+      .btn-visit:hover {
+        background-color: #91c3f8;
+        transform: scale(1.02);
+      }
+      .no-friends {
+        text-align: center;
+        color: #a4a1a2;
+        margin: 30px 0;
+        font-size: 18px;
+      }
+      .action-btn {
+        font-family: "Viga", sans-serif;
+        border: none;
+        margin-bottom: 10px;
+        transition: all 0.3s;
+      }
+      .btn-primary {
+        background-color: #cdb4db;
+      }
+      .btn-primary:hover {
+        background-color: #b8a0cc;
+        transform: scale(1.02);
+      }
+      .btn-default {
+        background-color: #a2d2ff;
+        color: white;
+      }
+      .btn-default:hover {
+        background-color: #91c3f8;
+        transform: scale(1.02);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="top-banner">
+        <h2>👯 Your Friends</h2>
+      </div>
 
-    {% for friend in friends %}
+      {% for friend in friends %}
       <div class="friend-card">
         <h4>{{ friend.name }}</h4>
         <p>Username: {{ friend.username }}</p>
         <a href="{% url 'visit_friend' friend.user_id %}">
-          <button type="button" class="btn btn-info btn-sm btn-visit">Visit {{ friend.name }}</button>
+          <button type="button" class="btn btn-info btn-sm btn-visit">
+            Visit {{ friend.name }}
+          </button>
         </a>
       </div>
-    {% empty %}
-      <p class="no-friends">No friends found 😢</p>
-    {% endfor %}
+      {% empty %}
+      <p class="no-friends">
+        No friends found yet 😢<br />Start adding friends below!
+      </p>
+      {% endfor %}
 
-    <a href="{% url 'search_users' %}" class="btn btn-primary btn-block">+ Find New Friends</a>
-    <a href="{% url 'friend_request'%}" class="btn btn-primary btn-block">Check Friend Requests</a>
-    <a href="{% url 'home' %}" class="btn btn-default btn-block">← Return to Home</a>
-  </div>
-</body>
+      <div class="action-buttons">
+        <a
+          href="{% url 'search_users' %}"
+          class="btn btn-primary btn-block action-btn"
+          >+ Find New Friends</a
+        >
+        <a
+          href="{% url 'friend_request'%}"
+          class="btn btn-primary btn-block action-btn"
+          >Check Friend Requests</a
+        >
+        <a href="{% url 'home' %}" class="btn btn-default btn-block action-btn"
+          >← Return to Home</a
+        >
+      </div>
+    </div>
+  </body>
 </html>

@@ -1,29 +1,26 @@
-<!-- templates/base.html -->
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- Latest compiled and minified CSS -->
+    <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
       integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
       crossorigin="anonymous"
     />
-
-    <!-- Optional theme -->
+    <!-- Bootstrap Theme -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css"
       integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ"
       crossorigin="anonymous"
     />
-    <!-- fonts -->
+    <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Viga&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Latest compiled and minified JavaScript -->
+    <!-- Bootstrap JS -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"
       integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
@@ -31,118 +28,211 @@
     ></script>
     <meta charset="utf-8" />
     <title>{% block title %}FitPet{% endblock %}</title>
+
     <style>
+      body {
+        background-color: #bde0fe;
+        font-family: "Viga", sans-serif;
+        color: #4a4a4a;
+      }
+
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 20px;
+        max-width: 500px;
+        margin: 0 auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .welcome-user {
+        font-family: "Lilita One", cursive;
+        font-size: 28px;
+        color: #cdb4db;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
       .pet-container {
         position: relative;
         width: 100%;
-        height: 300px;
+        height: 400px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      .pet-container-no-background {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background-color: white;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      .pet,
+      .pet-clothing,
+      .pet-shoes {
+        position: absolute;
+        top: 70%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .pet-no-background,
+      .pet-clothing-no-background,
+      .pet-shoes-no-background {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
 
       .background {
         position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
+        object-fit: cover;
         z-index: 1;
       }
 
       .pet {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); /* Centers the pet image */
         z-index: 2;
+        width: 200px;
+        height: 200px;
+      }
+
+      .pet-no-background {
+        z-index: 2;
+        width: 200px;
+        height: 200px;
       }
 
       .pet-clothing {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         z-index: 3;
+        width: 200px;
+        height: 200px;
       }
 
       .pet-shoes {
-        position: absolute;
-        height: 50px;
+        z-index: 4;
         width: 50px;
+        height: 50px;
         top: 75%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 3;
       }
 
-      .container {
-        width: 300px;
-        height: 650px;
-        margin: 0 auto;
-        border: 1px solid #effbfd;
-        background-color: #fcfcfc;
-        overflow-y: auto;
+      button {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #a2d2ff;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
       }
 
-      /* welcome user text */
-      .welcome-user {
-        font-family: "Viga", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        text-align: center;
+      button:hover {
+        background-color: #91c3f8;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      form button {
+        background-color: #cdb4db;
+      }
+
+      form button:hover {
+        background-color: #b8a0cc;
       }
     </style>
   </head>
+
   <body>
     <main>
       <div class="container">
         {% if user.is_authenticated %}
         <h2 class="welcome-user">Hi {{ user.username }}!</h2>
+
+        {% load static %} {% if background_wearing %}
         <div class="pet-container">
-          {%load static%} {% if background_wearing %}
           <img
             class="background"
             src="{% static background_wearing.image_path %}?v={{ timestamp }}"
             alt="Background Image"
           />
-          {%endif%}
           <img
             class="pet"
             id="pet-image"
             src="/static/images/pet_example.png"
             alt="Your Pet"
-            style="width: 200px; height: 200px"
           />
           {% if hat_wearing %}
           <img
             src="{% static hat_wearing.image_path %}?v={{ timestamp }}"
             alt="Hat"
-            style="width: 200px; height: 200px"
             class="pet-clothing"
           />
           {% endif %} {% if shirt_wearing %}
           <img
             src="{% static shirt_wearing.image_path %}?v={{ timestamp }}"
-            alt="Hat"
-            style="width: 200px; height: 200px"
+            alt="Shirt"
             class="pet-clothing"
           />
           {% endif %} {% if shoes_wearing %}
-          <!-- TODO: fix shoes heightand class when add actual images -->
           <img
             src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
-            alt="Hat"
-            style="width: 50px; height: 50px"
+            alt="Shoes"
             class="pet-shoes"
           />
           {% endif %}
         </div>
+        {% else %}
+        <div class="pet-container-no-background">
+          <img
+            class="pet-no-background"
+            id="pet-image"
+            src="/static/images/pet_example.png"
+            alt="Your Pet"
+          />
+          {% if hat_wearing %}
+          <img
+            src="{% static hat_wearing.image_path %}?v={{ timestamp }}"
+            alt="Hat"
+            class="pet-clothing"
+          />
+          {% endif %} {% if shirt_wearing %}
+          <img
+            src="{% static shirt_wearing.image_path %}?v={{ timestamp }}"
+            alt="Shirt"
+            class="pet-clothing"
+          />
+          {% endif %} {% if shoes_wearing %}
+          <img
+            src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
+            alt="Shoes"
+            class="pet-shoes"
+          />
+          {% endif %}
+        </div>
+        {% endif %}
 
         <form action="{% url 'logout' %}" method="post">
           {% csrf_token %}
           <button type="submit">Log Out</button>
         </form>
+
         {% else %}
         <p>You are not logged in</p>
-        <a href="{% url 'login' %}">Log In</a>
+        <a href="{% url 'login' %}">
+          <button type="button">Log In</button>
+        </a>
         {% endif %}
 
         <a href="{% url 'dress_page' %}">
@@ -152,8 +242,8 @@
         <a href="{% url 'shop_page' %}">
           <button type="button">Shop For Clothes</button>
         </a>
-        
-        <a href="{%url 'workout_page' %}">
+
+        <a href="{% url 'workout_page' %}">
           <button type="button">Log Exercise</button>
         </a>
 
