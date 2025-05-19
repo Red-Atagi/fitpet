@@ -322,3 +322,118 @@
     </script>
   </body>
 </html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{friend.name}}'s Profile</title>
+    <meta name="author" content="Red and Brandin">
+    <meta name="description" content="{{friend.name}}'s Profile">
+    <style>
+
+  
+    * {
+        box-sizing: border-box;
+    }
+        body {
+            background-color: f6f8fa    ;
+            margin: 0;
+        }
+        @media screen and (min-width: 600px) {
+            .main-grid {
+                display: flex;
+                justify-content: space-around;
+                padding: 20px;
+            }
+            .user-info {
+                background-color: white;
+                width: 40vw;
+                /* padding: 20px; */
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .Pet-Info {
+                background-color: white;
+                /* padding: 20px; */
+                width: 50vw;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        @media screen and (max-width:599px) {
+            .main-grid {
+                background-color: white;
+                padding: 20px;
+                width: 85vw;
+                margin: 0 auto;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }   
+        }
+
+        .user-info h1{
+            text-align: center;
+            background-color: lightblue ;
+            padding: 10px;
+        }
+
+        .user-info h2{
+            margin: 10px;
+        }
+        .user-info h3{
+            margin: 10px;
+        }
+
+        .user-info p {
+            margin: 10px;
+        }
+
+        .Pet-Info h1{
+            text-align: center;
+            background-color: lightblue ;
+            padding: 10px;
+        }
+
+        .Pet-Info h2{
+            margin: 10px;
+        }
+
+        .Pet-Info h3{
+            margin: 10px;
+        }
+        .Pet-Info p {
+            margin: 10px;
+        }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="main-grid">
+      <div class="user-info">
+        <h1>{{friend.name }}</h1>
+        <h2> {{friend.username}}</h2>
+        <h3> Level {{pet.level}}</h3>
+        <h3> XP: {{pet.xp}}</h3>
+        <h3> Coins: {{friend.coins}}</h3>
+        <h1> {{friend.name}}'s Friends</h1>
+        {% for friend in friends %}
+        <h3>{{ friend.name }}</h3>
+        <p>Username: {{ friend.username }}</p>
+        <a href="{% url 'visit_friend' friend.user_id %}">
+        <!-- <button type="button" class="btn btn-info btn-sm btn-visit">Visit {{ friend.name }}</button> -->
+        </a>
+        {% empty %}
+        <h3 class="no-friends">No friends found 😢</h3>
+        {% endfor %}
+      </div>
+      <!-- Pet Info Stuff Goes Here TODO -->
+      <div class="Pet-Info">
+        <h1>Pet Info</h1>
+        <h2> Name: {{pet.name}}</h2>
+      </div>
+    </div>
+  </body>
+</html>
