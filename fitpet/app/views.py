@@ -285,10 +285,13 @@ def shop_page(request):
         hats = unowned_clothing.filter(clothing_type="Hat")
         shirts = unowned_clothing.filter(clothing_type="Shirt")
         shoes = unowned_clothing.filter(clothing_type="Shoes")
+        backgrounds = unowned_clothing.filter(clothing_type="Background")
+        
         data = {
             "hats_unowned": hats,
             "shirts_unowned": shirts,
             "shoes_unowned": shoes,
+            "backgrounds_unowned": backgrounds,
             "user": None,
         }
         return render(request, "shop.html", data)
@@ -303,6 +306,8 @@ def shop_page(request):
     hats = unowned_clothing.filter(clothing_type="Hat")
     shirts = unowned_clothing.filter(clothing_type="Shirt")
     shoes = unowned_clothing.filter(clothing_type="Shoes")
+    backgrounds = unowned_clothing.filter(clothing_type="Background")
+
 
     pet = Pet.objects.filter(owner=fpuser)
     # hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
@@ -313,6 +318,7 @@ def shop_page(request):
         "shoes_unowned": shoes,
         "user": fpuser,
         "pet": pet,
+        "backgrounds_unowned": backgrounds,
         # "hat_wearing": hat_wearing,
         # "shirt_wearing": shirt_wearing,
         # "shoes_wearing": shoes_wearing

@@ -219,6 +219,19 @@ header {
         {% endfor %}
     </div>
 
+<!-- backgrounds Section -->
+    <h2>Backgrounds</h2>
+    <div class="clothing-grid">
+        {% for background in backgrounds_unowned %}
+        <div id='{{ background.clothing_id }}' class="clothing-item" onclick="showModal('{% static background.image_path %}?v={{ timestamp }}', '{{ background.clothing_id }}', 'background', '{{ background.price }}')">
+            <img src="{% static background.image_path %}?v={{ timestamp }}" alt="background" style="max-width: 200px; max-height: 200px;">
+            <p>Price: {{ background.price }} coins</p>
+        </div>
+        {% empty %}
+            <p>You own all available backgrounds!</p>
+        {% endfor %}
+    </div>
+
     <!-- The Pop Up Image -->
     <div id="image-modal" class="modal" onclick="closeModal(event)">
         <div id="modal-clothing-id" style="display: none;"></div>
