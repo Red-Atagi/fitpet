@@ -1,20 +1,49 @@
 <!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Viga&display=swap" rel="stylesheet">
     <title>Exercise Results</title>
     <style>
+        :root {
+            --color1: #cdb4db;  /* light purple */
+            --color2: #ffc8dd;  /* pink */
+            --color3: #ffafcc;  /* coral pink */
+            --color4: #bde0fe;  /* light blue */
+            --color5: #a2d2ff;  /* bright blue */
+        }
+        body {
+            font-family: 'Viga', sans-serif;
+            background-color: var(--color4);
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+            margin: 0;
+        }
+        h1, h2, h3 {
+            font-family: 'Viga', sans-serif;
+        }
         #result-box {
             margin-top: 1em;
             padding: 1em;
-            background-color: #e3fbe3;
-            border: 1px solid #8fda8f;
+            background-color: var(--color1);
             border-radius: 8px;
+            width: 500px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
         }
 
+
         .button {
-            background-color: #f0f0f0; 
-            color: black;
-            border: 2px solid black;
+            background-color: var(--color4);
+            color: white;
+            border: 2px solid var(--color5);
             padding: 10px 20px;
             border-radius: 6px;
             font-weight: bold;
@@ -24,20 +53,19 @@
         }
 
         .button:hover {
-            background-color: #dcdcdc;
+            background-color: var(--color2);
         }
+
     </style>
 </head>
 
-<html>
-
-    <div id="result-box">
-        <p>You earned <strong>{{ gainedXP }}</strong> XP and <strong>{{ gainedCoins }}</strong> Coins!</p>
+<body>
+    <div id="result-box" align="center">
+        <p>You earned <strong>{{ gainedXP }}</strong> XP and <strong>{{ gainedCoins }}</strong> 🪙!</p>
         {% if leveled_up %}
             <p><strong>You leveled up!</strong></p>
         {% endif %}
         <a href="{% url 'home' %}" class="button">Back to Home Page</a>
     </div>
-    
-
+</body>
 </html>
