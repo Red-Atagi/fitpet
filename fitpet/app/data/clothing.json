@@ -10,12 +10,12 @@
         "image_path": "images/tiara-silver.png"
     },
     {
-        "price": 100,
+        "price": 10,
         "clothing_type": "Hat",
         "image_path": "images/glasses-black.png"
     },
     {
-        "price": 100,
+        "price": 10,
         "clothing_type": "Hat",
         "image_path": "images/glasses-grey.png"
     },
