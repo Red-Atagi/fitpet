@@ -1,328 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{friend.name}}'s Profile</title>
-    <meta name="author" content="Red and Brandin">
-    <meta name="description" content="{{friend.name}}'s Profile">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Roboto:ital,wght@0,100..900;1,100..900&family=Viga&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Viga&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      * {
-        box-sizing: border-box;
-        
-      }
-      body {
-        background-color: rgb(240, 240, 161);
-        margin: 0;
-      }
-      .scroll-row {
-        display: flex;
-        overflow-x: auto;
-        padding: 10px 0;
-      }
-      .clothing-item {
-        flex: 0 0 auto;
-        margin-right: 10px;
-        text-align: center;
-        border: 3px solid rgb(162, 162, 162);
-        border-radius: 15px;
-        justify-content: center;
-        align-items: center;
-        background-color: rgb(251, 251, 251);
-      }
-      .clothing-item img {
-        width: 50px;
-        height: 50px;
-        object-fit: contain;
-        border: 2px solid transparent;
-        border-radius: 8px;
-        display: block;
-      }
+<head>
+  <meta charset="utf-8" />
+  <title>{{ friend.name }}’s Profile</title>
+  <!-- Bootstrap CSS & Theme -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css"
+  />
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Viga&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --color1: #cdb4db;  /* light purple */
+      --color2: #ffc8dd;  /* pink */
+      --color3: #ffafcc;  /* coral pink */
+      --color4: #bde0fe;  /* light blue */
+      --color5: #a2d2ff;  /* bright blue */
+    }
 
-      .clothing-container {
-        padding-left: 20px;
-        padding-right: 20px;
-        margin-top: 0px;
-        margin-bottom: 10px;
-      }
+    body {
+      background-color: var(--color4);
+      font-family: 'Viga', sans-serif;
+      color: #4a4a4a;
+      padding-top: 30px;
+      margin: 0;
+    }
 
-      h1 {
-        font-family: "Viga", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        text-align: center;
-        color: white;
-      }
-      .dress-pet-header {
-        border: 3px solid transparent;
-        border-radius: 35px;
-        margin-bottom: 10px;
-        height: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f7b3f9;
-      }
-      h2 {
-        font-family: "Roboto", sans-serif;
-        font-size: large;
-        font-style: normal;
-        font-variation-settings: "wdth" 200;
-        font-weight: 500;
-        font-style: normal;
-        display: block;
-        margin-top: 0px;
-        margin-bottom: 0px;
-      }
-      .center-content {
-        display: flex;
-        justify-content: center;
-        align-items: left;
-      }
-      .return-button {
-        border-radius: 10px;
-        border-color: transparent;
-        width: 130px;
-        height: 30px;
-        font-family: "Viga", sans-serif;
-        font-weight: 0.01;
-        background-color: #f7b3f9;
-        color: white;
-        margin-top: 10px;
-        transition: 0.15s;
-      }
-      .return-button:hover {
-        background-color: white;
-        color: #f7b3f9;
-        transform: scale(1.05);
-      }
-      .pet-container {
-        position: relative;
-        width: 100%;
-        height: 300px;
-        display: flex;
-      }
-      .background {
-        position: relative;
-        top: 0;
-        left: 0;
-        height: 100%;
-        z-index: 1;
-        margin: auto;
-        align-content: center;
+    .container {
+      background-color: white;
+      max-width: 700px;
+      margin: 0 auto 40px;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
 
-      }
-      .pet {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2;
-      }
-      .pet-clothing {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 3;
-      }
-      .pet-shoes {
-        position: absolute;
-        height: 50px;
-        width: 50px;
-        top: 75%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 3;
-      }
-      @media screen and (min-width: 600px) {
-        .main-grid {
-          display: flex;
-          justify-content: space-around;
-          padding: 20px;
-        }
-        .user-info {
-          background-color: #69aff1;
-          width: 40vw;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-          border: 4px solid pink;
-        }
-        .Pet-Info {
-          background-color: white;
-          width: 50vw;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
+    .welcome-user {
+      font-family: 'Viga', sans-serif;
+      font-size: 28px;
+      color: var(--color1);
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-        .pet-details {
-          width: 300px;
-          height: fit-content;
-          /* position: relative; */
-          border: 4px solid pink;
-          background-color: rgb(105, 175, 241);
-          /* overflow-y: auto; */
-          margin: auto;
-          width: 100%;
-        }
+    .profile-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    @media (min-width: 600px) {
+      .profile-grid {
+        flex-direction: row;
       }
-      @media screen and (max-width:599px) {
-        .main-grid {
-          background-color: rgb(105, 175, 241);
-          width: 85vw;
-          margin: 5px auto;
-          border: 4px solid pink;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+      .user-info, .pet-info {
+        flex: 1;
       }
-      .user-info h1{
-        text-align: center;
-        background-color: #f7b3f9 ;
-        border-radius: 35px;
-        padding: 5px;
-        margin: 0;
+      .user-info {
+        margin-right: 20px;
       }
-      .user-info h2{
-        margin: 10px;
-      }
-      .user-info h3{
-        margin: 10px;
-      }
-      .user-info p {
-        margin: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="main-grid">
+    }
+
+    .user-info h2,
+    .user-info h3 {
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .user-info h2 span {
+      color: var(--color5);
+    }
+
+    .friend-list {
+      margin-top: 20px;
+    }
+    .friend-list h4 {
+      margin: 10px 0 5px;
+    }
+    .friend-list p {
+      margin: 0 0 10px;
+    }
+    .friend-list .btn {
+      margin-bottom: 15px;
+    }
+
+    .pet-info .pet-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: var(--color2);
+      margin-bottom: 20px;
+    }
+    .pet-info .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+    .pet-info .pet,
+    .pet-info .pet-clothing {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 2;
+      width: 200px;
+      height: 200px;
+    }
+    .pet-info .pet-shoes {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      top: 75%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 3;
+    }
+
+    button, .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: var(--color5);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover, .btn:hover {
+      background-color: var(--color4);
+    }
+
+    a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="profile-grid">
       <div class="user-info">
-        <h1>{{friend.name }}</h1>
-        <h2> {{friend.username}}</h2>
-        <h2> Level {{pet.level}}</h2>
-        <h2> XP: {{pet.xp}}</h2>
-        <h2> Coins: {{friend.coins}}</h2>
-        <h1> {{friend.name}}'s Friends</h1>
-        {% for friend in friends %}
         <h2>{{ friend.name }}</h2>
-        <p>Username: {{ friend.username }}</p>
-        <a href="{% url 'visit_friend' friend.user_id %}">
-        <!-- <button type="button" class="btn btn-info btn-sm btn-visit">Visit {{ friend.name }}</button> -->
-        </a>
-        {% empty %}
-        <h2 class="no-friends">No friends found 😢</h2>
-        {% endfor %}
-        <div class="center-content">
-        <a href="{% url 'home' %}">
-            <button class="return-button">return home</button>
-        </a>
+        <h3>Username: <span>{{ friend.username }}</span></h3>
+        <h3>Level: <span>{{ pet.level }}</span></h3>
+        <h3>XP: <span>{{ pet.xp }}</span></h3>
+        <h3>Coins: <span>{{ friend.coins }}</span></h3>
+
+        <div class="friend-list">
+          <h4>{{ friend.name }}'s Friends</h4>
+          {% for f in friends %}
+            <h4>{{ f.name }}</h4>
+            <p>Username: {{ f.username }}</p>
+            <a href="{% url 'visit_friend' f.user_id %}" class="btn btn-info btn-sm">Visit {{ f.name }}</a>
+          {% empty %}
+            <p>No friends found 😢</p>
+          {% endfor %}
         </div>
+
+        <a href="{% url 'home' %}" class="btn">Return Home</a>
       </div>
-      <div class="Pet-Info">
+
+      <div class="pet-info">
         <div class="pet-details">
-          <div class="dress-pet-header">
-            <h1>{{pet.name}}</h1>
-          </div>
+          <h2 style="text-align:center;">{{ pet.name }}</h2>
           <div class="pet-container">
             {% load static %}
             {% if background_wearing %}
-            <img
-              class="background "
-              src="{% static background_wearing.image_path %}?v={{ timestamp }}"
-              alt="Background Image"
-            />
+              <img class="background" src="{% static background_wearing.image_path %}?v={{ timestamp }}" alt="Background">
             {% endif %}
-            <img
-              class="pet"
-              id="pet-image"
-              src="/static/images/pet_example.png"
-              alt="Your Pet"
-              style="width: 200px; height: 200px"
-            />
+            <img class="pet" src="/static/images/pet_example.png" alt="Your Pet">
             {% if hat_wearing %}
-            <img
-              src="{% static hat_wearing.image_path %}?v={{ timestamp }}"
-              alt="Hat"
-              style="width: 200px; height: 200px"
-              class="pet-clothing"
-            />
+              <img class="pet-clothing" src="{% static hat_wearing.image_path %}?v={{ timestamp }}" alt="Hat">
             {% endif %}
             {% if shirt_wearing %}
-            <img
-              src="{% static shirt_wearing.image_path %}?v={{ timestamp }}"
-              alt="Shirt"
-              style="width: 200px; height: 200px"
-              class="pet-clothing"
-            />
+              <img class="pet-clothing" src="{% static shirt_wearing.image_path %}?v={{ timestamp }}" alt="Shirt">
             {% endif %}
             {% if shoes_wearing %}
-            <img
-              src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
-              alt="Shoes"
-              style="width: 200px; height: 200px"
-              class="pet-clothing"
-            />
+              <img class="pet-shoes" src="{% static shoes_wearing.image_path %}?v={{ timestamp }}" alt="Shoes">
             {% endif %}
-          </div>
-          <div class="clothing-container">
-            <h2>Hats</h2>
-            <div class="scroll-row" id="hats-row">
-              {% for hat in hats_owned %}
-              <div
-                class="clothing-item"
-            >
-                <img
-                  src="{% static hat.image_path %}?v={{ timestamp }}"
-                  alt="Hat"
-                />
-              </div>
-              {% endfor %}
-            </div>
-            <h2>Shirts</h2>
-            <div class="scroll-row" id="shirts-row">
-              {% for shirt in shirts_owned %}
-              <div
-                class="clothing-item"
-              >
-                <img
-                  src="{% static shirt.image_path %}?v={{ timestamp }}"
-                  alt="Shirt"
-                />
-              </div>
-              {% endfor %}
-            </div>
-            <h2>Shoes</h2>
-            <div class="scroll-row" id="shoes-row">
-              {% for shoes in shoes_owned %}
-              <div class="clothing-item">
-                <img
-                  src="{% static shoes.image_path %}?v={{ timestamp }}"
-                  alt="Shoes"
-                />
-              </div>
-              {% endfor %}
-            </div>
-            <h2>Background</h2>
-            <div class="scroll-row" id="background-row">
-              {% for background in backgrounds_owned %}
-              <div
-                class="clothing-item"
-              >
-                <img
-                  src="{% static background.image_path %}?v={{ timestamp }}"
-                  alt="Background"
-                />
-              </div>
-              {% endfor %}
-            </div>
           </div>
         </div>
       </div>
     </div>
-  </body>
+  </div>
+</body>
 </html>
