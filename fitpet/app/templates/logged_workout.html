@@ -1,43 +1,91 @@
 <!DOCTYPE html>
-<head>
+<html>
+  <head>
     <meta charset="UTF-8" />
     <title>Exercise Results</title>
     <style>
-        #result-box {
-            margin-top: 1em;
-            padding: 1em;
-            background-color: #e3fbe3;
-            border: 1px solid #8fda8f;
-            border-radius: 8px;
-        }
+      body {
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: "Viga", sans-serif;
+      }
 
-        .button {
-            background-color: #f0f0f0; 
-            color: black;
-            border: 2px solid black;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            transition: background-color 0.2s;
-        }
+      #result-box {
+        background-color: white;
+        padding: 30px;
+        border-radius: 20px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        border: 3px solid #a2d2ff;
+      }
 
-        .button:hover {
-            background-color: #dcdcdc;
+      #result-box p {
+        font-size: 18px;
+        color: #4a4a4a;
+        margin-bottom: 20px;
+      }
+
+      #result-box strong {
+        color: #cdb4db;
+        font-size: 20px;
+      }
+
+      .button {
+        background-color: #a2d2ff;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-family: "Viga", sans-serif;
+        font-size: 16px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        margin-top: 10px;
+      }
+
+      .button:hover {
+        background-color: #91c3f8;
+        transform: scale(1.05);
+      }
+
+      .level-up {
+        color: #ffafcc;
+        font-weight: bold;
+        font-size: 20px;
+        margin: 15px 0;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
         }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
     </style>
-</head>
-
-<html>
-
+  </head>
+  <body>
     <div id="result-box">
-        <p>You earned <strong>{{ gainedXP }}</strong> XP and <strong>{{ gainedCoins }}</strong> Coins!</p>
-        {% if leveled_up %}
-            <p><strong>You leveled up!</strong></p>
-        {% endif %}
-        <a href="{% url 'home' %}" class="button">Back to Home Page</a>
+      <p>
+        You earned <strong>{{ gainedXP }} XP</strong> and
+        <strong>{{ gainedCoins }} Coins</strong>!
+      </p>
+      {% if leveled_up %}
+      <p class="level-up">✨ You leveled up! ✨</p>
+      {% endif %}
+      <a href="{% url 'home' %}" class="button">Return Home</a>
     </div>
-    
-
+  </body>
 </html>
