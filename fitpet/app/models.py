@@ -52,9 +52,6 @@ class FPUser(models.Model):
         """
         Returns True if purchase is valid.
         """
-        print(self.username)
-        print(self.coins)
-        print(clothing.price)
         if not self.owns.filter(clothing_id=clothing.clothing_id).exists(): #checks to see if clothing is not in owned
             if self.coins >= clothing.price:
                 return True
@@ -64,10 +61,7 @@ class FPUser(models.Model):
         """
         Adds coins to the users wallet
         """
-        print(self.username)
-        print(f"before coins{self.coins}")
         self.coins += gainedCoins
-        print(f"after coins{self.coins}")
         return
 
 class Clothing(models.Model):
