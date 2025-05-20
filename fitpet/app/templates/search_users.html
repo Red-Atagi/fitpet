@@ -1,52 +1,140 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Find Friends | FitPet</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
-  <style>
-    body {
-      font-family: 'Viga', sans-serif;
-      background-color: #f6f8fa;
-      padding: 30px;
-    }
-    .container {
-      background-color: white;
-      border-radius: 15px;
-      padding: 25px;
-      max-width: 500px;
-      margin: 0 auto;
-      box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
-    }
-    .user-box {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>🔍 Find Other Users</h2>
+  <head>
+    <title>Find Friends | FitPet</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Viga&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Viga", sans-serif;
+        background-color: #bde0fe;
+        padding: 20px;
+        margin: 0;
+      }
+      .container {
+        background-color: white;
+        border-radius: 20px;
+        padding: 25px;
+        max-width: 500px;
+        margin: 0 auto;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        font-family: "Lilita One", cursive;
+        color: #cdb4db;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      h4 {
+        color: #4a4a4a;
+        margin: 20px 0 10px 0;
+        font-size: 18px;
+      }
+      .user-box {
+        padding: 15px;
+        background-color: #f0f9ff;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        border-left: 4px solid #ffafcc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.2s;
+      }
+      .user-box:hover {
+        transform: translateY(-3px);
+      }
+      .user-box span {
+        font-size: 16px;
+        color: #4a4a4a;
+      }
+      .btn-primary {
+        background-color: #a2d2ff;
+        border: none;
+        font-family: "Viga", sans-serif;
+        padding: 10px;
+        margin-top: 15px;
+        transition: all 0.3s;
+      }
+      .btn-primary:hover {
+        background-color: #91c3f8;
+        transform: scale(1.02);
+      }
+      .btn-success {
+        background-color: #cdb4db;
+        border: none;
+        font-family: "Viga", sans-serif;
+        padding: 6px 12px;
+        transition: all 0.3s;
+      }
+      .btn-success:hover {
+        background-color: #b8a0cc;
+        transform: scale(1.05);
+      }
+      .btn-link {
+        color: #ffafcc;
+        font-family: "Viga", sans-serif;
+        margin-top: 15px;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        transition: all 0.3s;
+      }
+      .btn-link:hover {
+        color: #ff9ebd;
+        text-decoration: none;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #cdb4db;
+        border-radius: 8px;
+        font-family: "Viga", sans-serif;
+        margin-bottom: 10px;
+      }
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #a2d2ff;
+        box-shadow: 0 0 5px rgba(162, 210, 255, 0.5);
+      }
+      a:hover {
+        text-decoration: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>🔍 Find Friends</h2>
 
-    <form method="post">
-      {% csrf_token %}
-      {{ form.query }}
-      <button type="submit" class="btn btn-primary btn-block">Search</button>
-    </form>
+      <form method="post">
+        {% csrf_token %} {{ form.query }}
+        <button type="submit" class="btn btn-primary btn-block">Search</button>
+      </form>
 
-    {% if results %}
-      <h4 style="margin-top: 20px;">Results</h4>
+      {% if results %}
+      <h4>Search Results</h4>
       {% for user in results %}
-        <div class="user-box">
-          <span>{{ user.username }}</span>
-          <a href="{% url 'send_friend_request' user.user_id %}" class="btn btn-sm btn-success">Send Request</a>
-        </div>
-      {% endfor %}
-    {% endif %}
-    <a href="{% url 'friend_list' %}" class="btn btn-link">← Back to Friends</a>
-  </div>
-</body>
+      <div class="user-box">
+        <span>{{ user.username }}</span>
+        <a
+          href="{% url 'send_friend_request' user.user_id %}"
+          class="btn btn-success"
+          >Send Request</a
+        >
+      </div>
+      {% endfor %} {% endif %}
+
+      <a href="{% url 'friend_list' %}" class="btn-link"
+        >← Back to Friends List</a
+      >
+    </div>
+  </body>
 </html>
