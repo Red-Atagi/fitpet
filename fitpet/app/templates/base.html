@@ -114,7 +114,8 @@
         height: 200px;
       }
 
-      .pet-clothing {
+      .pet-clothing,
+      .pet-clothing-no-background {
         z-index: 3;
         width: 200px;
         height: 200px;
@@ -214,19 +215,19 @@
           <img
             src="{% static hat_wearing.image_path %}?v={{ timestamp }}"
             alt="Hat"
-            class="pet-clothing"
+            class="pet-clothing-no-background"
           />
           {% endif %} {% if shirt_wearing %}
           <img
             src="{% static shirt_wearing.image_path %}?v={{ timestamp }}"
             alt="Shirt"
-            class="pet-clothing"
+            class="pet-clothing-no-background"
           />
           {% endif %} {% if shoes_wearing %}
           <img
             src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
             alt="Shoes"
-            class="pet-shoes"
+            class="pet-clothing-no-background"
           />
           {% endif %}
         </div>
