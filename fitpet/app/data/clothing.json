@@ -1,5 +1,30 @@
 [
     {
+        "price": 100,
+        "clothing_type": "Hat",
+        "image_path": "images/tiara-gold.png"
+    },
+    {
+        "price": 100,
+        "clothing_type": "Hat",
+        "image_path": "images/tiara-silver.png"
+    },
+    {
+        "price": 100,
+        "clothing_type": "Hat",
+        "image_path": "images/glasses-black.png"
+    },
+    {
+        "price": 100,
+        "clothing_type": "Hat",
+        "image_path": "images/glasses-grey.png"
+    },
+    {
+        "price": 100,
+        "clothing_type": "Hat",
+        "image_path": "images/glasses-gold.png"
+    },
+    {
         "price": 10,
         "clothing_type": "Hat",
         "image_path": "images/bow-periwinkle.png"
