@@ -166,7 +166,7 @@ header {
 }
 
 .modal-left {
-    display: flex;
+    /* display: flex; */
     align-items: center;
     justify-content: center;
     background-color: white;
@@ -176,8 +176,9 @@ header {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
+    position: absolute;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
 }
 
 .modal-right {
@@ -317,7 +318,7 @@ header {
             <div class="modal-content">
                 <div class="modal-left">
                     {% if user %}
-                        <img id="preview-img" src="{% static pet.image_path %}?v={{ timestamp }}" alt="Pet">
+                        <img id="preview-img" src="/static/images/pet_example.png" alt="Pet">
                     {% endif %}
                     <img id="modal-img" src="" alt="Enlarged Image">
                 </div>

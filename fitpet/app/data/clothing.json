@@ -1,48 +1,148 @@
 [
     {
-        "price": 1,
+        "price": 100,
         "clothing_type": "Hat",
-        "image_path": "images/test_hat1.png"
+        "image_path": "images/tiara-gold.png"
     },
     {
-        "price": 2,
+        "price": 100,
         "clothing_type": "Hat",
-        "image_path": "images/test_hat2.png"
+        "image_path": "images/tiara-silver.png"
     },
     {
-        "price": 1,
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/glasses-black.png"
+    },
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/glasses-grey.png"
+    },
+    {
+        "price": 100,
+        "clothing_type": "Hat",
+        "image_path": "images/glasses-gold.png"
+    },
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/bow-periwinkle.png"
+    },
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/bow-red.png"
+    },   
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/bow-pink.png"
+    }, 
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/bow-purple.png"
+    },
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/yellow-bow.png"
+    },
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/bow-blue.png"
+    },
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/bow-green.png"
+    },
+    {
+        "price": 10,
+        "clothing_type": "Hat",
+        "image_path": "images/bow-orange.png"
+    },
+    {
+        "price": 20,
         "clothing_type": "Shirt",
-        "image_path": "images/test_shirt1.png"
+        "image_path": "images/shirt-blue.png"
     },
     {
-        "price": 2,
+        "price": 20,
         "clothing_type": "Shirt",
-        "image_path": "images/test_shirt2.png"
+        "image_path": "images/shirt-green.png"
     },
     {
-        "price": 1,
-        "clothing_type": "Shoes",
-        "image_path": "images/test_shoes1.png"
+        "price": 20,
+        "clothing_type": "Shirt",
+        "image_path": "images/shirt-orange.png"
     },
     {
-        "price": 2,
-        "clothing_type": "Shoes",
-        "image_path": "images/test_shoes2.png"
+        "price": 20,
+        "clothing_type": "Shirt",
+        "image_path": "images/shirt-pink.png"
     },
     {
-        "price": 2,
-        "clothing_type": "Shoes",
-        "image_path": "images/test_shoes3.png"
+        "price": 20,
+        "clothing_type": "Shirt",
+        "image_path": "images/shirt-periwinkle.png"
     },
     {
-        "price": 2,
-        "clothing_type": "Shoes",
-        "image_path": "images/test_shoes4.png"
+        "price": 20,
+        "clothing_type": "Shirt",
+        "image_path": "images/shirt-purple.png"
     },
     {
-        "price": 2,
+        "price": 20,
+        "clothing_type": "Shirt",
+        "image_path": "images/shirt-red.png"
+    },
+    {
+        "price": 20,
+        "clothing_type": "Shirt",
+        "image_path": "images/shirt-yellow.png"
+    },
+    {
+        "price": 15,
         "clothing_type": "Shoes",
-        "image_path": "images/test_shoes5.png"
+        "image_path": "images/shoes-blue.png"
+    },
+        {
+        "price": 15,
+        "clothing_type": "Shoes",
+        "image_path": "images/shoes-green.png"
+    },
+    {
+        "price": 15,
+        "clothing_type": "Shoes",
+        "image_path": "images/shoes-orange.png"
+    },
+    {
+        "price": 15,
+        "clothing_type": "Shoes",
+        "image_path": "images/shoes-periwinkle.png"
+    },
+    {
+        "price": 15,
+        "clothing_type": "Shoes",
+        "image_path": "images/shoes-pink.png"
+    },
+    {
+        "price": 15,
+        "clothing_type": "Shoes",
+        "image_path": "images/shoes-purple.png"
+    },
+    {
+        "price": 15,
+        "clothing_type": "Shoes",
+        "image_path": "images/shoes-red.png"
+    },
+    {
+        "price": 15,
+        "clothing_type": "Shoes",
+        "image_path": "images/shoes-yellow.png"
     },
     {
         "price": 1,

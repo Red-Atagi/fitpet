@@ -30,6 +30,9 @@
     <title>{% block title %}FitPet{% endblock %}</title>
 
     <style>
+      a:hover {
+        text-decoration: none !important;
+      }
       body {
         background-color: #bde0fe;
         font-family: "Viga", sans-serif;
@@ -195,7 +198,7 @@
           <img
             src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
             alt="Shoes"
-            class="pet-shoes"
+            class="pet-clothing"
           />
           {% endif %}
         </div>

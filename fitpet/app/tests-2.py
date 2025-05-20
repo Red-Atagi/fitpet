@@ -185,38 +185,51 @@ class FriendListTestCase(TestCase):
 
 
 class CheckFriendRequestTestCase(TestCase):
-    def setup(self):
+    def setUp(self):
+
         # Create a user and a pet for the tests
-        self.user = User.objects.create_user(username="testuser", password="testpass")
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword"
+        )
         self.fpuser = FPUser.objects.create(
-            djuser=self.user, coins=75, username="testuser", name="Test User"
+            djuser=self.user, coins=100, username="testuser", name="Test User"
         )
         self.pet = Pet.objects.create(name="Test Pet", owner=self.fpuser)
 
-        # Create a friend user and pet for the tests
+        # Create a friend user and pet
         self.friend_user = User.objects.create_user(
-            username="frienduser", password="friendpass"
+            username="frienduser", password="friendpassword"
         )
         self.friend_fpuser = FPUser.objects.create(
-            djuser=self.friend_user, coins=60, username="frienduser", name="Friend User"
+            djuser=self.friend_user, coins=50, username="frienduser", name="Friend User"
         )
         self.friend_pet = Pet.objects.create(
             name="Friend Pet", owner=self.friend_fpuser
+        )
+
+        # Make Friend Requests
+        self.friend_request = FriendRequest.objects.create(
+            from_user = self.friend_fpuser,
+              to_user = self.fpuser
         )
 
     def test_leave_friend_page(self):
         """
         Test that leaves the friend list page
         """
-        # Log In
-        self.client.login(username="testuser", password="testpass")
+        # Log in the user
+        self.client.login(username="testuser", password="testpassword")
 
-        # Go to Friend Page
+        # Visit the friend's page
         response = self.client.get(reverse("friend_list"))
+
+        # Check that the response is 200
         self.assertEqual(response.status_code, 200)
 
         # Go Home
         response = self.client.get(reverse("home"))
+
+        #Check that the response is 2000
         self.assertEqual(response.status_code, 200)
 
     def test_accept_friend_request(self):
@@ -224,40 +237,52 @@ class CheckFriendRequestTestCase(TestCase):
         Test that accepts a friend request and adds friends to the users
         """
         # Log In
-        self.client.login(username="testuser", password="testpass")
+        self.client.login(username="testuser", password="testpassword")
 
         # Go to Friend Page
         response = self.client.get(reverse("friend_list"))
+
+        # Check that the response is 200
         self.assertEqual(response.status_code, 200)
 
         # Go to Friend Request Page
         response = self.client.get(reverse("friend_request"))
+
+        # Check that the response is 200
         self.assertEqual(response.status_code, 200)
 
         # Accept Friend Request
-        answer = 1
+        answer = 'accept'
         friend = self.friend_fpuser.user_id
-        response = self.client.post(
-            reverse("friend_request"), {"answer": answer, "friend": friend}
-        )
-        # Add Friend to Friend :ist
-        self.fpuser.friends.add(self.friend_fpuser)
-        self.friend_fpuser.friends.add(self.fpuser)
 
-        self.assertContains(self.fpuser.friends, self.friend_fpuser)
-        self.assertContains(self.friend_fpuser.friends, self.fpuser)
-        # Remove friend from friend request
-        """
-        Need to create a method for the friend requests to be 
-        sent / seen in the backend
-        """
+        # Confirms friend request
+        response = self.client.post(
+            reverse("confirm_friend_request", args=[answer, friend])
+        )
+
+        #Check that the reponse is 302
+        self.assertEqual(response.status_code, 302)
+
+        #Check that it redirects to the right page
+        self.assertRedirects(response, reverse("friend_request"))
+
+        # Checking if the friends were added to the list
+        self.assertIn(self.friend_fpuser, self.fpuser.friends.all())
+        self.assertIn(self.fpuser, self.friend_fpuser.friends.all())
+
+        # Checking if the friend request has been deleted
+        self.assertFalse(FriendRequest.objects.filter(from_user= self.friend_fpuser, to_user = self.fpuser).exists())
 
         # Go to Friend Page
         response = self.client.get(reverse("friend_list"))
+
+        # Check that the response is 200
         self.assertEqual(response.status_code, 200)
 
         # Go Home
         response = self.client.get(reverse("home"))
+
+        # Check that the response is 200
         self.assertEqual(response.status_code, 200)
 
     def test_decline_friend_request(self):
@@ -265,7 +290,7 @@ class CheckFriendRequestTestCase(TestCase):
         Test that declines the friend request
         """
         # Log In
-        self.client.login(username="testuser", password="testpass")
+        self.client.login(username="testuser", password="testpassword")
 
         # Go to Friend Page
         response = self.client.get(reverse("friend_list"))
@@ -276,17 +301,19 @@ class CheckFriendRequestTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Decline Friend Request
-        answer = 0
+        answer = 'decline'
         friend = self.friend_fpuser.user_id
+
+        # confirm friend request
         response = self.client.post(
-            reverse("friend_request"), {"answer": answer, "friend": friend}
+            reverse("confirm_friend_request", args=[answer, friend])
         )
 
-        # Remove friend from friend request
-        """
-        Need to create a method for the friend requests to be 
-        sent / seen in the backend
-        """
+        # Check that it redirects to the right page
+        self.assertRedirects(response, reverse("friend_request"))
+
+        # Checking if the friend request has been deleted
+        self.assertFalse(FriendRequest.objects.filter(from_user= self.friend_fpuser, to_user = self.fpuser).exists())
 
         # Go to Friend Page
         response = self.client.get(reverse("friend_list"))

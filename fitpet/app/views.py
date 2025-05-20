@@ -244,7 +244,7 @@ def view_friend_requests(request):
 
     return render(request, "friend_request.html", data)
 
-def confirm_friend_request(request, answer, from_user_id):
+def confirm_friend_request(request, action, from_user_id):
     """
     Handles acceptance or denial of friend request
     """
@@ -252,18 +252,21 @@ def confirm_friend_request(request, answer, from_user_id):
         return redirect("login")
 
     if request.method == "POST":
-        # Get the friend's fpuser
-        from_user = FPUser.objects.get(user_id = from_user_id)
+        try:
+            # Get the friend's fpuser
+            from_user = FPUser.objects.get(user_id = from_user_id)
 
-        # Get the current user's fpuser
-        user = request.user
-        to_user = FPUser.objects.get(djuser = user)
+            # Get the current user's fpuser
+            user = request.user
+            to_user = FPUser.objects.get(djuser = user)
 
-        # Get the friend request
-        friend_request = FriendRequest.objects.get(from_user = from_user, to_user = to_user)
-
+            # Get the friend request
+            friend_request = FriendRequest.objects.get(from_user = from_user, to_user = to_user)
+        except:
+            return redirect("friend_request")
+        
         # If the user accepts the friend request it adds to friends list
-        if answer == 'accept':
+        if action == 'accept':
             to_user.friends.add(from_user)
             from_user.friends.add(to_user)
             to_user.save()
@@ -271,7 +274,8 @@ def confirm_friend_request(request, answer, from_user_id):
 
         # delete this friend request
         friend_request.delete()
-       
+        return redirect("friend_request")
+    
     return redirect("friend_request")
 
 
