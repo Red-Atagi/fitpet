@@ -112,20 +112,6 @@
         border-radius: 8px;
         font-family: "Roboto", sans-serif;
         display: none; /* Hidden by default */
-        color: #4a4a4a; /* Add text color */
-      }
-
-      #result-box h3 {
-        color: #cdb4db; /* Purple header */
-        margin-top: 0;
-      }
-
-      #result-box p {
-        margin-bottom: 0;
-      }
-
-      #result-box strong {
-        color: #ffafcc; /* Pink for emphasized text */
       }
 
       .form-group {
@@ -176,33 +162,5 @@
         <!-- Results will be displayed here after calculation -->
       </div>
     </div>
-    <script>
-      document.querySelector("form").addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        // Get form values
-        const exercise = document.getElementById("exerciseSelect").value;
-        const reps = document.getElementById("reps").value;
-
-        // Calculate XP and Coins (example values - replace with your actual calculation)
-        const xp = Math.floor(reps * 0.5); // Example calculation
-        const coins = Math.floor(reps * 0.2); // Example calculation
-
-        // Display results
-        const resultBox = document.getElementById("result-box");
-        resultBox.innerHTML = `
-            <h3>Workout Complete!</h3>
-            <p>You earned: <strong>${xp} XP</strong> and <strong>${coins} coins</strong>!</p>
-            <p>Exercise: ${exercise} (${reps} reps)</p>
-          `;
-        resultBox.style.display = "block";
-
-        // Optional: Scroll to results
-        resultBox.scrollIntoView({ behavior: "smooth" });
-
-        // If you want to actually submit the form after showing results:
-        // setTimeout(() => this.submit(), 2000);
-      });
-    </script>
   </body>
 </html>
