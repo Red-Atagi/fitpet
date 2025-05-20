@@ -236,10 +236,10 @@ def view_friend_requests(request):
     fpuser = FPUser.objects.get(djuser=user)
 
     # Get all friend requests that were sent to the user
-    friend_requests = FriendRequest.objects.filter(to_user= fpuser)
-    
+    friend_requests = FriendRequest.objects.filter(to_user= fpuser).all()
+
     data = {
-        "requests" : friend_requests,
+        "friend_requests" : friend_requests,
     }
 
     return render(request, "friend_request.html", data)
