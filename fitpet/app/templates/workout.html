@@ -1,62 +1,166 @@
 <!DOCTYPE html>
-<head>
+<html lang="en">
+  <head>
     <meta charset="UTF-8" />
     <title>Exercise Log</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+      integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+      crossorigin="anonymous"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Roboto:ital,wght@0,100..900;1,100..900&family=Viga&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        .button {
-            text-decoration: none;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            display: inline-block;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+      body {
+        background-color: #bde0fe;
+        font-family: "Viga", sans-serif;
+        color: #4a4a4a;
+      }
 
-        .cancel {
-            background-color: #e53935;    
-        }
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 20px;
+        max-width: 500px;
+        margin: 30px auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      }
 
-        .confirm {
-            background-color: #43a047;    
-        }
+      h1 {
+        font-family: "Lilita One", sans-serif;
+        color: #cdb4db;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 32px;
+      }
 
-        #result-box {
-            margin-top: 1em;
-            padding: 1em;
-            background-color: #e3fbe3;
-            border: 1px solid #8fda8f;
-            border-radius: 8px;
-        }
+      h3 {
+        font-family: "Roboto", sans-serif;
+        color: #4a4a4a;
+        margin: 20px 0 10px 0;
+      }
+
+      .button {
+        text-decoration: none;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-family: "Viga", sans-serif;
+        border-radius: 8px;
+        display: inline-block;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        text-align: center;
+        margin: 0 auto;
+      }
+
+      .cancel-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #bde0fe; /* light blue link */
+        font-size: 17px;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .cancel-link:hover {
+        color: #ff9ebd; /* deeper blue on hover */
+      }
+
+      .confirm {
+        background-color: #a2d2ff;
+        width: 100%;
+        margin-top: 5px;
+        padding: 12px;
+        font-size: 18px;
+      }
+
+      .confirm:hover {
+        background-color: #91c3f8;
+        transform: scale(1.02);
+      }
+
+      #exerciseSelect,
+      #reps {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #cdb4db;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-family: "Roboto", sans-serif;
+      }
+
+      #exerciseSelect:focus,
+      #reps:focus {
+        outline: none;
+        border-color: #a2d2ff;
+        box-shadow: 0 0 5px rgba(162, 210, 255, 0.5);
+      }
+
+      #result-box {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f0f9ff;
+        border: 2px solid #a2d2ff;
+        border-radius: 8px;
+        font-family: "Roboto", sans-serif;
+        display: none; /* Hidden by default */
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .input-label {
+        display: block;
+        margin-bottom: 8px;
+        font-family: "Roboto", sans-serif;
+        color: white;
+        font-size: 0px;
+      }
     </style>
-</head>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Exercise Log</h1>
 
-<html>
-
-    <h1>Exercise Log</h1>
-
-    <a href = "{% url 'home' %}" class="button cancel"> Cancel Workout </a>
-    
-    <form method = "POST" action = "{%url 'workout_logged'%}">
+      <form method="POST" action="{% url 'workout_logged' %}">
         {% csrf_token %}
 
-        <h3> Select your Exercise! </h3>
-        <label for="exerciseSelect"></label>
-        <select name="exercise" id="exerciseSelect" required>
-            <option disabled selected></option>
+        <div class="form-group">
+          <h3>Select your Exercise!</h3>
+          <label for="exerciseSelect" class="input-label">Exercise:</label>
+          <select name="exercise" id="exerciseSelect" required>
+            <option value="" disabled selected>Choose an exercise...</option>
             {% for ex in exercises %}
-                <option value="{{ ex.name }}">{{ ex.name }}</option>
+            <option value="{{ ex.name }}">{{ ex.name }}</option>
             {% endfor %}
-        </select>
+          </select>
+        </div>
 
+        <div class="form-group">
+          <h3>How many reps have you done?</h3>
+          <label for="reps" class="input-label">Reps:</label>
+          <input type="number" id="reps" name="reps" min="1" required />
+        </div>
 
-        <h3> How many reps have you done? </h3>
-        <label for="reps" class="input-label">Reps:</label>
-        <input type="number" id="reps" name="reps" min="1" required>
+        <button class="button confirm" type="Submit">
+          Calculate XP and Coins
+        </button>
 
-        <p></p>
-        <button class = "button confirm" type="Submit">Calculate XP and Coins</button>
-    </form>
+        <a href="{% url 'home' %}" class="button cancel-link">Cancel Workout</a>
+      </form>
+
+      <div id="result-box">
+        <!-- Results will be displayed here after calculation -->
+      </div>
+    </div>
+  </body>
 </html>

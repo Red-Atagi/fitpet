@@ -3,154 +3,173 @@
   <head>
     <meta charset="UTF-8" />
     <title>Dress Your Pet</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+      integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+      crossorigin="anonymous"
+    />
+    <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Roboto:ital,wght@0,100..900;1,100..900&family=Viga&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Viga&display=swap"
-      rel="stylesheet"
-    />
     <style>
+      body {
+        background-color: #bde0fe;
+        font-family: "Viga", sans-serif;
+        color: #4a4a4a;
+      }
+
+      .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 20px;
+        max-width: 400px;
+        margin: 30px auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        height: 650px;
+        overflow-y: auto;
+      }
+
+      .dress-pet-header {
+        border-radius: 35px;
+        margin-bottom: 15px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #cdb4db;
+      }
+
+      h1 {
+        font-family: "Lilita One", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        text-align: center;
+        color: white;
+        margin: 0;
+        font-size: 24px;
+      }
+
       .scroll-row {
         display: flex;
         overflow-x: auto;
         padding: 10px 0;
+        margin-bottom: 15px;
       }
+
       .clothing-item {
         flex: 0 0 auto;
         margin-right: 10px;
         text-align: center;
-        border: 3px solid rgb(162, 162, 162);
-
+        border: 3px solid #a2d2ff;
         border-radius: 15px;
-        justify-content: center;
-        align-items: center;
-        background-color: rgb(251, 251, 251);
+        background-color: white;
+        padding: 5px;
+        transition: transform 0.2s;
       }
+
+      .clothing-item:hover {
+        transform: scale(1.05);
+      }
+
       .clothing-item img {
         width: 50px;
         height: 50px;
         object-fit: contain;
-        border: 2px solid transparent;
         border-radius: 8px;
         display: block;
       }
 
       .clothing-item.selected {
-        border-color: #f7b3f9;
+        border-color: #ffafcc;
+        background-color: #ffc8dd;
       }
 
       .clothing-container {
-        padding-left: 20px;
-        padding-right: 20px;
-        margin-top: 0px;
-        margin-bottom: 10px;
-      }
-
-      .container {
-        width: 300px;
-        height: 650px;
-        margin: 0 auto;
-        border: 1px solid #effbfd;
-        background-color: #fcfcfc;
-        overflow-y: auto;
-      }
-
-      h1 {
-        font-family: "Viga", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-        text-align: center;
-        color: white;
-      }
-
-      .dress-pet-header {
-        border: 3px solid transparent;
-        border-radius: 35px;
-        margin-bottom: 10px;
-        height: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f7b3f9;
+        padding: 0 10px;
+        margin-top: 10px;
       }
 
       h2 {
         font-family: "Roboto", sans-serif;
-        font-size: large;
-        font-style: normal;
-        font-variation-settings: "wdth" 200;
+        font-size: 18px;
         font-weight: 500;
-        font-style: normal;
-        display: block;
-        margin-top: 0px;
-        margin-bottom: 0px;
+        color: #4a4a4a;
+        margin: 15px 0 5px 0;
       }
 
       .center-content {
         display: flex;
         justify-content: center;
-        align-items: center;
+        margin-top: 15px;
       }
 
       .return-button {
         border-radius: 10px;
-        border-color: transparent;
+        border: none;
         width: 130px;
-        height: 30px;
+        height: 35px;
         font-family: "Viga", sans-serif;
-        font-weight: 0.01;
-        background-color: #f7b3f9;
+        background-color: #a2d2ff;
         color: white;
-        margin-top: 10px;
+        transition: background-color 0.3s;
       }
 
       .return-button:hover {
-        background-color: white;
-        color: #f7b3f9;
-        transform: scale(1.05);
+        background-color: #91c3f8;
+        color: white;
       }
 
       .pet-container {
         position: relative;
-        width: 100%;
-        height: 300px;
+        width: 80%;
+        height: 250px;
+        background-color: #ffafcc;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        margin: 0 auto 15px;
       }
 
       .background {
-        position: absolute;
-        top: 0;
-        left: 0;
+        /* position: absolute; */
         width: 100%;
         height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
         z-index: 1;
       }
 
       .pet {
         position: absolute;
-        top: 50%;
+        top: 65%;
         left: 50%;
-        transform: translate(-50%, -50%); /* Centers the pet image */
+        transform: translate(-50%, -50%);
         z-index: 2;
+        width: 180px;
+        height: 180px;
       }
 
       .pet-clothing {
         position: absolute;
-        top: 50%;
+        top: 65%;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 3;
+        width: 180px;
+        height: 180px;
       }
 
       .pet-shoes {
         position: absolute;
-        height: 50px;
-        width: 50px;
         top: 75%;
         left: 50%;
         transform: translate(-50%, -50%);
-        z-index: 3;
+        z-index: 4;
+        width: 50px;
+        height: 50px;
       }
     </style>
   </head>
@@ -161,49 +180,46 @@
       </div>
 
       <!-- Pet Display -->
-      <div class="pet-container">
-        {%load static%} {% if background_wearing %}
-        <img
-          class="background"
-          src="{% static background_wearing.image_path %}?v={{ timestamp }}"
-          alt="Background Image"
-        />
-        {%endif%}
-        <img
-          class="pet"
-          id="pet-image"
-          src="/static/images/pet_example.png"
-          alt="Your Pet"
-          style="width: 200px; height: 200px"
-        />
-        {% if hat_wearing %}
-        <img
-          src="{% static hat_wearing.image_path %}?v={{ timestamp }}"
-          alt="Hat"
-          style="width: 200px; height: 200px"
-          class="pet-clothing"
-        />
-        {% endif %} {% if shirt_wearing %}
-        <img
-          src="{% static shirt_wearing.image_path %}?v={{ timestamp }}"
-          alt="Hat"
-          style="width: 200px; height: 200px"
-          class="pet-clothing"
-        />
-        {% endif %} {% if shoes_wearing %}
-        <!-- TODO: fix shoes heightand class when add actual images -->
-        <img
-          src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
-          alt="Hat"
-          style="width: 200px; height: 200px"
-          class="pet-clothing"
-        />
-        {% endif %}
+      <div class="" center-content>
+        <div class="pet-container">
+          {%load static%} {% if background_wearing %}
+          <img
+            class="background"
+            src="{% static background_wearing.image_path %}?v={{ timestamp }}"
+            alt="Background Image"
+          />
+          {%endif%}
+          <img
+            class="pet"
+            id="pet-image"
+            src="/static/images/pet_example.png"
+            alt="Your Pet"
+          />
+          {% if hat_wearing %}
+          <img
+            src="{% static hat_wearing.image_path %}?v={{ timestamp }}"
+            alt="Hat"
+            class="pet-clothing"
+          />
+          {% endif %} {% if shirt_wearing %}
+          <img
+            src="{% static shirt_wearing.image_path %}?v={{ timestamp }}"
+            alt="Shirt"
+            class="pet-clothing"
+          />
+          {% endif %} {% if shoes_wearing %}
+          <img
+            src="{% static shoes_wearing.image_path %}?v={{ timestamp }}"
+            alt="Shoes"
+            class="pet-shoes"
+          />
+          {% endif %}
+        </div>
       </div>
 
       <div class="center-content">
         <a href="{% url 'home' %}"
-          ><button class="return-button">return home</button></a
+          ><button class="return-button">Return Home</button></a
         >
       </div>
 
@@ -286,9 +302,8 @@
         console.log(newClothingId);
 
         const data = new URLSearchParams();
-        data.append("clothing_id", newClothingId); // Append clothing_id to the request data
+        data.append("clothing_id", newClothingId);
 
-        console.log("here");
         fetch("{% url 'update_clothing' %}", {
           method: "POST",
           headers: {
@@ -300,8 +315,6 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              console.log("Changed clothing successfully!");
-              // Trigger page reload to fetch the updated data
               window.location.reload();
             } else {
               console.error("Failed to change clothing:", data.error);
