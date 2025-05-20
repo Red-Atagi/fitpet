@@ -360,12 +360,16 @@ class DressPetTestCase(TestCase):
         )
 
         # Get clothing items
+        # changed the clothing items to be taken from the database to work with 
+        # the new designs added to the database
         clothing1 = Clothing.objects.get(clothing_id=1)  # hat1
         clothing2 = Clothing.objects.get(clothing_id=2)  # hat2
-        clothing3 = Clothing.objects.get(clothing_id=3)  # shirt1
-        clothing4 = Clothing.objects.get(clothing_id=4)  # shirt2
-        clothing5 = Clothing.objects.get(clothing_id=5)  # shoes1
-        clothing6 = Clothing.objects.get(clothing_id=6)  # shoes2
+        clothing3 = Clothing.objects.get(clothing_id=14)  # shirt1
+        clothing4 = Clothing.objects.get(clothing_id=15)  # shirt2
+        clothing5 = Clothing.objects.get(clothing_id=22)  # shoes1
+        clothing6 = Clothing.objects.get(clothing_id=23)  # shoes2
+
+        self.clothing = [clothing1, clothing2, clothing3, clothing4, clothing5, clothing6]
 
         # Assign clothing to users
         self.fpuser1.owns.add(
@@ -394,12 +398,12 @@ class DressPetTestCase(TestCase):
 
         # Check all clothing options are displayed
         content = response.content.decode()
-        self.assertIn("test_hat1.png", content)
-        self.assertIn("test_hat2.png", content)
-        self.assertIn("test_shirt1.png", content)
-        self.assertIn("test_shirt2.png", content)
-        self.assertIn("test_shoes1.png", content)
-        self.assertIn("test_shoes2.png", content)
+        self.assertIn(self.clothing[0].image_path, content)
+        self.assertIn(self.clothing[1].image_path, content)
+        self.assertIn(self.clothing[2].image_path, content)
+        self.assertIn(self.clothing[3].image_path, content)
+        self.assertIn(self.clothing[4].image_path, content)
+        self.assertIn(self.clothing[5].image_path, content)
 
         # Changing clothes
         response = self.client.post(reverse("update_clothing"), {"clothing_id": 2})
@@ -426,13 +430,14 @@ class DressPetTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Check correct clothing options are displayed
+        # Updated to use the clothing list from setUp to ensure consistency
         content = response.content.decode()
-        self.assertIn("test_hat1.png", content)
-        self.assertNotIn("test_hat2.png", content)
-        self.assertIn("test_shirt1.png", content)
-        self.assertNotIn("test_shirt2.png", content)
-        self.assertIn("test_shoes1.png", content)
-        self.assertNotIn("test_shoes2.png", content)
+        self.assertIn(self.clothing[0].image_path, content)
+        self.assertNotIn(self.clothing[1].image_path, content)
+        self.assertIn(self.clothing[2].image_path, content)
+        self.assertNotIn(self.clothing[3].image_path, content)
+        self.assertIn(self.clothing[4].image_path, content)
+        self.assertNotIn(self.clothing[5].image_path, content)
 
         # Simulate clothing changes
         response = self.client.post(reverse("update_clothing"), {"clothing_id": 1})
@@ -441,11 +446,12 @@ class DressPetTestCase(TestCase):
         self.pet2.refresh_from_db()
         self.assertEqual(self.pet2.hat.clothing_id, 1)
 
-        response = self.client.post(reverse("update_clothing"), {"clothing_id": 3})
+        #changed the id to be 14 to match a shirt clothing item
+        response = self.client.post(reverse("update_clothing"), {"clothing_id": 14})
         self.assertEqual(response.status_code, 200)
 
         self.pet2.refresh_from_db()
-        self.assertEqual(self.pet2.shirt.clothing_id, 3)
+        self.assertEqual(self.pet2.shirt.clothing_id, 14)
 
     def test_3(self):
         # Log in
@@ -457,12 +463,12 @@ class DressPetTestCase(TestCase):
 
         # Check nothing is displayed
         content = response.content.decode()
-        self.assertNotIn("test_hat1.png", content)
-        self.assertNotIn("test_hat2.png", content)
-        self.assertNotIn("test_shirt1.png", content)
-        self.assertNotIn("test_shirt2.png", content)
-        self.assertNotIn("test_shoes1.png", content)
-        self.assertNotIn("test_shoes2.png", content)
+        self.assertNotIn(self.clothing[0].image_path, content)
+        self.assertNotIn(self.clothing[1].image_path, content)
+        self.assertNotIn(self.clothing[2].image_path, content)
+        self.assertNotIn(self.clothing[3].image_path, content)
+        self.assertNotIn(self.clothing[4].image_path, content)
+        self.assertNotIn(self.clothing[5].image_path, content)
 
 
 class WorkoutTestCase(TestCase):
