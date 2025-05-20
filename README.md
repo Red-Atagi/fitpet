@@ -1,5 +1,38 @@
 # FitPet
 
+## Project Milestone 4B
+### Usecases Implemented In Iteration 2
+#### Send Friend Request
+A user can search for other users by their username through the find new friends page and send them a friend request
+
+#### Check Friend Request
+A user can check their friend requests and accept or decline users who have sent a friend request
+
+#### Vist Friends
+A user can see a list of their friends and click visit to see their friends stats, pet, owned clothed, and their other friends
+
+### Who did What
+- Send Friend Request: Eric and Gabe
+- Visit Friends and clothing drawings: Brandin and Red
+- Website Design Alexis and Kaitlyn
+- Chekc Friend Request: Josh and Kate
+
+### Changed and Not changed
+We were able to implement most of the use cases for the user: create account, log in, workout, shop, dress pet, send friend request, check friend request (accept and decline friend request), visit friend. We only have one pet design so we did not implement choose pet use case create account. We didn't implmenent the administrator use cases: add exercises, delete exercises. However we can edit a file /fitpet/app/data/exercise.json to add new exercises.
+
+### Acceptance Test
+1. Register at least two users using any username, password (at least 8 characters, not too similar to your username), name, and pet's name.
+2. Log in to one of the new account. This should bring you to the home page.
+2. From the home page navigate to the friends list page by clicking on "friends" or going to `http://127.0.0.1:8000/friends/list/`
+3. You'll see that you don't have any friends
+3. From the friend list page navigate to the find friends page by clicking "find new friends" or going to `http://127.0.0.1:8000/search_users/`
+4. Search the username of the account you just logged out of and click "Send Request" to send a friend request
+5. Log out and Log in to the user you sent the friend request to 
+6. From the friends list page navigate to the check friend request by clicking "Check Friend Request" or going to `http://127.0.0.1:8000/friends/list/`
+7. You should see the friend request you just sent. Click accept friend request and then return to friends list. You'll see your new friend in you friends list
+8. Click "visit {name}" and see the profile of your new friend
+9. You can change users and dress the pet in new clothing, purchase new items, log more exercises and level up and it will change in the friends profile 
+
 ## Project Milestone 4A
 
 ### 2nd Iteration Plan
@@ -50,7 +83,7 @@ Our unit tests for iteration 2 are loacted in fitpet/app/tests-2.py. You can run
 2. Log in with your new account. This should bring you to the home page.
 3. From the home page, navigate to the workout page by pressing the button or going to `http://127.0.0.1:8000/workout/`.
 4. Log a workout to earn coins.
-5. From the home page, navigate to the shop page by pressing the button or going to `http://127.0.0.1:8000/api/buyclothing`.
+5. From the home page, navigate to the shop page by pressing the button or going to `http://127.0.0.1:8000/shop`.
 6. Buy some items with your earned coins.
 7. From the home page, navigate to the dress pet page by pressing the button or going to `http://127.0.0.1:8000/dress/`.
 8. See your different purchased clothings on your pet.
