@@ -179,7 +179,7 @@ def visit_friend(request, friend_id):
     except FPUser.DoesNotExist:
         return redirect("friend_list")
 
-    # Check if the friend is actially a friend
+    # # Check if the friend is actially a friend
     if not fpuser.friends.filter(user_id=friend_id).exists():
         return redirect("friend_list")
 
@@ -187,18 +187,98 @@ def visit_friend(request, friend_id):
 
     if not pet:
         return redirect("home")
-    friend.user_id
+    
+    hats_owned, shirts_owned, shoes_owned, backgrounds_owned = friend.clothing_owned()
+    hat_wearing, shirt_wearing, shoes_wearing, background_wearing = pet.is_wearing()
+
+    clothing_lists = [hats_owned, shirts_owned, shoes_owned, backgrounds_owned]
+    currently_wearing = [hat_wearing, shirt_wearing, shoes_wearing, background_wearing]
+
+    # # Sort the list so that the item currently worn is at the head
+    for i in range(len(clothing_lists)):
+        clothing_list = clothing_lists[i]
+        wearing_item = currently_wearing[i]
+
+        for idx, item in enumerate(clothing_list):
+            if wearing_item and item.clothing_id == wearing_item.clothing_id:
+                clothing_list.insert(0, clothing_list.pop(idx))
+                break
+    # friend.user_id
+    friends = friend.friends.all()
 
     data = {
         "friend": friend,
+        "friends": friends,
         "pet": pet,
         "user": user,
+        "hats_owned": hats_owned,
+        "shirts_owned": shirts_owned,
+        "shoes_owned": shoes_owned,
+        "backgrounds_owned": backgrounds_owned,
+        "hat_wearing": hat_wearing,
+        "shirt_wearing": shirt_wearing,
+        "shoes_wearing": shoes_wearing,
+        "background_wearing": background_wearing,
     }
 
     return render(request, "friend.html", data)
 
-def friend_request(request):
-    ...
+def view_friend_requests(request):
+    """
+    Renders the friend request list page with the requests sent to the user.
+    """
+
+    if not request.user.is_authenticated:
+        return redirect("login")
+    
+    # Get the fpuser
+    user = request.user
+    fpuser = FPUser.objects.get(djuser=user)
+
+    # Get all friend requests that were sent to the user
+    friend_requests = FriendRequest.objects.filter(to_user= fpuser)
+    
+    data = {
+        "requests" : friend_requests,
+    }
+
+    return render(request, "friend_request.html", data)
+
+def confirm_friend_request(request, action, from_user_id):
+    """
+    Handles acceptance or denial of friend request
+    """
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    if request.method == "POST":
+        try:
+            # Get the friend's fpuser
+            from_user = FPUser.objects.get(user_id = from_user_id)
+
+            # Get the current user's fpuser
+            user = request.user
+            to_user = FPUser.objects.get(djuser = user)
+
+            # Get the friend request
+            friend_request = FriendRequest.objects.get(from_user = from_user, to_user = to_user)
+        except:
+            return redirect("friend_request")
+        
+        # If the user accepts the friend request it adds to friends list
+        if action == 'accept':
+            to_user.friends.add(from_user)
+            from_user.friends.add(to_user)
+            to_user.save()
+            from_user.save()
+
+        # delete this friend request
+        friend_request.delete()
+        return redirect("friend_request")
+    
+    return redirect("friend_request")
+
+
 
 def shop_page(request):
     """
@@ -209,10 +289,13 @@ def shop_page(request):
         hats = unowned_clothing.filter(clothing_type="Hat")
         shirts = unowned_clothing.filter(clothing_type="Shirt")
         shoes = unowned_clothing.filter(clothing_type="Shoes")
+        backgrounds = unowned_clothing.filter(clothing_type="Background")
+        
         data = {
             "hats_unowned": hats,
             "shirts_unowned": shirts,
             "shoes_unowned": shoes,
+            "backgrounds_unowned": backgrounds,
             "user": None,
         }
         return render(request, "shop.html", data)
@@ -227,6 +310,8 @@ def shop_page(request):
     hats = unowned_clothing.filter(clothing_type="Hat")
     shirts = unowned_clothing.filter(clothing_type="Shirt")
     shoes = unowned_clothing.filter(clothing_type="Shoes")
+    backgrounds = unowned_clothing.filter(clothing_type="Background")
+
 
     pet = Pet.objects.filter(owner=fpuser)
     # hat_wearing, shirt_wearing, shoes_wearing = pet.is_wearing()
@@ -237,6 +322,7 @@ def shop_page(request):
         "shoes_unowned": shoes,
         "user": fpuser,
         "pet": pet,
+        "backgrounds_unowned": backgrounds,
         # "hat_wearing": hat_wearing,
         # "shirt_wearing": shirt_wearing,
         # "shoes_wearing": shoes_wearing

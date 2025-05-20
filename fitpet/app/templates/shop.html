@@ -1,152 +1,82 @@
 <!DOCTYPE html>
-<head lang="en">
+<html lang="en">
+<head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
+      integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css"
+      integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ"
+      crossorigin="anonymous"
+    />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Viga&display=swap"
+      rel="stylesheet"
+    />
     <meta charset="UTF-8">
     <title>Pet Clothing Shop</title>
 </head>
 <style>
-.modal {
-    display: none; /* hidden by default */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0,0,0,0.8);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal img {
-    max-width: 90%;
-    max-height: 90%;
-    box-shadow: 0 0 20px #fff;
-    border-radius: 8px;
-    align-content: center;
-}
-
-.modal-content {
-  display: flex;
-  background-color: white;
-  width: 80%;
-  max-width: 900px;
-  height: 70%;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.modal-left, .modal-right {
-  flex: 1;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.modal-left {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-left img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.modal-right {
-  background-color: #fff;
-  color: #333;
-  position: relative;
-  align-content: center;
-  vertical-align: middle;
-}
-
-.close-btn {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    font-size: 2rem;
-    color: black;
-    cursor: pointer;
-    user-select: none;
-}
-
-.desc {
-    position: relative;
-    align-content: right;
-    background-color: #fff;
-    color: #333;
-}
-
-#buy-btn {
-    top: 50%;
-    right: 25%;
-    font-size: 1rem;
-    background-color: green;
-    color: white;
-}
-
-#preview-img {
-    position: absolute;
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 8px;
-    align-content: center;
-    vertical-align: middle;
-}
-
-#modal-img {
-    max-width: 90%;
-    max-height: 90%;
-    box-shadow: 0 0 20px #fff;
-    border-radius: 8px;
-    align-content: center;
-    vertical-align: middle;
-}
-
-.clothing-grid {
-    display: flex;
-    flex-wrap: wrap;    
-}
-
-.center {
-    text-align: center;
-    margin: 20px 0;
-}
-
-h1 {
-    font-family: Helvetica, sans-serif;
-    font-size: 2.5rem;
-    color: #333;
-}
-h2 {
-    font-family: Helvetica, sans-serif;
-    font-size: 2rem;
-    color: #666;
+/* New color palette */
+:root {
+    --color1: #cdb4db;  /* light purple */
+    --color2: #ffc8dd;  /* pink */
+    --color3: #ffafcc;  /* coral pink */
+    --color4: #bde0fe;  /* light blue */
+    --color5: #a2d2ff;  /* bright blue */
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Viga', sans-serif;
     padding: 20px;
+    background-color: var(--color4);
+    color: black;
+}
+
+h1 {
+    font-family: 'Viga', sans-serif;
+    font-size: 3rem;
+    color: black;
+}
+
+h2 {
+    font-family: 'Viga', sans-serif;
+    font-size: 2rem;
+    color: black;
+}
+h3 {
+    font-family: 'Viga', sans-serif;
+    font-size: 5rem;
+    color: black;
 }
 
 header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; 
     align-items: center;
     margin-bottom: 20px;
+    flex-direction: column; 
+    text-align: center; 
 }
 
-.header-left {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.header-center {
-    text-align: center;
-    flex: 1;
-}
+.blue-container {
+    padding: 20px; 
+    background-color: white; 
+    color: black;  
+    max-width: 500px; 
+    height: auto;
+    font-family: 'Viga', sans-serif;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+    margin: 0 auto;  
+  }
 
 .button {
     padding: 10px 20px;
@@ -155,126 +85,258 @@ header {
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
+    background-color: var(--color5);
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: var(--color2);
 }
 
 .button-left {
-    background-color: #5d5d5d; 
+    background-color: var(--color3);
+}
+
+.button-left:hover {
+    background-color: var(--color2);
+}
+
+.clothing-row {
+    display: flex;
+    overflow-x: auto; 
+    white-space: nowrap;
+    padding: 10px 0;
+    gap: 15px;   
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    background-color: #fff; 
+  }
+
+.clothing-item {
+    background-color: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    flex-basis: 80px; 
+    text-align: center;
+}
+
+.clothing-item:hover {
+    background-color: #FFE9F2;
+}
+
+.clothing-item img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.modal {
+    display: none; /* hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(45, 43, 57, 0.85); /* darker overlay */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    display: flex;
+    background-color: white;
+    width: 80%;
+    max-width: 900px;
+    height: 70%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.modal-left, .modal-right {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal-left {
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.modal-left img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    position: absolute;
+    border-radius: 8px;
+    /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */
+}
+
+.modal-right {
+    background-color: white;
+    color: #333;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 30px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2rem;
+    color: var(--color5);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: var(--color4);
+}
+
+.desc h2 {
+    margin-bottom: 15px;
+    color: #222;
+}
+
+.desc p {
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+.button[type="button"] {
+    background-color: var(--color5);
+    color: white;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button[type="button"]:hover {
+    background-color: var(--color4);
+}
+
+/* Coins display */
+.header-center h2 span {
+    color: var(--color5);
+    font-weight: bold;
 }
 
 </style>
 <body>
-    {% load static %}
-    <!-- Header -->
-    <a href="{% url 'home' %}" class="button button-left">Back to Home</a>
+    <div class="blue-container">
+        {% load static %}
+        <!-- Header -->
+        <a href="{% url 'home' %}" class="button button-left">Back to Home</a>
 
-    <header>
-        <div class="header-left">
-        </div>
-        <div class="header-center">
-            <h1>Welcome to the Shop!</h1>
-            {% if user %}
-                <h2><span>Your coins: </span><span id="coins">{{ user.coins }}</span></h2>
-            {% else %}
-                <h2>Hello Stranger</h2>
-            {% endif %}
-        </div>
-    </header>
-
-    <!-- Hats Section -->
-    <h2 class="section-title">Hats</h2>
-    <div class="clothing-grid">
-        {% for hat in hats_unowned %}
-        <div id='{{ hat.clothing_id }}' class="clothing-item" onclick="showModal('{% static hat.image_path %}?v={{ timestamp }}', '{{ hat.clothing_id }}', 'Hat', '{{ hat.price }}')">
-            <img src="{% static hat.image_path %}?v={{ timestamp }}" alt="Hat" style="max-width: 200px; max-height: 200px;">
-            <p>Price: {{ hat.price }} coins</p>
-        </div>
-        {% empty %}
-            <p>You own all available hats!</p>
-        {% endfor %}
-    </div>
-
-<!-- Shirts Sections -->
-    <h2>Shirts</h2>
-    <div class="clothing-grid">
-        {% for shirt in shirts_unowned %}
-        <div id='{{ shirt.clothing_id }}' class="clothing-item" onclick="showModal('{% static shirt.image_path %}?v={{ timestamp }}', '{{ shirt.clothing_id }}', 'Shirt', '{{ shirt.price }}')">
-            <img src="{% static shirt.image_path %}?v={{ timestamp }}" alt="Shirt" style="max-width: 200px; max-height: 200px;">
-            <p>Price: {{ shirt.price }} coins</p>
-        </div>
-        {% empty %}
-            <p>You own all available shirts!</p>
-        {% endfor %}
-    </div>
-
-<!-- Shoes Section -->
-    <h2>Shoes</h2>
-    <div class="clothing-grid">
-        {% for shoe in shoes_unowned %}
-        <div id='{{ shoe.clothing_id }}' class="clothing-item" onclick="showModal('{% static shoe.image_path %}?v={{ timestamp }}', '{{ shoe.clothing_id }}', 'Shoe', '{{ shoe.price }}')">
-            <img src="{% static shoe.image_path %}?v={{ timestamp }}" alt="Shoe" style="max-width: 200px; max-height: 200px;">
-            <p>Price: {{ shoe.price }} coins</p>
-        </div>
-        {% empty %}
-            <p>You own all available shoes!</p>
-        {% endfor %}
-    </div>
-
-    <!-- The Pop Up Image -->
-    <div id="image-modal" class="modal" onclick="closeModal(event)">
-        <div id="modal-clothing-id" style="display: none;"></div>
-        <div class="modal-content">
-            <div class="modal-left">
-                {% if user %}
-                    <img id="preview-img" src="{% static pet.image_path %}?v={{ timestamp }}" alt="Pet">
-                {% endif %}
-                <img id="modal-img" src="" alt="Enlarged Image">
+        <header>
+            <div class="header-left">
             </div>
-            <div class="modal-right">
-                <span class="close-btn" onclick="hideModal()">&times;</span>
-                <div class="desc">
-                    <h2 id="modal-item-title">Item</h2>
-                    <p id="modal-item-price"><span>Price: 🪙</span><span id="cost">200</span></p>
-                    <button type="button" class="button" onclick="buyClothing()">Buy</button>
+            <div class="header-center">
+                <h1>Welcome to the Shop!</h1>
+                {% if user %}
+                    <h2><span style=color:black>Your coins: </span><span id="coins" style=color:black>{{ user.coins }}</span></h2>
+                {% else %}
+                    <h2>Hello Stranger</h2>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Hats Section -->
+        <h2 class="section-title">Hats</h2>
+        <div class="clothing-row">
+            {% for hat in hats_unowned %}
+            <div id='{{ hat.clothing_id }}' class="clothing-item" onclick="showModal('{% static hat.image_path %}?v={{ timestamp }}', '{{ hat.clothing_id }}', 'Hat', '{{ hat.price }}')">
+                <img src="{% static hat.image_path %}?v={{ timestamp }}" alt="Hat">
+                <p>Price: {{ hat.price }} coins</p>
+            </div>
+            {% empty %}
+                <p>You own all available hats!</p>
+            {% endfor %}
+        </div>
+
+        <!-- Shirts Sections -->
+        <h2>Shirts</h2>
+        <div class="clothing-row">
+            {% for shirt in shirts_unowned %}
+            <div id='{{ shirt.clothing_id }}' class="clothing-item" onclick="showModal('{% static shirt.image_path %}?v={{ timestamp }}', '{{ shirt.clothing_id }}', 'Shirt', '{{ shirt.price }}')">
+                <img src="{% static shirt.image_path %}?v={{ timestamp }}" alt="Shirt">
+                <p>Price: {{ shirt.price }} coins</p>
+            </div>
+            {% empty %}
+                <p>You own all available shirts!</p>
+            {% endfor %}
+        </div>
+
+        <!-- Shoes Section -->
+        <h2>Shoes</h2>
+        <div class="clothing-row">
+            {% for shoe in shoes_unowned %}
+            <div id='{{ shoe.clothing_id }}' class="clothing-item" onclick="showModal('{% static shoe.image_path %}?v={{ timestamp }}', '{{ shoe.clothing_id }}', 'Shoe', '{{ shoe.price }}')">
+                <img src="{% static shoe.image_path %}?v={{ timestamp }}" alt="Shoe">
+                <p>Price: {{ shoe.price }} coins</p>
+            </div>
+            {% empty %}
+                <p>You own all available shoes!</p>
+            {% endfor %}
+        </div>
+
+        <!-- Backgrounds Section -->
+        <h2>Backgrounds</h2>
+        <div class="clothing-row">
+            {% for background in backgrounds_unowned %}
+            <div id='{{ background.clothing_id }}' class="clothing-item" onclick="showModal('{% static background.image_path %}?v={{ timestamp }}', '{{ background.clothing_id }}', 'background', '{{ background.price }}')">
+                <img src="{% static background.image_path %}?v={{ timestamp }}" alt="background">
+                <p>Price: {{ background.price }} coins</p>
+            </div>
+            {% empty %}
+                <p>You own all available backgrounds!</p>
+            {% endfor %}
+        </div>
+
+        <!-- The Pop Up Image -->
+        <div id="image-modal" class="modal" onclick="closeModal(event)">
+            <div id="modal-clothing-id" style="display: none;"></div>
+            <div class="modal-content">
+                <div class="modal-left">
+                    {% if user %}
+                        <img id="preview-img" src="/static/images/pet_example.png" alt="Pet">
+                    {% endif %}
+                    <img id="modal-img" src="" alt="Enlarged Image">
+                </div>
+                <div class="modal-right">
+                    <span class="close-btn" onclick="hideModal()">&times;</span>
+                    <div class="desc">
+                        <h3 id="modal-item-title">Item</h3>
+                        <p id="modal-item-price"><span>Price: 🪙</span><span id="cost">200</span></p>
+                        <button type="button" class="button" onclick="buyClothing()">Buy</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-
 </body>
+
 <script>
-    // import clothing data TODO: check if account checking is needed
-
-    // // check shirts owned
-    // fetch('/app/data/clothing.json')
-    // .then(response => response.json())
-    // .then(imageUrls => {
-
-    //     imageUrls.forEach(url => {
-    //     const img = document.createElement('img');
-    //     img.src = `/app/${url["image_path"]}`;
-    //     img.alt = url["clothing_type"];
-    //     let container = document.getElementById(`image-container-${img.alt.toLowerCase()}`);
-    //     img.style.width = '500px';
-    //     img.style.height = '500px';
-    //     img.style.margin = '10px';
-    //     img.style.objectFit = 'cover';
-
-    //     // If image fails to load, replace with blank square (gray box)
-    //     img.onerror = function () {
-    //         img.src = '';
-    //         img.style.backgroundColor = '#ccc'; // light gray
-    //     };
-    //     img.onclick = () => showModal(`/app/${url["image_path"]}`);
-    //     container.appendChild(img);
-    //     });
-    // })
-    // .catch(error => {
-    //     console.error('Error loading images:', error);
-    // });
-        
-     // Modal functionality
-
     function decrementCoins(amt) {
         const coinsElement = document.getElementById('coins');
         let coins = parseInt(coinsElement.textContent);
@@ -373,4 +435,3 @@ header {
         });
     }
 </script>
-
