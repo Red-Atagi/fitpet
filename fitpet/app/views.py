@@ -493,7 +493,9 @@ def search_users(request):
         form = UserSearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
-            results = FPUser.objects.filter(username__icontains=query).exclude(user_id=fpuser.user_id)
+            results = FPUser.objects.filter(username__icontains=query) \
+            .exclude(user_id=fpuser.user_id) \
+            .exclude(user_id__in=fpuser.friends.values_list('user_id', flat=True))
     else:
         form = UserSearchForm()
 
