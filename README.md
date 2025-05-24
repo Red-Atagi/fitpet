@@ -1,5 +1,51 @@
 # FitPet
 
+## Project Milestone 5
+
+### Project Purpose
+This project aims to build a web app for users to log their workouts and use their rewards to dress their virtual pet. Users can add their friends and see their friends' pets as well.
+
+### How to Compile
+1. Navigate into the `fitpet` directory. You are in the right directory if there is a file `manage.py` (among others) in the directory.
+2. You may need to run `pip install django`.
+3. Run `python manage.py makemigrations` in the terminal.
+	-  make sure you're in fitpet/ directory
+4. Run `python manage.py migrate` in the terminal.
+
+*If you have trouble migrating try the command* `python manage.py makemigrations app`.
+
+### How to Run the Code
+1. Navigate into the `fitpet` directory. You are in the right directory if there is a file `manage.py` (among others) in the directory.
+2. Run `python manage.py runserver` in the terminal.
+3. You will see a line in your terminal that says: `Starting development server at http://127.0.0.1:8000/`. Note that the port may be different if you already have something running at that port.
+4. Go to `http://127.0.0.1:8000/` (or whichever port your terminal says) to see our app.
+
+### How to Run Test Cases
+1. Navigate into the `fitpet` directory. You are in the right directory if there is a file `manage.py` (among others) in the directory.
+2. Run `python manage.py test app`.
+
+### Acceptance Tests Using Web Interface
+1. Register a user using any username, password (at least 8 characters, not too similar to your username), name, and pet's name.
+2. Log in with your new account. This should bring you to the home page.
+3. From the home page, navigate to the workout page by pressing the button or going to `http://127.0.0.1:8000/workout/`.
+4. Log a workout to earn coins.
+5. From the home page, navigate to the shop page by pressing the button or going to `http://127.0.0.1:8000/shop`.
+6. Buy some items with your earned coins.
+7. From the home page, navigate to the dress pet page by pressing the button or going to `http://127.0.0.1:8000/dress/`.
+8. See your different purchased clothings on your pet.
+9. Go back to the home page to see that your pet and its background are updated to what you selected on the dress page.
+10. Register another user using any username, password (at least 8 characters, not too similar to your username), name, and pet's name.
+11. Log in to the new account. This should bring you to the home page.
+12. From the home page navigate to the friends list page by clicking on "friends" or going to `http://127.0.0.1:8000/friends/list/`
+13. You'll see that you don't have any friends
+14. From the friend list page navigate to the find friends page by clicking "find new friends" or going to `http://127.0.0.1:8000/search_users/`
+15. Search the username of the first account and click "Send Request" to send a friend request
+16. Log out and Log in to the user you sent the friend request to 
+17. From the friends list page navigate to the check friend request by clicking "Check Friend Request" or going to `http://127.0.0.1:8000/friends/list/`
+18. You should see the friend request you just sent. Click accept friend request and then return to friends list. You'll see your new friend in you friends list
+19. Click "visit {name}" and see the profile of your new friend
+20. You can change users and dress the pet in new clothing, purchase new items, log more exercises and level up and it will change in the friends profile 
+
 ## Project Milestone 4B
 ### Usecases Implemented In Iteration 2
 #### Send Friend Request
